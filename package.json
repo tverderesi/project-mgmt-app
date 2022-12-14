@@ -1,0 +1,29 @@
+{
+  "name": "project-mgmt-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node src/server/index.ts",
+    "dev": "nodemon src/server/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^15.8.0",
+    "mongoose": "^6.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.12",
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  }
+}
