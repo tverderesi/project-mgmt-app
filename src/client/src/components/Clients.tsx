@@ -10,24 +10,27 @@ export default function Clients() {
   return (
     <>
       {!loading && !error && (
-        <table className='table table-hover mt-3'>
-          <thead className=''>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.clients.map((client: any) => (
-              <ClientRow
-                key={client.id}
-                client={client}
-              />
-            ))}
-          </tbody>
-        </table>
+        <>
+          <h2 className='text-center w-full fw-bold'>My Clients</h2>
+          <table className='table table-hover mt-3'>
+            <thead className=''>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.clients.map((client: any) => (
+                <ClientRow
+                  key={client.id}
+                  client={client}
+                />
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
     </>
   );
