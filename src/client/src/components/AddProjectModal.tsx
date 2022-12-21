@@ -4,8 +4,6 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_PROJECTS } from '../queries/projectQueries';
 import { ADD_PROJECT } from '../mutations/projectMutations';
 import { GET_CLIENTS } from '../queries/clientQueries';
-import AddClientModal from './AddClientModal';
-import Spinner from './Spinner';
 
 export default function AddProjectModal() {
   //States for Handling Form Data
@@ -19,7 +17,7 @@ export default function AddProjectModal() {
 
   //Mutation for Submitting
   const [addProject]: any = useMutation(ADD_PROJECT, {
-    variables: { name, status, description },
+    variables: { name, status, description, clientId },
     update(cache, { data: { addProject } }) {
       const { projects } = cache.readQuery<any>({ query: GET_PROJECTS });
       cache.writeQuery({
@@ -36,7 +34,7 @@ export default function AddProjectModal() {
       return alert('Please fill in all the fields!');
     }
 
-    addProject(name, description, status);
+    addProject(name, description, status, clientId);
 
     setName('');
     setDescription('');
@@ -149,6 +147,9 @@ export default function AddProjectModal() {
                           setClientId(e.target.value);
                         }}
                       >
+                        <option style={{ color: 'black' }}>
+                          Select Client
+                        </option>
                         {data.clients.map((client: any) => {
                           return (
                             <option
@@ -162,16 +163,13 @@ export default function AddProjectModal() {
                         })}
                       </select>
                     </div>
-                    <div className='w-100 d-flex justify-content-between'>
-                      <AddClientModal />
-                      <button
-                        type='submit'
-                        data-bs-dismiss='modal'
-                        className='btn btn-secondary'
-                      >
-                        Submit
-                      </button>
-                    </div>
+                    <button
+                      type='submit'
+                      data-bs-dismiss='modal'
+                      className='btn btn-secondary'
+                    >
+                      Submit
+                    </button>
                   </form>
                 </div>
               </div>
