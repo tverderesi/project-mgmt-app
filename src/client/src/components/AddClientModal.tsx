@@ -28,8 +28,6 @@ export default function AddClientModal() {
       return alert('Please fill in all the fields!');
     }
 
-    console.log('hello');
-
     addClient(name, email, phone);
 
     setName('');

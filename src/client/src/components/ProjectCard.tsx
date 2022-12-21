@@ -18,8 +18,22 @@ export default function ProjectCard({ project }: { project: any }) {
               View
             </a>
           </div>
-          <p className='small'>
-            Status: <strong> {project.status}</strong>
+          <p className='small fw-bold'>
+            Status: {` `}
+            <strong
+              style={{
+                color:
+                  project.status === 'Not Started'
+                    ? 'red'
+                    : project.status === 'In Progress'
+                    ? '#efab00'
+                    : 'green',
+                fontWeight: '500',
+              }}
+              className='fw-bold'
+            >
+              {project.status}
+            </strong>
           </p>
         </div>
       </div>

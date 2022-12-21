@@ -24,6 +24,7 @@ code {
 
 .btn {
   font-size: 15px;
+  border: none
 }
 
 .btn-primary,
@@ -38,11 +39,12 @@ code {
 }
 
 .btn-secondary {
-  background-color: #7430f9;
+  background-color: #9a00c0;
+  font-weight: 600;
 }
 
 .btn-secondary:hover {
-  background-color: #7430f9;
+  background-color: hsl(288, 100%, 30%);
   opacity: 0.9;
 }
 
