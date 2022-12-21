@@ -52,3 +52,7 @@ code {
   margin-right: 5px;
 }
 
+.btn-light{
+  background-color: #ededed;
+  font-weight: 600;
+}

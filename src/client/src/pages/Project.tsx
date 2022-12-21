@@ -1,7 +1,9 @@
 import { useQuery } from '@apollo/client';
-import { FaCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaCircle } from 'react-icons/fa';
 import { Link, useParams } from 'react-router-dom';
 import ClientInfo from '../components/ClientInfo';
+import DeleteProjectButton from '../components/DeleteProjectButton';
+import EditProjectForm from '../components/EditProjectForm';
 import Spinner from '../components/Spinner';
 import { GET_PROJECT } from '../queries/projectQueries';
 
@@ -16,8 +18,10 @@ export default function Project() {
         <div className='mx-auto w-75 card p-5'>
           <Link
             to='/'
-            className='btn btn-secondary btn-sm w-25 d-inline ms-auto mb-5'
+            className='btn btn-light btn-sm d-flex align-items-center justify-content-center me-auto mb-5'
+            style={{ width: '6rem' }}
           >
+            <FaArrowLeft className='icon' />
             Back
           </Link>
           <h1 className='fw-bold'>{data.project.name}</h1>
@@ -48,6 +52,10 @@ export default function Project() {
             {data.project.status}
           </p>
           <ClientInfo client={data.project.client} />
+          <div className='d-flex mt-5 w-100 justify-content-between'>
+            <EditProjectForm project={data.project} />
+            <DeleteProjectButton projectId={data.project.id} />
+          </div>
         </div>
       )}
     </>

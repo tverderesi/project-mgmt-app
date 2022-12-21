@@ -5,6 +5,7 @@ import { GET_PROJECTS } from '../queries/projectQueries';
 import { ADD_PROJECT } from '../mutations/projectMutations';
 import { GET_CLIENTS } from '../queries/clientQueries';
 
+
 export default function AddProjectModal() {
   //States for Handling Form Data
   const [name, setName] = useState('');
@@ -163,6 +164,7 @@ export default function AddProjectModal() {
                         })}
                       </select>
                     </div>
+           
                     <button
                       type='submit'
                       data-bs-dismiss='modal'
