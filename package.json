@@ -6,14 +6,15 @@
   "scripts": {
     "start": "node src/server/index.ts",
     "dev": "nodemon src/server/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild src/server/index.ts --platform=node --bundle --minify --outfile=built/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "colors": "^1.4.0",
     "cors": "^2.8.5",
+    "esbuild": "0.16.10",
     "express": "^4.18.2",
     "express-graphql": "^0.12.0",
     "graphql": "^15.8.0",

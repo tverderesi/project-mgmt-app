@@ -33,7 +33,7 @@ const ProjectType = new GraphQLObjectType({
     status: { type: GraphQLString },
     client: {
       type: ClientType,
-      resolve(parent: { clientId: any; }, args: any) {
+      resolve(parent: any, args: any) {
         return Client.findById(parent.clientId)
       },
     },
@@ -179,7 +179,7 @@ const mutation = new GraphQLObjectType({
               status: args.status,
             }
           },
-            { new: true } //if it's not there It's going to create a new project
+            { new: true } //if it's not there then It's going to create a new project
           )
         }
       

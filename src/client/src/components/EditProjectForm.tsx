@@ -30,8 +30,8 @@ export default function EditProjectForm({ project }: { project: any }) {
     if (!name || !status || !description) {
       return alert('You must fill in all fields!');
     }
-    //@ts-ignore
-    updateProject(name, description, status);
+
+    updateProject();
   };
 
   return (
