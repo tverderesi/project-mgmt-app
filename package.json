@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "node index.ts",
-    "server": "nodemon server.js",
+    "server": "nodemon index.ts",
     "client": "npm start --prefix client",
     "clientinstall": "npm install --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
