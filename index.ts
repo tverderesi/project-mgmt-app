@@ -18,8 +18,9 @@ app.use(
     graphiql: process.env.NODE_ENV === 'development',
   })
 );
-
-if (process.env.NODE_ENV === 'production') {
+console.log(process.env.NODE_ENV === 'PRODUCTION')
+if (process.env.NODE_ENV === 'PRODUCTION') {
+ 
   //*Set static folder up in production
   app.use(express.static('client/build'));
 
