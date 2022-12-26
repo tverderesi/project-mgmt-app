@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 //@ts-ignore
 import logo from './assets/logo.png';
 
@@ -5,8 +6,8 @@ export default function Header() {
   return (
     <nav className='navbar bg-light mb-4 p-0'>
       <div className='container'>
-        <a
-          href='/'
+        <Link
+          to={'/'}
           className='navbar-brand'
         >
           <div className='d-flex'>
@@ -16,7 +17,7 @@ export default function Header() {
             />
             <div>ProjectMGMT</div>
           </div>
-        </a>
+        </Link>
       </div>
     </nav>
   );
