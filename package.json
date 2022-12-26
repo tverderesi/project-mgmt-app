@@ -4,10 +4,12 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "start": "node src/server/index.ts",
-    "dev": "nodemon src/server/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild src/server/index.ts --platform=node --bundle --minify --outfile=built/index.js"
+    "start": "node index.ts",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix client",
+    "clientinstall": "npm install --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "render-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +25,7 @@
   "devDependencies": {
     "@types/express": "^4.17.15",
     "@types/node": "^18.11.12",
+    "concurrently": "^7.6.0",
     "dotenv": "^16.0.3",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
