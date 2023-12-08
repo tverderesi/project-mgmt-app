@@ -1,0 +1,144 @@
+type Client {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  projects: [Project]!
+}
+
+type Query {
+  clients: [Client]!
+  client(id: ID!): Client
+  users: [User]
+  user(id: ID!): User!
+  projects: [Project]!
+  project(id: ID!): Project!
+  tasks: [Task]!
+  task(id: ID!): Task!
+}
+
+input ClientInput {
+  name: String!
+  email: String!
+  phone: String!
+}
+
+type Mutation {
+  createClient(input: ClientInput!): Client!
+  updateClient(id: ID!, input: ClientInput!): Client!
+  deleteClient(id: ID!): String!
+  restoreClient(id: ID!): String!
+  purgeClient(id: ID!): String!
+  createUser(input: UserInput!): User!
+  updateUser(id: ID!, input: UpdateUserInput!): User!
+  deleteUser(id: ID!): String!
+  restoreUser(id: ID!): String!
+  purgeUser(id: ID!): String!
+  createProject(input: ProjectInput!): Project!
+  updateProject(id: ID!, input: UpdateProjectInput!): Project!
+  deleteProject(id: ID!): String!
+  restoreProject(id: ID!): String!
+  purgeProject(id: ID!): String!
+  createTask(input: TaskInput!): Task!
+  updateTask(id: ID!, input: UpdateTaskInput!): Task!
+  deleteTask(id: ID!): String!
+  restoreTask(id: ID!): String!
+  purgeTask(id: ID!): String!
+  login(input: LoginInput!): String!
+  logout(input: LogoutInput!): String!
+}
+
+input ClientInput {
+  name: String!
+  email: String!
+  phone: String!
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  photo: String
+  projects: [Project]!
+  clients: [Client]!
+}
+
+input UserInput {
+  name: String!
+  email: String!
+  confirmEmail: String!
+  confirmPassword: String!
+  password: String!
+  photo: String
+}
+
+input UpdateUserInput {
+  name: String
+  email: String
+  password: String
+  oldPassword: String
+  photo: String
+}
+
+type Project {
+  id: ID!
+  name: String!
+  description: String!
+  client: Client!
+  user: User!
+  tasks: [Task]!
+  status: String!
+  progress: Int!
+}
+
+input ProjectInput {
+  name: String!
+  description: String!
+  clientId: ID
+  userId: ID!
+  status: String!
+  progress: Int!
+}
+
+input UpdateProjectInput {
+  name: String
+  description: String
+  status: String
+  progress: Int
+}
+
+type Task {
+  id: ID!
+  name: String!
+  description: String!
+  project: Project!
+  user: User!
+  status: String!
+  progress: Int!
+}
+
+input TaskInput {
+  name: String!
+  description: String!
+  projectId: ID!
+  userId: ID!
+  status: String!
+  progress: Int!
+}
+
+input UpdateTaskInput {
+  name: String
+  description: String
+  status: String
+  progress: Int
+}
+
+input LoginInput {
+  user: String!
+  password: String!
+}
+
+input LogoutInput {
+  user: String!
+}
