@@ -51,7 +51,6 @@ const port = process.env.PORT || 5000;
 const server = new ApolloServer({
   typeDefs,
   resolvers: { Query: { ...clientResolver } },
-
   introspection: process.env.NODE_ENV === "development",
 });
 await server.start();
@@ -61,7 +60,7 @@ const app = express();
 app.use(
   session({
     genid: (req) => uuidv4(),
-    secret: "keyboard cat",
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -75,7 +74,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(cors());
-app.use("/graphql", cors<cors.CorsRequest>(), expressMiddleware(server));
+app.use(
+  "/graphql",
+  cors<cors.CorsRequest>(),
+  expressMiddleware(server, {
+    context: async ({ req, res }) => ({ authScope: buildContext({ req, res, UserModel }) }),
+  })
+);
 
 app.listen(port, () => console.log(`Server running on http://localhost:${port} `));
 

@@ -8,16 +8,28 @@ const roles = ["ADMIN", "USER"] as const;
 export interface User {
   name: string;
   username: string;
+  email: string;
   password: string;
   photo?: Buffer;
   projects: Project[];
   clients: Client[];
-  role: string;
+  role: "ADMIN" | "USER";
+}
+
+export interface UserInput {
+  name: string;
+  username: string;
+  email: string;
+  confirmEmail: string;
+  password: string;
+  confirmPassword: string;
+  photo?: string;
 }
 
 const userSchema = new mongoose.Schema<User>({
   name: { type: String, required: true, maxlength: 100 },
   username: { type: String, required: true, unique: true, maxlength: 32 },
+  email: { type: String, required: true, unique: true, maxlength: 64 },
   password: { type: String, required: true, maxlength: 64 },
   photo: { type: Buffer },
   projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
