@@ -15,7 +15,7 @@ import { readFileSync } from "fs";
 import clientResolver from "./graphql/resolvers/query/client";
 import bodyParser from "body-parser";
 import { UserModel, User } from "./models/User";
-
+import { userMutations } from "./graphql/resolvers/mutation/user";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -50,7 +50,7 @@ passport.deserializeUser(async (id, done) => {
 const port = process.env.PORT || 5000;
 const server = new ApolloServer({
   typeDefs,
-  resolvers: { Query: { ...clientResolver } },
+  resolvers: { Query: { ...clientResolver }, Mutation: { ...userMutations } },
   introspection: process.env.NODE_ENV === "development",
 });
 await server.start();
