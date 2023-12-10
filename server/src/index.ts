@@ -16,6 +16,7 @@ import clientResolver from "./graphql/resolvers/query/client";
 import bodyParser from "body-parser";
 import { UserModel, User } from "./models/User";
 import { userMutations } from "./graphql/resolvers/mutation/user";
+import bcrypt from "bcrypt";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -27,14 +28,17 @@ const envPath = path.resolve(
 );
 dotenv.config({ path: envPath });
 passport.use(
-  new GraphQLLocalStrategy(async (email, password, done) => {
+  new GraphQLLocalStrategy(async (email: string, password: string, done) => {
     const user = await UserModel.findOne({ email });
     if (user === null) {
       done(new Error("User not found"), null);
     }
-    if (user.password !== password) {
+
+    const decryptedPassword = await bcrypt.compare(password, user?.password as string);
+    if (!decryptedPassword) {
       done(new Error("Incorrect password"), null);
     }
+
     return done(null, user);
   })
 );
@@ -60,7 +64,7 @@ const app = express();
 app.use(
   session({
     genid: (req) => uuidv4(),
-    secret: process.env.SECRET,
+    secret: process.env.SECRET as string,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -74,11 +78,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(cors());
+//@ts-ignore
 app.use(
   "/graphql",
   cors<cors.CorsRequest>(),
   expressMiddleware(server, {
-    context: async ({ req, res }) => ({ authScope: buildContext({ req, res, UserModel }) }),
+    context: async ({ req, res }) => {
+      return buildContext({ req, res, UserModel });
+    },
   })
 );
 

@@ -1,6 +1,6 @@
 import { UserModel, UserInput } from "@/models/User";
 import { z } from "zod";
-
+import bcrypt from "bcrypt";
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
 const userInputValidator = z.object({
   name: z.string({ required_error: "Name is required!" }),
@@ -42,7 +42,17 @@ export const userMutations = {
       if (email !== confirmEmail) throw new Error("E-mails don't match!");
       if (password !== confirmPassword) throw new Error("Passwords don't match!");
 
-      return { id: "1", ...input };
+      const isEmailOnDB = await UserModel.findOne({ email });
+      if (isEmailOnDB) throw new Error("E-mail already registered!");
+      const isUsernameOnDB = await UserModel.findOne({ username });
+      if (isUsernameOnDB) throw new Error("Username already registered!");
+
+      //hash password using crypto
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const user = await UserModel.create({ name, username, email, password: hashedPassword });
+      if (!user) throw new Error("Error creating user!");
+      return user;
     } catch (error) {
       throw new Error(error.message);
     }
