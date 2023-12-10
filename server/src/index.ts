@@ -16,6 +16,7 @@ import clientResolver from "./graphql/resolvers/query/client";
 import bodyParser from "body-parser";
 import { UserModel, User } from "./models/User";
 import { userMutations } from "./graphql/resolvers/mutation/user";
+import { userQuery } from "./graphql/resolvers/query/user";
 import bcrypt from "bcrypt";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,18 +29,19 @@ const envPath = path.resolve(
 );
 dotenv.config({ path: envPath });
 passport.use(
-  new GraphQLLocalStrategy(async (email: string, password: string, done) => {
-    const user = await UserModel.findOne({ email });
-    if (user === null) {
+  new GraphQLLocalStrategy(async (username: string, password: string, done) => {
+    const isEmail = username?.includes("@");
+    const foundUser = await UserModel.findOne({ [isEmail ? "email" : "username"]: username });
+    if (username === null) {
       done(new Error("User not found"), null);
     }
 
-    const decryptedPassword = await bcrypt.compare(password, user?.password as string);
+    const decryptedPassword = await bcrypt.compare(password, foundUser?.password as string);
     if (!decryptedPassword) {
       done(new Error("Incorrect password"), null);
     }
 
-    return done(null, user);
+    return done(null, username);
   })
 );
 
@@ -47,6 +49,7 @@ passport.serializeUser((user: User, done) => {
   done(null, user);
 });
 passport.deserializeUser(async (id, done) => {
+  console.log("Hi");
   const user = await UserModel.findById(id);
   done(null, user);
 });
@@ -54,7 +57,7 @@ passport.deserializeUser(async (id, done) => {
 const port = process.env.PORT || 5000;
 const server = new ApolloServer({
   typeDefs,
-  resolvers: { Query: { ...clientResolver }, Mutation: { ...userMutations } },
+  resolvers: { Query: { ...clientResolver, ...userQuery }, Mutation: { ...userMutations } },
   introspection: process.env.NODE_ENV === "development",
 });
 await server.start();
@@ -78,7 +81,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(cors());
-//@ts-ignore
 app.use(
   "/graphql",
   cors<cors.CorsRequest>(),

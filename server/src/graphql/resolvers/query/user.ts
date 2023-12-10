@@ -1,6 +1,5 @@
 import { UserModel } from "@/models/User";
 import { z } from "zod";
-
 const userValidator = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
@@ -13,10 +12,13 @@ const userValidator = z.object({
   sort: z.string().optional(),
 });
 
-export const userResolver = {
+export const userQuery = {
   users: async (parent: any, args: Partial<z.infer<typeof userValidator>>) => {
     try {
-      const users = await UserModel.find(args).limit(args.limit).skip(args.skip).sort(args.sort);
+      const users = await UserModel.find(args)
+        .limit(args?.limit || 25)
+        .skip(args?.skip || 0)
+        .sort(args.sort);
       if (!users || users.length === 0) throw new Error("No users found!");
       return users;
     } catch (error) {
@@ -31,5 +33,8 @@ export const userResolver = {
     } catch (error) {
       throw new Error(error.message);
     }
+  },
+  currentUser: async (parent, args, context) => {
+    return await context.getUser();
   },
 };

@@ -111,6 +111,7 @@ type Query {
   project(id: ID!): Project!
   tasks: [Task]!
   task(id: ID!): Task!
+  currentUser: User
 }
 
 type Mutation {
