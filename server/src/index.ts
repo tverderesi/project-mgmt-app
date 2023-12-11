@@ -11,13 +11,14 @@ import { v4 as uuidv4 } from "uuid";
 import { GraphQLLocalStrategy, buildContext } from "graphql-passport";
 import { fileURLToPath } from "url";
 import path from "path";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import clientResolver from "./graphql/resolvers/query/client";
 import bodyParser from "body-parser";
 import { UserModel, User } from "./models/User";
 import { userMutations } from "./graphql/resolvers/mutation/user";
 import { userQuery } from "./graphql/resolvers/query/user";
 import bcrypt from "bcrypt";
+import cookieParser from "cookie-parser";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -41,15 +42,14 @@ passport.use(
       done(new Error("Incorrect password"), null);
     }
 
-    return done(null, username);
+    return done(null, foundUser);
   })
 );
 
-passport.serializeUser((user: User, done) => {
-  done(null, user);
+passport.serializeUser(({ user }: { user: User }, done) => {
+  done(null, user._id);
 });
 passport.deserializeUser(async (id, done) => {
-  console.log("Hi");
   const user = await UserModel.findById(id);
   done(null, user);
 });
@@ -63,13 +63,19 @@ const server = new ApolloServer({
 await server.start();
 
 const app = express();
-
+app.use(cookieParser());
 app.use(
   session({
     genid: (req) => uuidv4(),
     secret: process.env.SECRET as string,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 60,
+      secure: false,
+      sameSite: "lax",
+      httpOnly: false,
+    },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
       autoRemove: "native",
@@ -91,7 +97,10 @@ app.use(
   })
 );
 
-app.listen(port, () => console.log(`Server running on http://localhost:${port} `));
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+  console.log(`GraphQL server running on http://localhost:${port}/graphql`);
+});
 
 //Connecting to the DB
 connectDB();

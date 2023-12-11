@@ -58,13 +58,15 @@ export const userMutations = {
     }
   },
   login: async (parent: any, { input: { user, password } }, context) => {
-    console.log(user, password);
-
     const loggedUser = await context.authenticate("graphql-local", {
       username: user,
       password,
     });
-    context.login(loggedUser);
-    return "User logged in successfully!";
+    await context.login(loggedUser);
+    return loggedUser.user;
+  },
+  logout: async (parent: any, args, context) => {
+    await context.logout();
+    return true;
   },
 };

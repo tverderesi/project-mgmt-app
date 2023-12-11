@@ -16,7 +16,6 @@ const clientValidator = z.object({
 export const clientResolver = {
   clients: async (parent: any, args: Partial<z.infer<typeof clientValidator>>, contextValue) => {
     try {
-      console.log("contextValue", contextValue);
       const clients = await ClientModel.find();
       if (!clients || clients.length === 0) throw new Error("No clients found!");
       return clients;

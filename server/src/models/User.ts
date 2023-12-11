@@ -6,6 +6,7 @@ import BaseSchema from "./BaseModel";
 const roles = ["ADMIN", "USER"] as const;
 
 export interface User {
+  _id: string;
   name: string;
   username: string;
   email: string;
