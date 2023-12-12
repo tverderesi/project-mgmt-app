@@ -84,9 +84,13 @@ type User {
   """
   The username of the user. It must be unique.
   """
-  email: String!
+  username: String!
   """
   The email of the user. It must be unique.
+  """
+  email: String!
+  """
+  The Password of the user.
   """
   password: String!
   """
@@ -165,6 +169,10 @@ input UpdateUserInput {
   The new photo of the user. This field is not implemented yet.
   """
   photo: String
+  """
+  The username of the user. It must be unique.
+  """
+  username: String
 }
 
 """
