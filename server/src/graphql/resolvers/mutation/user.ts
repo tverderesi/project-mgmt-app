@@ -1,12 +1,16 @@
 import bcrypt from "bcrypt";
 import { UserModel, UserInput } from "@/models/User";
-import { userInputValidator } from "@/validators/userInputValidator";
+import {
+  createUserInputValidator,
+  updateUserInputValidator,
+  userInputValidator,
+} from "@/validators/userInputValidator";
 import { getUniqueKeys, checkUniqueKeys } from "@/utils/uniqueKeyUtils";
 
 export const userMutations = {
   createUser: async (_parent: any, { input }: { input: Partial<UserInput> }) => {
     try {
-      const result = userInputValidator.safeParse(input);
+      const result = createUserInputValidator.safeParse(input);
       if (!result.success) {
         const formatted = result.error.format();
         const errors = Object.keys(formatted)
@@ -46,5 +50,29 @@ export const userMutations = {
   logout: async (parent: any, args, context) => {
     await context.logout();
     return true;
+  },
+
+  updateUser: async (_parent: any, { input }: { input: Partial<UserInput> }) => {
+    try {
+      const result = updateUserInputValidator.safeParse(input);
+      if (!result.success) {
+        const formatted = result.error.format();
+        const errors = Object.keys(formatted)
+          .filter((key) => key !== "_errors")
+          .map((key) => JSON.stringify({ [key]: formatted[key]?._errors?.[0] }));
+        if (errors.length > 0) {
+          throw new Error(errors.join(", "));
+        }
+      }
+      const uniqueKeys = getUniqueKeys(UserModel);
+      await checkUniqueKeys(input, uniqueKeys);
+      const user = await UserModel.findByIdAndUpdate(input.id, input, { new: true });
+      if (!user) {
+        throw new Error("Error updating user!");
+      }
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
   },
 };

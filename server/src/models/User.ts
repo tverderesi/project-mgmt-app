@@ -18,6 +18,7 @@ export interface User {
 }
 
 export interface UserInput {
+  id?: string;
   name: string;
   username: string;
   email: string;

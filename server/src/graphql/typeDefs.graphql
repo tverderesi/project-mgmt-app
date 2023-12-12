@@ -142,6 +142,10 @@ The UpdateUserInput type is used as an input to update a user.
 """
 input UpdateUserInput {
   """
+  The id of the user to update.
+  """
+  id: ID!
+  """
   The new name of the user.
   """
   name: String
@@ -428,7 +432,7 @@ type Mutation {
   """
   Updates a user given its id and the fields to update.
   """
-  updateUser(id: ID!, input: UpdateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
   """
   Deletes a user given its id. This operation is not permanent, the user is just marked as deleted.
   """
