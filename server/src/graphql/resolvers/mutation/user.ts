@@ -1,62 +1,40 @@
-import { UserModel, UserInput } from "@/models/User";
-import { z } from "zod";
 import bcrypt from "bcrypt";
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
-const userInputValidator = z.object({
-  name: z.string({ required_error: "Name is required!" }),
-  username: z.string({ required_error: "Username is required!" }),
-  email: z.string({ required_error: "E-mail is required!" }).email({ message: "Invalid e-mail!" }),
-  confirmEmail: z
-    .string({ required_error: "Confirm E-mail is required!" })
-    .email({ message: "Invalid e-mail!" }),
-  password: z
-    .string({ required_error: "Password is required!" })
-    .regex(
-      passwordRegex,
-      "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character"
-    ),
-  confirmPassword: z
-    .string({ required_error: "Confirm Password is required!" })
-    .regex(
-      passwordRegex,
-      "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character"
-    ),
-});
+import { UserModel, UserInput } from "@/models/User";
+import { userInputValidator } from "@/validators/userInputValidator";
+import { getUniqueKeys, checkUniqueKeys } from "@/utils/uniqueKeyUtils";
+
 export const userMutations = {
-  createUser: async (_parent: any, { input }: { input: UserInput }) => {
-    const errors = [] as string[];
+  createUser: async (_parent: any, { input }: { input: Partial<UserInput> }) => {
     try {
       const result = userInputValidator.safeParse(input);
       if (!result.success) {
         const formatted = result.error.format();
-        Object.keys(formatted)
+        const errors = Object.keys(formatted)
           .filter((key) => key !== "_errors")
-          .map((key) => {
-            errors.push(JSON.stringify({ [key]: formatted[key]?._errors?.[0] }));
-          });
-        if (errors.length > 0) throw new Error(errors.join(", "));
+          .map((key) => JSON.stringify({ [key]: formatted[key]?._errors?.[0] }));
+        if (errors.length > 0) {
+          throw new Error(errors.join(", "));
+        }
       }
 
-      const { name, username, email, confirmEmail, password, confirmPassword } = input;
-
-      if (email !== confirmEmail) throw new Error("E-mails don't match!");
-      if (password !== confirmPassword) throw new Error("Passwords don't match!");
-
-      const isEmailOnDB = await UserModel.findOne({ email });
-      if (isEmailOnDB) throw new Error("E-mail already registered!");
-      const isUsernameOnDB = await UserModel.findOne({ username });
-      if (isUsernameOnDB) throw new Error("Username already registered!");
-
-      //hash password using crypto
+      const uniqueKeys = getUniqueKeys(UserModel);
+      await checkUniqueKeys(input, uniqueKeys);
       const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(password, salt);
-      const user = await UserModel.create({ name, username, email, password: hashedPassword });
-      if (!user) throw new Error("Error creating user!");
+      const hashedPassword = bcrypt.hashSync(input.password as string, salt);
+      if (input) {
+        delete input.confirmPassword;
+        delete input.confirmEmail;
+      }
+      const user = await UserModel.create({ ...input, password: hashedPassword });
+      if (!user) {
+        throw new Error("Error creating user!");
+      }
       return user;
     } catch (error) {
       throw new Error(error.message);
     }
   },
+
   login: async (parent: any, { input: { user, password } }, context) => {
     const loggedUser = await context.authenticate("graphql-local", {
       username: user,

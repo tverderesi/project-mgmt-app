@@ -1,136 +1,492 @@
+"""
+This enum is used to represent the status of a project or a task.
+"""
+enum Status {
+  """
+  The project or task is open, i.e., it's not started yet.
+  """
+  OPEN
+  """
+  The project or task is in progress.
+  """
+  IN_PROGRESS
+  """
+  The project or task is done.
+  """
+  DONE
+  """
+  The project or task is impeded, i.e., it's blocked by something.
+  """
+  IMPEDED
+}
+
+"""
+This scalar is used to represent the progress of a project or a task. It's an integer between 0 and 100.
+"""
+scalar Percentage
+
+"""
+This type is used to represent a client in the database. It is created by an user when they want to add a new client to the database.
+"""
 type Client {
+  """
+  The id of the client.
+  """
   id: ID!
+  """
+  The name of the client.
+  """
   name: String!
+  """
+  The email of the client.
+  """
   email: String!
+  """
+  The phone of the client.
+  """
   phone: String!
+  """
+  The projects that are associated with a specific client.
+  """
   projects: [Project]!
 }
 
+"""
+The ClientInput type is used as an input to create a new client.
+"""
 input ClientInput {
+  """
+  The name of the client.
+  """
   name: String!
+  """
+  The email of the client.
+  """
   email: String!
+  """
+  The phone of the client.
+  """
   phone: String!
 }
 
+"""
+This type is used to represent a user in the database. This is the type that do the operations.
+"""
 type User {
+  """
+  The id of the user.
+  """
   id: ID!
+  """
+  The name of the user.
+  """
   name: String!
+  """
+  The username of the user. It must be unique.
+  """
   email: String!
+  """
+  The email of the user. It must be unique.
+  """
   password: String!
+  """
+  The photo of the user, it's optional. This field is not implemented yet.
+  """
   photo: String
+  """
+  The projects that are associated with a specific user.
+  """
   projects: [Project]!
+  """
+  The clients that are associated with a specific user.
+  """
   clients: [Client]!
 }
 
+"""
+The UserInput type is used as an input to create a new user.
+"""
 input UserInput {
+  """
+  The Full Name of the user.
+  """
   name: String!
+  """
+  The username of the user. It must be unique.
+  """
   username: String!
+  """
+  The email of the user. It must be unique.
+  """
   email: String!
+  """
+  The email that must be confirmed by the user. It must be unique and equal to the email field.
+  """
   confirmEmail: String!
-  confirmPassword: String!
+  """
+  The password of the user.
+  """
   password: String!
+  """
+  The password that must be confirmed by the user. It must be equal to the password field.
+  """
+  confirmPassword: String!
+  """
+  The photo of the user, it's optional. This field is not implemented yet.
+  """
   photo: String
 }
 
+"""
+The UpdateUserInput type is used as an input to update a user.
+"""
 input UpdateUserInput {
+  """
+  The new name of the user.
+  """
   name: String
+  """
+  the new email of the user. It must be unique.
+  """
   email: String
+  """
+  The new password of the user.
+  """
   password: String
+  """
+  The old password of the user. This field is also used to confirm the update operations.
+  """
   oldPassword: String
+  """
+  The new photo of the user. This field is not implemented yet.
+  """
   photo: String
 }
 
+"""
+This type is used to represent a project in the database. It is created by an user when they want to add a new project to the database.
+"""
 type Project {
+  """
+  The id of the project.
+  """
   id: ID!
+  """
+  The name of the project.
+  """
   name: String!
+  """
+  The description of the project.
+  """
   description: String!
+  """
+  The client that is associated with a specific project.
+  """
   client: Client!
+  """
+  The user that is associated with a specific project.
+  """
   user: User!
+  """
+  The tasks that are associated with a specific project.
+  """
   tasks: [Task]!
-  status: String!
-  progress: Int!
+  """
+  The status of the project.
+  """
+  status: Status!
+  """
+  The progress of the project, it's a number between 0 and 100.
+  """
+  progress: Percentage!
 }
 
+"""
+The ProjectInput type is used as an input to create a new project.
+"""
 input ProjectInput {
+  """
+  The name of the project.
+  """
   name: String!
+  """
+  The description of the project.
+  """
   description: String!
-  clientId: ID
+  """
+  The id of the client that is associated with the project.
+  """
+  clientId: ID!
+  """
+  The id of the user that is associated with the project.
+  """
   userId: ID!
-  status: String!
-  progress: Int!
+  """
+  The status of the project.
+  """
+  status: Status!
+  """
+  The progress of the project, it's a number between 0 and 100.
+  """
+  progress: Percentage!
 }
 
+"""
+This input type is used to update a project.
+"""
 input UpdateProjectInput {
+  """
+  The new name of the project.
+  """
   name: String
+  """
+  The new description of the project.
+  """
   description: String
-  status: String
-  progress: Int
+  """
+  The new status of the project.
+  """
+  status: Status
+  """
+  The new progress of the project, it's a number between 0 and 100.
+  """
+  progress: Percentage
+  """
+  The id of the client that is associated with the project.
+  """
+  clientId: ID
+  """
+  The id of the user that is associated with the project.
+  """
+  userId: ID
 }
 
+"""
+This type is used to represent a task in the database. It is created by an user when they want to add a task to a project.
+"""
 type Task {
+  """
+  The id of the task.
+  """
   id: ID!
+  """
+  The name of the task.
+  """
   name: String!
-  description: String!
-  project: Project!
-  user: User!
-  status: String!
-  progress: Int!
-}
-
-input TaskInput {
-  name: String!
-  description: String!
-  projectId: ID!
-  userId: ID!
-  status: String!
-  progress: Int!
-}
-
-input UpdateTaskInput {
-  name: String
+  """
+  The description of the task.
+  """
   description: String
-  status: String
-  progress: Int
+  """
+  The project that is associated with a specific task.
+  """
+  project: Project!
+  """
+  The user that is associated with a specific task.
+  """
+  user: User!
+  """
+  The status of the task.
+  """
+  status: Status!
+  """
+  The progress of the task, it's a number between 0 and 100.
+  """
+  progress: Percentage!
 }
 
+"""
+The TaskInput type is used as an input to create a new task.
+"""
+input TaskInput {
+  """
+  The name of the task.
+  """
+  name: String!
+  """
+  The description of the task.
+  """
+  description: String
+  """
+  The id of the project that is associated with the task.
+  """
+  projectId: ID!
+  """
+  The id of the user that is associated with the task.
+  """
+  userId: ID!
+  """
+  The status of the task.
+  """
+  status: Status!
+  """
+  The progress of the task, it's a number between 0 and 100.
+  """
+  progress: Percentage!
+}
+
+"""
+This input type is used to update a task.
+"""
+input UpdateTaskInput {
+  """
+  The new name of the task.
+  """
+  name: String
+  """
+  The new description of the task.
+  """
+  description: String
+  """
+  The new status of the task.
+  """
+  status: Status
+  """
+  The new progress of the task, it's a number between 0 and 100.
+  """
+  progress: Percentage
+}
+
+"""
+The LoginInput type is used as an input to login a user. It is resolved by Passport.
+"""
 input LoginInput {
   user: String!
   password: String!
 }
 
+"""
+The Query type is used to query the database, i.e., to run operations that do not modify the database.
+"""
 type Query {
+  """
+  Returns all the clients in the database.
+  """
   clients: [Client]!
+  """
+  Returns a specific client given its id.
+  """
   client(id: ID!): Client
+  """
+  Returns all the users in the database.
+  """
   users: [User]
+  """
+  Returns a specific user given its id.
+  """
   user(id: ID!): User!
+  """
+  Returns all the projects in the database.
+  """
   projects: [Project]!
+  """
+  Returns a specific project given its id.
+  """
   project(id: ID!): Project!
+  """
+  Returns all the tasks in the database.
+  """
   tasks: [Task]!
+  """
+  Returns a specific task given its id.
+  """
   task(id: ID!): Task!
+  """
+  Returns the current user.
+  """
   currentUser: User
 }
 
+"""
+The Mutation type is used to mutate the database, i.e., to run operations that modify the database.
+"""
 type Mutation {
+  """
+  Creates a new client into the database given the required fields.
+  """
   createClient(input: ClientInput!): Client!
+  """
+  Updates a client given its id and the fields to update.
+  """
   updateClient(id: ID!, input: ClientInput!): Client!
+  """
+  Deletes a client given its id. This operation is not permanent, the client is just marked as deleted.
+  """
   deleteClient(id: ID!): String!
+  """
+  Restores a client given its id.
+  """
   restoreClient(id: ID!): String!
+  """
+  Purges a client given its id. This operation is permanent, the client is removed from the database.
+  """
   purgeClient(id: ID!): String!
+  """
+  Creates a new user into the database given the required fields.
+  """
   createUser(input: UserInput!): User!
+  """
+  Updates a user given its id and the fields to update.
+  """
   updateUser(id: ID!, input: UpdateUserInput!): User!
+  """
+  Deletes a user given its id. This operation is not permanent, the user is just marked as deleted.
+  """
   deleteUser(id: ID!): String!
+  """
+  Restores a user given its id.
+  """
   restoreUser(id: ID!): String!
+  """
+  Purges a user given its id. This operation is permanent, the user is removed from the database.
+  """
   purgeUser(id: ID!): String!
+  """
+  Creates a new project into the database given the required fields.
+  """
   createProject(input: ProjectInput!): Project!
+  """
+  Updates a project given its id and the fields to update.
+  """
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
+  """
+  Deletes a project given its id. This operation is not permanent, the project is just marked as deleted.
+  """
   deleteProject(id: ID!): String!
+  """
+  Restores a project given its id.
+  """
   restoreProject(id: ID!): String!
+  """
+  Purges a project given its id. This operation is permanent, the project is removed from the database.
+  """
   purgeProject(id: ID!): String!
+  """
+  Creates a new task into the database given the required fields.
+  """
   createTask(input: TaskInput!): Task!
+  """
+  Updates a task given its id and the fields to update.
+  """
   updateTask(id: ID!, input: UpdateTaskInput!): Task!
+  """
+  Deletes a task given its id. This operation is not permanent, the task is just marked as deleted.
+  """
   deleteTask(id: ID!): String!
+  """
+  Restores a task given its id.
+  """
   restoreTask(id: ID!): String!
+  """
+  Purges a task given its id. This operation is permanent, the task is removed from the database.
+  """
   purgeTask(id: ID!): String!
+  """
+  Login a user given its credentials.
+  """
   login(input: LoginInput!): User!
+  """
+  Logout the current user.
+  """
   logout: Boolean!
 }
