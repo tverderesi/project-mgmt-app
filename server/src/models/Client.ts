@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 import { Project } from "./Project";
-import { UserDocument } from "./User";
+import { User } from "./User";
 
 export interface Client {
   name: string;
   email: string;
   phone: string;
   projects: Project[];
-  user: UserDocument;
+  user: User;
 }
 
 const clientSchema = new mongoose.Schema<Client>(
@@ -18,7 +18,7 @@ const clientSchema = new mongoose.Schema<Client>(
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
-  { timestamps: true, autoIndex: process.env.NODE_ENV === "development" ? true : false }
+  { timestamps: true, autoIndex: true }
 );
 
 const ClientModel = mongoose.model<Client>("Client", clientSchema);

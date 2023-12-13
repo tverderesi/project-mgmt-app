@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { UserModel, UserInput } from "@/models/User";
+import { UserModel, CreateUserInput, UpdateUserInput } from "@/models/User";
 import {
   createUserInputValidator,
   updateUserInputValidator,
@@ -7,7 +7,8 @@ import {
 import { getUniqueKeys, checkUniqueKeys } from "@/utils/uniqueKeyUtils";
 
 export const userMutations = {
-  createUser: async (_parent: any, { input }: { input: Partial<UserInput> }) => {
+  createUser: async (_parent: any, { input }: { input: Partial<CreateUserInput> }, context) => {
+    const currentUser = await context.getUser();
     try {
       const result = createUserInputValidator.safeParse(input);
       if (!result.success) {
@@ -19,7 +20,9 @@ export const userMutations = {
           throw new Error(errors.join(", "));
         }
       }
-
+      if (currentUser.role !== "ADMIN" && input.role === "ADMIN") {
+        throw new Error("User not authorized!");
+      }
       const uniqueKeys = getUniqueKeys(UserModel);
       await checkUniqueKeys(input, uniqueKeys);
       const salt = await bcrypt.genSalt(10);
@@ -51,7 +54,7 @@ export const userMutations = {
     return true;
   },
 
-  updateUser: async (_parent: any, { input }: { input: Partial<UserInput> }) => {
+  updateUser: async (_parent: any, { input }: { input: Partial<UpdateUserInput> }) => {
     try {
       const result = updateUserInputValidator.safeParse(input);
       if (!result.success) {
@@ -77,9 +80,33 @@ export const userMutations = {
 
   deleteUser: async (_parent: any, { id }: { id: string }) => {
     try {
-      const user = await UserModel.findByIdAndDelete(id);
+      const user = await UserModel.findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true });
       if (!user) {
         throw new Error("Error deleting user!");
+      }
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  restoreUser: async (_parent: any, { id }: { id: string }) => {
+    try {
+      const user = await UserModel.findByIdAndUpdate(id, { deletedAt: null }, { new: true });
+      if (!user) {
+        throw new Error("Error restoring user!");
+      }
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  purgeUser: async (_parent: any, { id }: { id: string }) => {
+    try {
+      const user = await UserModel.findByIdAndDelete(id);
+      if (!user) {
+        throw new Error("Error purging user!");
       }
       return user;
     } catch (error) {

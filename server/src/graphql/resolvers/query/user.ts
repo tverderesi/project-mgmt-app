@@ -16,10 +16,7 @@ const userValidator = z.object({
 
 export const userQuery = {
   users: async (parent: any, args: Partial<z.infer<typeof userValidator>>, context) => {
-    const currentUser = await context.getUser();
-    if (!currentUser) throw new Error("User not authenticated!");
-    if (currentUser.role !== "ADMIN") throw new Error("User not authorized!");
-
+    await checkAuthorization(context, "ADMIN");
     const {
       skip = Number(process.env.DEFAULT_SKIP),
       limit = Number(process.env.DEFAULT_LIMIT),
@@ -39,6 +36,7 @@ export const userQuery = {
       return new Error(error.message);
     }
   },
+
   user: async (parent: any, { id }) => {
     try {
       const user = UserModel.findById(id);
@@ -48,9 +46,11 @@ export const userQuery = {
       throw new Error(error.message);
     }
   },
+
   currentUser: async (parent, args, context) => {
     return await context.getUser();
   },
+
   deletedUsers: async (parent: any, args: Partial<z.infer<typeof userValidator>>, context) => {
     const currentUser = await context.getUser();
     if (!currentUser) throw new Error("User not authenticated!");

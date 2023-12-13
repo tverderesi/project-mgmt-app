@@ -1,15 +1,14 @@
 import mongoose from "mongoose";
 import { Client } from "./Client";
-import { UserDocument } from "./User";
+import { User } from "./User";
 
 export interface Project {
   name: string;
   description: string;
   client: Client;
   progress: number;
-  user: UserDocument;
+  user: User;
 }
-
 const projectSchema = new mongoose.Schema<Project>(
   {
     name: { type: String, required: true },

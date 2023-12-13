@@ -1,4 +1,4 @@
-import { UserModel, UserInput } from "@/models/User";
+import { UserModel } from "@/models/User";
 import mongoose from "mongoose";
 
 export function getUniqueKeys(Model: mongoose.Model<any, any>) {
