@@ -407,6 +407,10 @@ type Query {
   Returns the current user.
   """
   currentUser: User
+  """
+  Returns the deleted Users.
+  """
+  deletedUsers: [User]!
 }
 
 """

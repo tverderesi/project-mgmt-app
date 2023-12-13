@@ -1,51 +1,11 @@
-import mongoose, { Document, Schema } from "mongoose";
-import { User } from "./User";
+import mongoose from "mongoose";
 
-export interface BaseModel {
-  createdAt: string;
-  updatedAt: string;
-  deletedAt?: string;
-}
-
-export interface IBaseDocument extends Document {
-  deletedAt: string | null;
-  createdBy: User;
-  updatedBy: User | null;
-  deletedBy: User | null;
-  delete: () => Promise<void>;
-  restore: () => Promise<void>;
-  findDeleted: () => Promise<void>;
-}
-
-const BaseSchema = new Schema<IBaseDocument>(
+export const auditSchema = new mongoose.Schema(
   {
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    deletedAt: { type: String, default: null },
+    deletedAt: { type: Date, default: null },
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
   },
-  { timestamps: true }
+  { timestamps: true, autoIndex: true }
 );
-
-BaseSchema.methods.delete = function () {
-  this.deletedAt = new Date().toISOString();
-  return this.save();
-};
-
-BaseSchema.methods.restore = function () {
-  this.deletedAt = null;
-  return this.save();
-};
-
-BaseSchema.pre("findOne", function () {
-  this.where({ deletedAt: null });
-});
-
-BaseSchema.methods.findDeleted = function () {
-  return this.where({ deletedAt: { $ne: null } });
-};
-
-BaseSchema.pre("find", function () {
-  this.where({ deletedAt: null });
-});
-
-export default BaseSchema;

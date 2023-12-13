@@ -5,6 +5,7 @@ const clientValidator = z.object({
   id: z.string().optional(),
   name: z.string().optional(),
   email: z.string().email().optional(),
+  deletedAt: z.string().optional(),
   phone: z.string().optional(),
   photo: z.any().optional(),
   userId: z.string().optional(),
@@ -26,7 +27,6 @@ export const clientResolver = {
   client: async (_parent: any, { id }: { id: string }) => {
     try {
       const client = await ClientModel.findById(id);
-
       if (!client || client === null) throw new Error("Client not found!");
       return client;
     } catch (error) {

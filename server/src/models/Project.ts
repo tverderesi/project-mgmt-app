@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 import { Client } from "./Client";
-import { User } from "./User";
-import BaseSchema from "./BaseModel";
+import { UserDocument } from "./User";
 
 export interface Project {
   name: string;
   description: string;
   client: Client;
   progress: number;
-  user: User;
+  user: UserDocument;
 }
 
 const projectSchema = new mongoose.Schema<Project>(
@@ -21,8 +20,6 @@ const projectSchema = new mongoose.Schema<Project>(
   },
   { timestamps: true, autoIndex: true }
 );
-
-projectSchema.add(BaseSchema);
 
 const ProjectModel = mongoose.model<Project>("Project", projectSchema);
 

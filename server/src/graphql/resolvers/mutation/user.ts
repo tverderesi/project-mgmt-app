@@ -3,7 +3,6 @@ import { UserModel, UserInput } from "@/models/User";
 import {
   createUserInputValidator,
   updateUserInputValidator,
-  userInputValidator,
 } from "@/validators/userInputValidator";
 import { getUniqueKeys, checkUniqueKeys } from "@/utils/uniqueKeyUtils";
 
@@ -69,6 +68,18 @@ export const userMutations = {
       const user = await UserModel.findByIdAndUpdate(input.id, input, { new: true });
       if (!user) {
         throw new Error("Error updating user!");
+      }
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  deleteUser: async (_parent: any, { id }: { id: string }) => {
+    try {
+      const user = await UserModel.findByIdAndDelete(id);
+      if (!user) {
+        throw new Error("Error deleting user!");
       }
       return user;
     } catch (error) {
