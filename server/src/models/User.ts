@@ -5,7 +5,8 @@ import { auditSchema } from "./Audit";
 
 const roles = ["ADMIN", "USER"] as const;
 
-export interface User {
+export interface User extends mongoose.Document {
+  _id?: string;
   name: string;
   username: string;
   email: string;
