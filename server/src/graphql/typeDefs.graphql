@@ -1,7 +1,10 @@
+# TODO: Separate the schema into multiple files using graphql-tools
+
 """
 This enum is used to represent the status of a project or a task.
 """
 enum Status {
+  #TODO Add IMPEDED, LATE, CANCELED and ARCHIVED statuses.
   """
   The project or task is open, i.e., it's not started yet.
   """
@@ -13,11 +16,7 @@ enum Status {
   """
   The project or task is done.
   """
-  DONE
-  """
-  The project or task is impeded, i.e., it's blocked by something.
-  """
-  IMPEDED
+  COMPLETED
 }
 
 """
@@ -214,6 +213,28 @@ type Project {
 }
 
 """
+The UserFilter type is used to filter the users.
+"""
+input UserFilter {
+  """
+  The name of the user.
+  """
+  name: String
+  """
+  The username of the user.
+  """
+  username: String
+  """
+  The email of the user.
+  """
+  email: String
+  """
+  The role of the user.
+  """
+  role: String
+}
+
+"""
 The ProjectInput type is used as an input to create a new project.
 """
 input ProjectInput {
@@ -374,19 +395,19 @@ type Query {
   """
   Returns all the clients in the database.
   """
-  clients: [Client]!
+  clients(filter: ClientFilter): [Client]!
   """
   Returns a specific client given its id.
   """
-  client(id: ID!): Client
+  client(_id: ID!): Client
   """
   Returns all the users in the database.
   """
-  users: [User]
+  users(filter: UserFilter): [User]
   """
   Returns a specific user given its id.
   """
-  user(id: ID!): User!
+  user(_id: ID!): User!
   """
   Returns all the projects in the database.
   """
@@ -394,7 +415,7 @@ type Query {
   """
   Returns a specific project given its id.
   """
-  project(id: ID!): Project!
+  project(_id: ID!): Project!
   """
   Returns all the tasks in the database.
   """
@@ -402,7 +423,7 @@ type Query {
   """
   Returns a specific task given its id.
   """
-  task(id: ID!): Task!
+  task(_id: ID!): Task!
   """
   Returns the current user.
   """
@@ -413,6 +434,23 @@ type Query {
   deletedUsers: [User]!
 }
 
+"""
+The ClientFilter type is used to filter the clients.
+"""
+input ClientFilter {
+  """
+  The name of the client.
+  """
+  name: String
+  """
+  The email of the client.
+  """
+  email: String
+  """
+  The phone of the client.
+  """
+  phone: String
+}
 """
 The Mutation type is used to mutate the database, i.e., to run operations that modify the database.
 """
@@ -448,15 +486,15 @@ type Mutation {
   """
   Deletes a user given its id. This operation is not permanent, the user is just marked as deleted.
   """
-  deleteUser(id: ID!): String!
+  deleteUser(_id: ID!): String!
   """
   Restores a user given its id.
   """
-  restoreUser(id: ID!): String!
+  restoreUser(_id: ID!): String!
   """
   Purges a user given its id. This operation is permanent, the user is removed from the database.
   """
-  purgeUser(id: ID!): String!
+  purgeUser(_id: ID!): String!
   """
   Creates a new project into the database given the required fields.
   """
@@ -464,19 +502,19 @@ type Mutation {
   """
   Updates a project given its id and the fields to update.
   """
-  updateProject(id: ID!, input: UpdateProjectInput!): Project!
+  updateProject(_id: ID!, input: UpdateProjectInput!): Project!
   """
   Deletes a project given its id. This operation is not permanent, the project is just marked as deleted.
   """
-  deleteProject(id: ID!): String!
+  deleteProject(_id: ID!): String!
   """
   Restores a project given its id.
   """
-  restoreProject(id: ID!): String!
+  restoreProject(_id: ID!): String!
   """
   Purges a project given its id. This operation is permanent, the project is removed from the database.
   """
-  purgeProject(id: ID!): String!
+  purgeProject(_id: ID!): String!
   """
   Creates a new task into the database given the required fields.
   """
