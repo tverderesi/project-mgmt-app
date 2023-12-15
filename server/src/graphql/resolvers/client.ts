@@ -1,16 +1,14 @@
 import { ClientModel } from "@/models/Client";
 import { z } from "zod";
-import {
-  clientValidator,
-  createClientValidator,
-  updateClientValidator,
-} from "@/validators/clientValidator";
+import { clientValidator, createClientValidator, updateClientValidator } from "@/validators/client";
 import {
   checkAuthentication,
   isCurrentUserOrAdmin,
   adminViewershipCheck,
   checkRoleAuthorization,
-} from "@/utils/authUtils";
+} from "@/utils/auth";
+import { checkRequiredFields } from "@/utils/field";
+
 export const query = {
   clients: async (parent: any, args: Partial<z.infer<typeof clientValidator>>, context) => {
     try {
@@ -65,6 +63,9 @@ export const mutation = {
     try {
       await checkAuthentication(context);
       await isCurrentUserOrAdmin(context, args.userId);
+
+      checkRequiredFields(args, createClientValidator);
+
       const client = await ClientModel.create(args);
       return client;
     } catch (error) {
@@ -75,17 +76,17 @@ export const mutation = {
     try {
       await checkAuthentication(context);
       await isCurrentUserOrAdmin(context, args.userId);
-      const updatedClient = ClientModel.findByIdAndUpdate(args.id, args, { new: true });
+      const updatedClient = ClientModel.findByIdAndUpdate(args._id, args, { new: true });
       return updatedClient;
     } catch (error) {
       throw new Error(error.message);
     }
   },
-  deleteClient: async (parent: any, { id }: { id: string }, context) => {
+  deleteClient: async (parent: any, { _id }: { _id: string }, context) => {
     try {
       await checkAuthentication(context);
-      await isCurrentUserOrAdmin(context, id);
-      const deletedClient = await ClientModel.findByIdAndUpdate(id, { deletedAt: new Date() });
+      await isCurrentUserOrAdmin(context, _id);
+      const deletedClient = await ClientModel.findByIdAndUpdate(_id, { deletedAt: new Date() });
       return deletedClient;
     } catch (error) {
       throw new Error(error.message);
