@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import { Project } from "./Project";
 import { User } from "./User";
+import { Audit, auditSchema } from "./Audit";
 // TODO: Add Deadlines
-export interface Task extends mongoose.Document {
+export interface Task extends Audit, mongoose.Document {
   _id?: string;
   name: string;
   description: string;
@@ -10,13 +11,6 @@ export interface Task extends mongoose.Document {
   user: User;
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
   progress: number;
-}
-export interface CreateTaskInput extends Task {
-  userId: string;
-}
-
-export interface UpdateTaskInput extends CreateTaskInput {
-  _id: string;
 }
 
 const taskSchema = new mongoose.Schema<Task>({
@@ -41,5 +35,7 @@ taskSchema.pre("save", async function (next) {
   }
   next();
 });
+
+taskSchema.add(auditSchema);
 
 export const TaskModel = mongoose.model<Task>("Task", taskSchema);
