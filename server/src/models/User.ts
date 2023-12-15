@@ -18,7 +18,6 @@ export interface User extends mongoose.Document {
 }
 
 export interface UpdateUserInput extends Partial<Omit<User, "projects" | "clients">> {
-  id: string;
   oldPassword?: string;
 }
 
