@@ -262,6 +262,10 @@ input ProjectInput {
   The progress of the project, it's a number between 0 and 100.
   """
   progress: Percentage!
+  """
+  If the progress should be updated automatically based on the progress of the tasks.
+  """
+  autoProgress: Boolean
 }
 
 """
@@ -389,6 +393,25 @@ input LoginInput {
 }
 
 """
+The ProjectFilter type is used to filter the projects.
+"""
+input ProjectFilter {
+  """
+  The name of the project.
+  """
+  name: String
+
+  """
+  The status of the project.
+  """
+  status: Status
+  """
+  The progress of the project, it's a number between 0 and 100.
+  """
+  progress: Percentage
+}
+
+"""
 The Query type is used to query the database, i.e., to run operations that do not modify the database.
 """
 type Query {
@@ -411,7 +434,7 @@ type Query {
   """
   Returns all the projects in the database.
   """
-  projects: [Project]!
+  projects(filter: ProjectFilter): [Project]!
   """
   Returns a specific project given its id.
   """
@@ -419,7 +442,7 @@ type Query {
   """
   Returns all the tasks in the database.
   """
-  tasks: [Task]!
+  tasks(filter: TaskFilter): [Task]!
   """
   Returns a specific task given its id.
   """
@@ -451,6 +474,25 @@ input ClientFilter {
   """
   phone: String
 }
+
+"""
+The TaskFilter type is used to filter the tasks.
+"""
+input TaskFilter {
+  """
+  The name of the task.
+  """
+  name: String
+  """
+  The status of the task.
+  """
+  status: Status
+  """
+  The progress of the task, it's a number between 0 and 100.
+  """
+  progress: Percentage
+}
+
 """
 The Mutation type is used to mutate the database, i.e., to run operations that modify the database.
 """
