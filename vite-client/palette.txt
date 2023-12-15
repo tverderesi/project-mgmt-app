@@ -1,0 +1,35 @@
+/* Coolors Exported Palette - https://coolors.co/d36135-ece4b7-16a34a-e6aa68-02020b */
+
+- Tailwind
+
+{ 'flame': { DEFAULT: '#d36135', 100: '#2b130a', 200: '#572613', 300: '#82391d', 400: '#ae4d26', 500: '#d36135', 600: '#dc825e', 700: '#e5a187', 800: '#edc0af', 900: '#f6e0d7' }, 'vanilla': { DEFAULT: '#ece4b7', 100: '#423b12', 200: '#847623', 300: '#c6b035', 400: '#dacb74', 500: '#ece4b7', 600: '#f0e9c5', 700: '#f3efd3', 800: '#f7f4e2', 900: '#fbfaf0' }, 'pigment_green': { DEFAULT: '#16a34a', 100: '#04200f', 200: '#09411d', 300: '#0d612c', 400: '#12813b', 500: '#16a34a', 600: '#1edb63', 700: '#53e789', 800: '#8cefb0', 900: '#c6f7d8' }, 'fawn': { DEFAULT: '#e6aa68', 100: '#392209', 200: '#724413', 300: '#ab661c', 400: '#dd882c', 500: '#e6aa68', 600: '#ebb984', 700: '#f0cba3', 800: '#f5dcc2', 900: '#faeee0' }, 'black': { DEFAULT: '#02020b', 100: '#000003', 200: '#010105', 300: '#010108', 400: '#02020a', 500: '#02020b', 600: '#121261', 700: '#2121b4', 800: '#5858e0', 900: '#ababf0' } }
+
+- CSV
+
+d36135,ece4b7,16a34a,e6aa68,02020b
+
+- With #
+
+#d36135, #ece4b7, #16a34a, #e6aa68, #02020b
+
+- Array
+
+["d36135","ece4b7","16a34a","e6aa68","02020b"]
+
+- Object
+
+{"Flame":"d36135","Vanilla":"ece4b7","Pigment green":"16a34a","Fawn":"e6aa68","Black":"02020b"}
+
+- Extended Array
+
+[{"name":"Flame","hex":"d36135","rgb":[211,97,53],"cmyk":[0,54,75,17],"hsb":[17,75,83],"hsl":[17,64,52],"lab":[55,42,46]},{"name":"Vanilla","hex":"ece4b7","rgb":[236,228,183],"cmyk":[0,3,22,7],"hsb":[51,22,93],"hsl":[51,58,82],"lab":[90,-4,23]},{"name":"Pigment green","hex":"16a34a","rgb":[22,163,74],"cmyk":[87,0,55,36],"hsb":[142,87,64],"hsl":[142,76,36],"lab":[59,-54,36]},{"name":"Fawn","hex":"e6aa68","rgb":[230,170,104],"cmyk":[0,26,55,10],"hsb":[31,55,90],"hsl":[31,72,65],"lab":[74,15,42]},{"name":"Black","hex":"02020b","rgb":[2,2,11],"cmyk":[82,82,0,96],"hsb":[240,82,4],"hsl":[240,69,3],"lab":[1,1,-3]}]
+
+- XML
+
+<palette>
+  <color name="Flame" hex="d36135" r="211" g="97" b="53" />
+  <color name="Vanilla" hex="ece4b7" r="236" g="228" b="183" />
+  <color name="Pigment green" hex="16a34a" r="22" g="163" b="74" />
+  <color name="Fawn" hex="e6aa68" r="230" g="170" b="104" />
+  <color name="Black" hex="02020b" r="2" g="2" b="11" />
+</palette>
