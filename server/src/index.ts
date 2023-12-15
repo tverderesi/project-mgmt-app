@@ -29,12 +29,12 @@ passport.use(
     const isEmail = username?.includes("@");
     const foundUser = await UserModel.findOne({ [isEmail ? "email" : "username"]: username });
     if (username === null) {
-      done(new Error("User not found"), null);
+      done(new Error("User not found!"), null);
     }
 
     const decryptedPassword = await bcrypt.compare(password, foundUser?.password as string);
     if (!decryptedPassword) {
-      done(new Error("Incorrect password"), null);
+      done(new Error("Incorrect password!"), null);
     }
 
     return done(null, foundUser);
@@ -65,10 +65,14 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.NODE_ENV === "development" ? "https://sandbox.embed.apollographql.com" : "*", // this will set the Access-Control-Allow-Origin header
-    credentials: true, // this will set the Access-Control-Allow-Credentials header
+    credentials: true,
+    origin:
+      process.env.NODE_ENV === "development"
+        ? ["http://localhost:5173", "https://sandbox.embed.apollographql.com"]
+        : "https://www.example.com",
   })
 );
+
 app.use(
   session({
     genid: (req) => uuidv4(),
@@ -93,7 +97,7 @@ app.use(bodyParser.json());
 
 app.use(
   "/graphql",
-  cors<cors.CorsRequest>(),
+
   expressMiddleware(server, {
     context: async ({ req, res }) => {
       return buildContext({ req, res, UserModel });
