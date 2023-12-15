@@ -1,22 +1,19 @@
-import { UserModel, CreateUserInput, UpdateUserInput } from "@/models/User";
-import {
-  createUserInputValidator,
-  updateUserInputValidator,
-  userQueryValidator,
-} from "@/validators/user";
+import { UserModel } from "@/models/User";
+import { createUserValidator, updateUserValidator, userValidator } from "@/validators/user";
 import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
 import { transformToUser } from "../../utils/dtos/transformToUser";
 import { isCurrentUserOrAdmin, checkRoleAuthorization, checkAuthentication } from "@/utils/auth";
+
 const mutation = {
-  createUser: async (_: any, { input }: { input: CreateUserInput }, context) => {
+  createUser: async (_parent: any, { input }: { input: z.infer<typeof createUserValidator> }, context: any) => {
     try {
       const currentUser = await context.getUser();
       if (currentUser.role !== "ADMIN" && input.role === "ADMIN") {
         throw new Error("Unauthorized action!");
       }
 
-      checkRequiredFields(input, createUserInputValidator);
+      checkRequiredFields(input, createUserValidator);
 
       const newUser = transformToUser({ ...input });
 
@@ -30,27 +27,24 @@ const mutation = {
     }
   },
 
-  login: async (parent: any, { input: { user: username, password } }, context) => {
+  login: async (_parent: any, { input: { user: username, password } }, context) => {
     const loggedUser = await context.authenticate("graphql-local", {
       username,
       password,
     });
-    console.log(loggedUser);
     await context.login(loggedUser);
     return loggedUser.user;
   },
 
-  logout: async (_: any, __: any, context: any) => {
+  logout: async (_parent: any, __: any, context: any) => {
     await context.logout();
     return true;
   },
 
-  updateUser: async (_: any, { input }: { input: Partial<UpdateUserInput> }, context: any) => {
+  updateUser: async (_parent: any, { input }: { input: z.infer<typeof updateUserValidator> }, context: any) => {
     try {
-      if (!input?.id) throw new Error("User ID not provided!");
-      await isCurrentUserOrAdmin(context, input.id);
-
-      checkRequiredFields(input, updateUserInputValidator);
+      await isCurrentUserOrAdmin(context, input._id);
+      checkRequiredFields(input, updateUserValidator);
 
       if (input.role === "ADMIN") {
         await checkRoleAuthorization(context, "ADMIN");
@@ -58,7 +52,8 @@ const mutation = {
 
       const updatedUser = transformToUser(input);
 
-      const user = await UserModel.findByIdAndUpdate(input.id, updatedUser, { new: true });
+      const user = await UserModel.findByIdAndUpdate(input._id, updatedUser, { new: true });
+
       if (!user) {
         throw new Error("Error updating user!");
       }
@@ -68,10 +63,11 @@ const mutation = {
     }
   },
 
-  deleteUser: async (_: any, { _id }: { _id: string }, context: any) => {
+  deleteUser: async (_parent: any, { _id }: { _id: string }, context: any) => {
     try {
       await isCurrentUserOrAdmin(context, _id);
       const user = await UserModel.findByIdAndUpdate(_id, { deletedAt: new Date() }, { new: true });
+
       if (!user) {
         throw new Error("Error deleting user!");
       }
@@ -81,7 +77,7 @@ const mutation = {
     }
   },
 
-  restoreUser: async (_: any, { _id }: { _id: string }, context: any) => {
+  restoreUser: async (_parent: any, { _id }: { _id: string }, context: any) => {
     try {
       await isCurrentUserOrAdmin(context, _id);
       const user = await UserModel.findByIdAndUpdate(_id, { deletedAt: null }, { new: true });
@@ -109,17 +105,11 @@ const mutation = {
 };
 
 const query = {
-  users: async (_: any, args: Partial<z.infer<typeof userQueryValidator>>, context) => {
-    await checkRoleAuthorization(context, "ADMIN");
-    const {
-      skip = Number(process.env.DEFAULT_SKIP),
-      limit = Number(process.env.DEFAULT_LIMIT),
-      sort,
-      ...rest
-    } = args;
+  users: async (_parent: any, args: z.infer<typeof userValidator>, context: any) => {
     try {
-      if (skip === undefined || !limit)
-        throw new Error("Skip and limit are required on the environment variables!");
+      await checkRoleAuthorization(context, "ADMIN");
+      const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT), sort, ...rest } = args;
+      if (skip === undefined || !limit) throw new Error("Skip and limit are required on the environment variables!");
       const users = await UserModel.find({ deletedAt: null, ...rest })
         .limit(limit)
         .skip(skip)
@@ -131,30 +121,27 @@ const query = {
     }
   },
 
-  user: async (_: any, { _id }, context: any) => {
-    await isCurrentUserOrAdmin(context, _id);
+  user: async (_parent: any, { _id }, context: any) => {
     try {
+      await isCurrentUserOrAdmin(context, _id);
       const user = UserModel.findById(_id);
-      if (!user) throw new Error("Client not found!");
+      if (!user) throw new Error("User not found!");
       return user;
     } catch (error) {
       throw new Error(error.message);
     }
   },
 
-  currentUser: async (parent, args, context) => {
+  currentUser: async (_parent: any, _args: any, context: any) => {
     return await context.getUser();
   },
 
-  deletedUsers: async (parent: any, args: Partial<z.infer<typeof userQueryValidator>>, context) => {
-    const currentUser = await context.getUser();
-    await checkAuthentication(context);
-    await checkRoleAuthorization(context, "ADMIN");
-    const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT) } =
-      args;
+  deletedUsers: async (_parent: any, args: z.infer<typeof userValidator>, context: any) => {
     try {
-      if (skip === undefined || !limit)
-        throw new Error("Skip and limit are required on the environment variables!");
+      await checkAuthentication(context);
+      await checkRoleAuthorization(context, "ADMIN");
+      const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT) } = args;
+      if (skip === undefined || !limit) throw new Error("Skip and limit are required on the environment variables!");
       const users = await UserModel.find({ deletedAt: { $ne: null } })
         .limit(limit)
         .skip(skip);
