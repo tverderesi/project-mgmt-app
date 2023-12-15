@@ -1,27 +1,16 @@
 import { ClientModel } from "@/models/Client";
 import { z } from "zod";
 import { clientValidator, createClientValidator, updateClientValidator } from "@/validators/client";
-import {
-  checkAuthentication,
-  isCurrentUserOrAdmin,
-  adminViewershipCheck,
-  checkRoleAuthorization,
-} from "@/utils/auth";
+import { checkAuthentication, isCurrentUserOrAdmin, adminViewershipCheck, checkRoleAuthorization } from "@/utils/auth";
 import { checkRequiredFields } from "@/utils/field";
 
-export const query = {
+const query = {
   clients: async (parent: any, args: Partial<z.infer<typeof clientValidator>>, context) => {
     try {
       await checkAuthentication(context);
       await adminViewershipCheck(context, args);
-      const {
-        skip = Number(process.env.DEFAULT_SKIP),
-        limit = Number(process.env.DEFAULT_LIMIT),
-        sort,
-        ...rest
-      } = args;
-      if (skip === undefined || !limit)
-        throw new Error("Skip and limit are required on the environment variables!");
+      const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT), sort, ...rest } = args;
+      if (skip === undefined || !limit) throw new Error("Skip and limit are required on the environment variables!");
 
       const clients = await ClientModel.find(rest).limit(limit).skip(skip).sort(sort);
 
@@ -44,10 +33,8 @@ export const query = {
     try {
       await checkAuthentication(context);
       await adminViewershipCheck(context, args);
-      const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT) } =
-        args;
-      if (skip === undefined || !limit)
-        throw new Error("Skip and limit are required on the environment variables!");
+      const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT) } = args;
+      if (skip === undefined || !limit) throw new Error("Skip and limit are required on the environment variables!");
       const clients = await ClientModel.find({ deletedAt: { $ne: null } })
         .limit(limit)
         .skip(skip);
@@ -58,7 +45,7 @@ export const query = {
   },
 };
 
-export const mutation = {
+const mutation = {
   createClient: async (parent: any, args: z.infer<typeof createClientValidator>, context) => {
     try {
       await checkAuthentication(context);
@@ -114,3 +101,5 @@ export const mutation = {
     }
   },
 };
+
+export const clientResolvers = { query, mutation };
