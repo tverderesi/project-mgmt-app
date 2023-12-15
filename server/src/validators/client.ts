@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const clientValidator = z.object({
-  id: z.string().optional(),
+  _id: z.string().optional(),
   name: z.string().optional(),
   email: z.string().email().optional(),
   deletedAt: z.string().optional(),
@@ -15,7 +15,7 @@ export const clientValidator = z.object({
 
 export const createClientValidator = clientValidator
   .omit({
-    id: true,
+    _id: true,
     deletedAt: true,
     limit: true,
     skip: true,
