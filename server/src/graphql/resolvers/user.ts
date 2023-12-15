@@ -3,16 +3,11 @@ import {
   createUserInputValidator,
   updateUserInputValidator,
   userQueryValidator,
-} from "@/validators/userValidator";
-import { getUniqueFields, checkUniqueFields } from "@/utils/fieldUtils";
-import { requiredFieldsCheck } from "@/utils/fieldUtils";
+} from "@/validators/user";
+import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
 import { transformToUser } from "../../utils/dtos/transformToUser";
-import {
-  isCurrentUserOrAdmin,
-  checkRoleAuthorization,
-  checkAuthentication,
-} from "@/utils/authUtils";
+import { isCurrentUserOrAdmin, checkRoleAuthorization, checkAuthentication } from "@/utils/auth";
 const mutation = {
   createUser: async (_: any, { input }: { input: CreateUserInput }, context) => {
     try {
@@ -21,10 +16,7 @@ const mutation = {
         throw new Error("Unauthorized action!");
       }
 
-      requiredFieldsCheck(input, createUserInputValidator);
-
-      const uniqueKeys = getUniqueFields(UserModel);
-      await checkUniqueFields(input, uniqueKeys);
+      checkRequiredFields(input, createUserInputValidator);
 
       const newUser = transformToUser({ ...input });
 
@@ -43,7 +35,7 @@ const mutation = {
       username,
       password,
     });
-
+    console.log(loggedUser);
     await context.login(loggedUser);
     return loggedUser.user;
   },
@@ -58,14 +50,11 @@ const mutation = {
       if (!input?.id) throw new Error("User ID not provided!");
       await isCurrentUserOrAdmin(context, input.id);
 
-      requiredFieldsCheck(input, updateUserInputValidator);
+      checkRequiredFields(input, updateUserInputValidator);
 
       if (input.role === "ADMIN") {
         await checkRoleAuthorization(context, "ADMIN");
       }
-
-      const uniqueKeys = getUniqueFields(UserModel);
-      await checkUniqueFields(input, uniqueKeys);
 
       const updatedUser = transformToUser(input);
 
@@ -79,10 +68,10 @@ const mutation = {
     }
   },
 
-  deleteUser: async (_: any, { id }: { id: string }, context: any) => {
+  deleteUser: async (_: any, { _id }: { _id: string }, context: any) => {
     try {
-      await isCurrentUserOrAdmin(context, id);
-      const user = await UserModel.findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true });
+      await isCurrentUserOrAdmin(context, _id);
+      const user = await UserModel.findByIdAndUpdate(_id, { deletedAt: new Date() }, { new: true });
       if (!user) {
         throw new Error("Error deleting user!");
       }
@@ -92,10 +81,10 @@ const mutation = {
     }
   },
 
-  restoreUser: async (_: any, { id }: { id: string }, context: any) => {
+  restoreUser: async (_: any, { _id }: { _id: string }, context: any) => {
     try {
-      await isCurrentUserOrAdmin(context, id);
-      const user = await UserModel.findByIdAndUpdate(id, { deletedAt: null }, { new: true });
+      await isCurrentUserOrAdmin(context, _id);
+      const user = await UserModel.findByIdAndUpdate(_id, { deletedAt: null }, { new: true });
       if (!user) {
         throw new Error("Error restoring user!");
       }
@@ -105,10 +94,10 @@ const mutation = {
     }
   },
 
-  purgeUser: async (_parent: any, { id }: { id: string }, context: any) => {
+  purgeUser: async (_parent: any, { _id }: { _id: string }, context: any) => {
     try {
       await checkRoleAuthorization(context, "ADMIN");
-      const user = await UserModel.findByIdAndDelete(id);
+      const user = await UserModel.findByIdAndDelete(_id);
       if (!user) {
         throw new Error("Error purging user!");
       }
@@ -142,10 +131,10 @@ const query = {
     }
   },
 
-  user: async (_: any, { id }, context: any) => {
-    await isCurrentUserOrAdmin(context, id);
+  user: async (_: any, { _id }, context: any) => {
+    await isCurrentUserOrAdmin(context, _id);
     try {
-      const user = UserModel.findById(id);
+      const user = UserModel.findById(_id);
       if (!user) throw new Error("Client not found!");
       return user;
     } catch (error) {
