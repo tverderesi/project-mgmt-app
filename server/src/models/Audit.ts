@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+export interface Audit extends mongoose.Document {
+  deletedAt: Date;
+  deletedBy: string;
+  createdBy: string;
+  updatedBy: string;
+}
+
 export const auditSchema = new mongoose.Schema(
   {
     deletedAt: { type: Date, default: null },
