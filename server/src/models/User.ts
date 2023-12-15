@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import { Project } from "./Project";
 import { Client } from "./Client";
-import { auditSchema } from "./Audit";
+import { Audit, auditSchema } from "./Audit";
 
 const roles = ["ADMIN", "USER"] as const;
 
-export interface User extends mongoose.Document {
+export interface User extends Audit, mongoose.Document {
   _id?: string;
   name: string;
   username: string;
@@ -16,16 +16,6 @@ export interface User extends mongoose.Document {
   clients: Client[];
   role: "ADMIN" | "USER";
 }
-
-export interface UpdateUserInput extends Partial<Omit<User, "projects" | "clients">> {
-  oldPassword?: string;
-}
-
-export interface CreateUserInput extends Omit<User, "projects" | "clients"> {
-  confirmEmail: string;
-  confirmPassword: string;
-}
-
 const userSchema = new mongoose.Schema<User>(
   {
     name: { type: String, required: true, maxlength: 100 },
