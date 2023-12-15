@@ -20,13 +20,9 @@ import cookieParser from "cookie-parser";
 import { Percentage } from "./graphql/custom_scalars/percentage";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
+//TODO: Implement logging
 const typeDefs = readFileSync(path.join(__dirname, "graphql", "typeDefs.graphql"), "utf-8");
-const envPath = path.resolve(
-  __dirname,
-  "..",
-  process.env.NODE_ENV === "development" ? ".env.development" : ".env"
-);
+const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
 dotenv.config({ path: envPath });
 passport.use(
   new GraphQLLocalStrategy(async (username: string, password: string, done) => {
@@ -69,8 +65,7 @@ const app = express();
 app.use(cookieParser());
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "development" ? "https://sandbox.embed.apollographql.com" : "*", // this will set the Access-Control-Allow-Origin header
+    origin: process.env.NODE_ENV === "development" ? "https://sandbox.embed.apollographql.com" : "*", // this will set the Access-Control-Allow-Origin header
     credentials: true, // this will set the Access-Control-Allow-Credentials header
   })
 );
