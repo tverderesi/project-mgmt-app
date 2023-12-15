@@ -1,35 +1,23 @@
 import { InMemoryCache, ApolloClient, ApolloProvider } from "@apollo/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { NewClient } from "./pages/NewClient";
-import { NewProject } from "./pages/NewProject";
+
 import { ThemeProvider } from "./components/ui/ThemeProvider";
 import { ToastProvider } from "@/components/ui/toast";
-import { SidebarProvider } from "./components/ui/sidebar";
+
 import { MainLayout } from "./MainLayout";
+import { Login } from "./pages/Login";
 
 function App() {
-  const cache = new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          clients: {
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-          projects: {
-            merge(existing, incoming) {
-              return incoming;
-            },
-          },
-        },
-      },
-    },
-  });
+  const cache = new InMemoryCache();
 
   const client = new ApolloClient({
     uri: import.meta.env.VITE_GRAPHQL_SERVER as string,
     cache: cache,
+    credentials: "include",
+    headers: {
+      "client-name": "vite-client",
+      "client-version": "1.0.0",
+    },
   });
   return (
     <ApolloProvider client={client}>
@@ -39,20 +27,13 @@ function App() {
             path="/"
             element={
               <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <SidebarProvider>
-                  <ToastProvider>
-                    <MainLayout />
-                  </ToastProvider>
-                </SidebarProvider>
+                <ToastProvider>
+                  <MainLayout />
+                </ToastProvider>
               </ThemeProvider>
             }
           >
-            <Route path="clients">
-              <Route path="new" element={<NewClient />} />
-            </Route>
-            <Route path="projects">
-              <Route path="new" element={<NewProject />} />
-            </Route>
+            <Route path="login" element={<Login />} />
           </Route>
         </Routes>
       </Router>
