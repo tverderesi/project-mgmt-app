@@ -68,6 +68,13 @@ await server.start();
 const app = express();
 app.use(cookieParser());
 app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "development" ? "https://sandbox.embed.apollographql.com" : "*", // this will set the Access-Control-Allow-Origin header
+    credentials: true, // this will set the Access-Control-Allow-Credentials header
+  })
+);
+app.use(
   session({
     genid: (req) => uuidv4(),
     secret: process.env.SECRET as string,
@@ -76,8 +83,7 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60,
       secure: false,
-      sameSite: "lax",
-      httpOnly: false,
+      sameSite: process.env.NODE_ENV === "development" ? "none" : true,
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
@@ -89,7 +95,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
-app.use(cors());
+
 app.use(
   "/graphql",
   cors<cors.CorsRequest>(),
