@@ -1,23 +1,15 @@
 import mongoose from "mongoose";
 import { Project } from "./Project";
 import { User } from "./User";
-import { auditSchema } from "./Audit";
+import { Audit, auditSchema } from "./Audit";
 
-export interface Client extends mongoose.Document {
+export interface Client extends Audit, mongoose.Document {
   _id?: string;
   name: string;
   email: string;
   phone: string;
   projects: Project[];
   user: User;
-}
-
-export interface CreateClientInput extends Omit<Client, "projects"> {
-  userId: string;
-}
-
-export interface UpdateClientInput extends Partial<Omit<Client, "projects">> {
-  id: string;
 }
 
 const clientSchema = new mongoose.Schema<Client>(
