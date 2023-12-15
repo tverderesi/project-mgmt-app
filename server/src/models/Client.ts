@@ -4,6 +4,7 @@ import { User } from "./User";
 import { auditSchema } from "./Audit";
 
 export interface Client extends mongoose.Document {
+  _id?: string;
   name: string;
   email: string;
   phone: string;
@@ -23,7 +24,7 @@ const clientSchema = new mongoose.Schema<Client>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
-    phone: { type: String, required: true },
+    phone: { type: String, required: true, match: /^\+\d{1,15}$/ },
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
