@@ -7,6 +7,7 @@ export const projectValidator = z.object({
   deletedAt: z.string().optional(),
   userId: z.string().optional(),
   clientId: z.string().optional(),
+  autoProgress: z.boolean().optional(),
   progress: z
     .number()
     .refine((arg) => arg < 0 || arg > 100, {
@@ -29,7 +30,7 @@ export const createProjectValidator = projectValidator
     skip: true,
     sort: true,
   })
-  .required({ name: true, description: true, userId: true, status: true, progress: true });
+  .required({ name: true, description: true, userId: true, status: true });
 
 export const updateProjectValidator = projectValidator
   .omit({
