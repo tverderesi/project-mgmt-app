@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
+
 export const userInputValidator = z.object({
   name: z.string({ required_error: "Name is required!" }),
   username: z.string({ required_error: "Username is required!" }),
@@ -33,6 +34,7 @@ export const updateUserInputValidator = userInputValidator
     message: "New password must be different from old password!",
     path: ["password"],
   });
+
 export const createUserInputValidator = userInputValidator
   .refine((data) => data.email === data.confirmEmail, {
     message: "E-mails don't match!",
@@ -42,3 +44,16 @@ export const createUserInputValidator = userInputValidator
     message: "Passwords don't match!",
     path: ["confirmPassword"],
   });
+
+export const userQueryValidator = z.object({
+  id: z.string().optional(),
+  name: z.string().optional(),
+  email: z.string().email().optional(),
+  deletedAt: z.string().datetime().or(z.boolean()).optional(),
+  projects: z.array(z.string()).optional(),
+  clients: z.array(z.string()).optional(),
+  role: z.string().optional(),
+  limit: z.number().optional(),
+  skip: z.number().optional(),
+  sort: z.string().optional(),
+});
