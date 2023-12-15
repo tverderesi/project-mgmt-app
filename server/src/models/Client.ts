@@ -1,13 +1,22 @@
 import mongoose from "mongoose";
 import { Project } from "./Project";
 import { User } from "./User";
+import { auditSchema } from "./Audit";
 
-export interface Client {
+export interface Client extends mongoose.Document {
   name: string;
   email: string;
   phone: string;
   projects: Project[];
   user: User;
+}
+
+export interface CreateClientInput extends Omit<Client, "projects"> {
+  userId: string;
+}
+
+export interface UpdateClientInput extends Partial<Omit<Client, "projects">> {
+  id: string;
 }
 
 const clientSchema = new mongoose.Schema<Client>(
@@ -21,6 +30,6 @@ const clientSchema = new mongoose.Schema<Client>(
   { timestamps: true, autoIndex: true }
 );
 
-const ClientModel = mongoose.model<Client>("Client", clientSchema);
+clientSchema.add(auditSchema);
 
-export default ClientModel;
+export const ClientModel = mongoose.model<Client>("Client", clientSchema);
