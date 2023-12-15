@@ -11,12 +11,10 @@ import { v4 as uuidv4 } from "uuid";
 import { GraphQLLocalStrategy, buildContext } from "graphql-passport";
 import { fileURLToPath } from "url";
 import path from "path";
-import { readFileSync, writeFileSync } from "fs";
-import clientResolver from "./graphql/resolvers/query/client";
+import { readFileSync } from "fs";
 import bodyParser from "body-parser";
 import { UserModel, User } from "./models/User";
-import { userMutations } from "./graphql/resolvers/mutation/user";
-import { userQuery } from "./graphql/resolvers/query/user";
+import { userResolvers } from "./graphql/resolvers/user";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import { Percentage } from "./graphql/custom_scalars/percentage";
@@ -59,8 +57,8 @@ const port = process.env.PORT || 5000;
 const server = new ApolloServer({
   typeDefs: [typeDefs],
   resolvers: {
-    Query: { ...clientResolver, ...userQuery },
-    Mutation: { ...userMutations },
+    Query: { ...userResolvers.query },
+    Mutation: { ...userResolvers.mutation },
     Percentage,
   },
   introspection: process.env.NODE_ENV === "development",
