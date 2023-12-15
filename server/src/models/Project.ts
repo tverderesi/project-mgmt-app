@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 import { Client } from "./Client";
 import { User } from "./User";
 import { Task } from "./Task";
+import { Audit, auditSchema } from "./Audit";
 //TODO: Add Deadlines
-export interface Project {
+export interface Project extends Audit, mongoose.Document {
   _id?: string;
   name: string;
   description: string;
@@ -14,6 +15,7 @@ export interface Project {
   tasks: Task[];
   user: User;
 }
+
 const projectSchema = new mongoose.Schema<Project>(
   {
     name: { type: String, required: true },
@@ -47,5 +49,7 @@ projectSchema.post("findOneAndDelete", async function (next) {
   await mongoose.model("Task").deleteMany({ project: filters._id });
   next();
 });
+
+projectSchema.add(auditSchema);
 
 export const ProjectModel = mongoose.model<Project>("Project", projectSchema);
