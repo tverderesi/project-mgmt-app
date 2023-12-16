@@ -9,6 +9,7 @@ export const IS_AUTHENTICATED = gql`
       email
       password
       photo
+      role
     }
   }
 `;
