@@ -7,7 +7,6 @@ export const IS_AUTHENTICATED = gql`
       name
       username
       email
-      password
       photo
       role
     }
