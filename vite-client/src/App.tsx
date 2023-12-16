@@ -1,11 +1,5 @@
 import { InMemoryCache, ApolloClient, ApolloProvider } from "@apollo/client";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./components/ui/ThemeProvider";
-import { ToastProvider } from "@/components/ui/toast";
-import { MainLayout } from "./MainLayout";
-import { Login } from "./pages/Login";
-import { AppLayout } from "./AppLayout";
-import { SignUp } from "./pages/SignUp";
+import { AppRouter } from "./AppRouter";
 
 function App() {
   const cache = new InMemoryCache();
@@ -21,27 +15,7 @@ function App() {
   });
   return (
     <ApolloProvider client={client}>
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <ToastProvider>
-                  <MainLayout />
-                </ToastProvider>
-              </ThemeProvider>
-            }
-          >
-            <Route path="login" element={<Login />} />
-            <Route path="sign-up" element={<SignUp />} />
-            <Route path="app" element={<AppLayout />}>
-              <Route path="" element={<div>App</div>} />
-              Ro
-            </Route>
-          </Route>
-        </Routes>
-      </Router>
+      <AppRouter />
     </ApolloProvider>
   );
 }
