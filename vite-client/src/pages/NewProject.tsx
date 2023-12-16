@@ -18,12 +18,15 @@ import { useQuery } from "@apollo/client";
 import { USER } from "./USER";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
 import { IS_AUTHENTICATED } from "@/IS_AUTHENTICATED";
 import { useLazyQuery } from "@apollo/client";
 import { CommandLoading } from "cmdk";
 import { useNavigate } from "react-router-dom";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const NewProject = () => {
   type Project = z.infer<typeof createProjectValidator>;
@@ -76,11 +79,13 @@ export const NewProject = () => {
   }, [data?.currentUser?.id]);
 
   return (
-    <section className="space-y-4">
-      <TypographyH3 className="inline-flex gap-2 items-center">New Project</TypographyH3>
-
+    <section className="flex flex-col justify-center items-center h-full w-full pt-8">
+      <TypographyH3 className="inline-flex gap-2 items-center mb-8">New Project</TypographyH3>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className=" grid grid-cols-1 lg:grid-cols-2 gap-y-4 gap-x-0  lg:gap-4 lg:gap-x-8"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -97,23 +102,9 @@ export const NewProject = () => {
           />
           <FormField
             control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem className="w-72">
-                <FormLabel>Description</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Description" {...field} />
-                </FormControl>
-                <FormDescription>Insert a brief description of the project.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
             name="status"
             render={({ field }) => (
-              <FormItem className="w-72">
+              <FormItem className="w-72 col-span-2 lg:col-span-1 grid-rows-2">
                 <FormLabel>Status</FormLabel>
                 <FormControl>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -137,6 +128,102 @@ export const NewProject = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem className="w-72 col-span-2 lg:col-span-1 grid-rows-2">
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Description" className="min-h-[7.5rem] max-h-[7.5rem]" {...field} />
+                </FormControl>
+                <FormDescription>Insert a brief description of the project.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="clientId"
+            render={({ field }) => (
+              <FormItem className="w-72 col-span-2 lg:col-span-1 grid-rows-2">
+                <FormLabel>Client</FormLabel>
+                <FormControl>
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const callbackParams = btoa(JSON.stringify(form.getValues()));
+                        navigate(`/app/${data.currentUser.role.toLowerCase()}/clients/new?callback=${callbackParams}`);
+                      }}
+                      className="w-72 font-semibold"
+                    >
+                      Create Client
+                    </Button>
+                    <div className="relative h-8 flex flex-row items-center w-72">
+                      <Separator className="my-2 absolute flex flex-row items-center" />
+                      <div className="text-sm font-semibold bg-background p-1 rounded-sm absolute left-[7.5rem] z-[1] tracking-widest w-10 text-center">
+                        OR
+                      </div>
+                    </div>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn("w-72 justify-between", !field.value && "text-muted-foreground")}
+                          >
+                            {field.value ? data?.user?.clients?.find((client) => client.id === field.value) : "Select Client"}
+                            <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-72 p-0">
+                        {userData?.user?.clients?.length === 0 ? (
+                          <div className="py-6 text-center text-sm">No Clients Found.</div>
+                        ) : (
+                          <Command value={field.value} onValueChange={field.onChange}>
+                            <CommandInput placeholder="Search Client..." className="h-9" />
+
+                            <CommandList>
+                              <CommandEmpty>No Clients Found.</CommandEmpty>
+                              {userLoading && (
+                                <CommandLoading>
+                                  <span>
+                                    <Loader2 className="h-4 w-4" /> Loading Clients{" "}
+                                  </span>
+                                </CommandLoading>
+                              )}
+
+                              {userData?.user?.clients?.map((client) => (
+                                <CommandItem
+                                  value={client?.name}
+                                  key={client?.id}
+                                  onSelect={() => {
+                                    form.setValue("clientId", client.id);
+                                  }}
+                                >
+                                  {client?.name}
+                                  <CheckIcon
+                                    className={cn("ml-auto h-4 w-4", client.id === field.value ? "opacity-100" : "opacity-0")}
+                                  />
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </Command>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+                  </>
+                </FormControl>
+                <FormDescription>You can create a client or an existing one.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <FormField
             control={form.control}
             name="progress"
@@ -164,85 +251,24 @@ export const NewProject = () => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="clientId"
+            name="autoProgress"
             render={({ field }) => (
-              <FormItem className="w-72">
-                <FormLabel>Progress</FormLabel>
+              <FormItem className="col-span-2 lg:col-span-1 flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow w-72">
                 <FormControl>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant="outline"
-                          role="combobox"
-                          className={cn("w-72 justify-between", !field.value && "text-muted-foreground")}
-                        >
-                          {field.value ? data?.user?.clients?.find((client) => client.id === field.value) : "Select Client"}
-                          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-72 p-0">
-                      {userData?.user?.clients?.length === 0 ? (
-                        <div className="py-6 text-center text-sm">
-                          No Clients Found.
-                          <div>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                const callbackParams = btoa(JSON.stringify(form.getValues()));
-                                navigate(`/app/${data.currentUser.role.toLowerCase()}/clients/new?callback=${callbackParams}`);
-                              }}
-                            >
-                              Create Client
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <Command value={field.value} onValueChange={field.onChange}>
-                          <CommandInput placeholder="Search Client..." className="h-9" />
-
-                          <CommandList>
-                            <CommandEmpty>No Clients Found.</CommandEmpty>
-                            {userLoading && (
-                              <CommandLoading>
-                                <span>
-                                  <Loader2 className="h-4 w-4" /> Loading Clients{" "}
-                                </span>
-                              </CommandLoading>
-                            )}
-
-                            {userData?.user?.clients?.map((client) => (
-                              <CommandItem
-                                value={client?.name}
-                                key={client?.id}
-                                onSelect={() => {
-                                  form.setValue("clientId", client.id);
-                                }}
-                              >
-                                {client?.name}
-                                <CheckIcon
-                                  className={cn("ml-auto h-4 w-4", client.id === field.value ? "opacity-100" : "opacity-0")}
-                                />
-                              </CommandItem>
-                            ))}
-                          </CommandList>
-                        </Command>
-                      )}
-                    </PopoverContent>
-                  </Popover>
+                  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                 </FormControl>
-                <FormDescription>Project is {form.watch("progress")}% Completed.</FormDescription>
-                <FormMessage />
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Auto-Update Project Progress</FormLabel>
+                  <FormDescription>You can change this setting later.</FormDescription>
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
-
-          <div className="inline-flex w-full items-center justify-end gap-4 absolute bottom-0 right-2">
+          <div className="inline-flex w-full justify-center gap-4 col-span-2 mt-8">
             <Button type="reset" className="gap-2" variant="destructive">
               <RotateCcw className="h-4 w-4" />
               Reset Form
