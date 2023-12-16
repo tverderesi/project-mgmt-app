@@ -47,9 +47,7 @@ export const createUserValidator = userValidator
         passwordRegex,
         "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character."
       ),
-    confirmEmail: z
-      .string({ required_error: "Confirm E-mail is required!" })
-      .email({ message: "Invalid e-mail!" }),
+    confirmEmail: z.string({ required_error: "Confirm E-mail is required!" }).email({ message: "Invalid e-mail!" }),
   })
   .refine((data) => data.email === data.confirmEmail, {
     message: "E-mails don't match!",
@@ -65,8 +63,7 @@ export const updateUserValidator = userValidator
   .extend({
     oldPassword: z.string({ required_error: "Password is required!" }),
     password: z.string({ required_error: "Password is required!" }).regex(passwordRegex, {
-      message:
-        "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character.",
+      message: "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character.",
     }),
   })
   .refine((data) => data.password !== data.oldPassword, {
