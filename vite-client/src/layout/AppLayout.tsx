@@ -1,8 +1,8 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { gql, useMutation, useApolloClient, useQuery } from "@apollo/client";
 import { useEffect } from "react";
-import { Button } from "./components/ui/button";
-import { IS_AUTHENTICATED } from "./IS_AUTHENTICATED";
+import { Button } from "../components/ui/button";
+import { IS_AUTHENTICATED } from "../IS_AUTHENTICATED";
 
 export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +18,8 @@ export const AppLayout: React.FC = () => {
   useEffect(() => {
     if (error) navigate("../login");
     if (data?.currentUser === null) navigate("../login");
+
+    if (data?.currentUser?.role) navigate(`../app/${data?.currentUser?.role.toLowerCase()}`);
   }, [data, error]);
 
   useEffect(() => {

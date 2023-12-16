@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Toaster } from "./components/ui/toaster";
+import { Toaster } from "../components/ui/toaster";
 
 export const MainLayout: React.FC = () => {
   return (
