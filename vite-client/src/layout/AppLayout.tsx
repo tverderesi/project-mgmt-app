@@ -38,17 +38,19 @@ export const AppLayout: React.FC = () => {
 
   const [logout] = useMutation(LOGOUT);
   return (
-    <div className="h-full w-full p-2">
-      <ModeToggle />
-      <Button
-        variant="outline"
-        onClick={() => {
-          logout();
-          client.resetStore();
-        }}
-      >
-        Logout
-      </Button>
+    <div className="h-full w-full p-2 relative">
+      <div className="absolute">
+        <ModeToggle />
+        <Button
+          variant="outline"
+          onClick={() => {
+            logout();
+            client.resetStore();
+          }}
+        >
+          Logout
+        </Button>
+      </div>
       {loading && <div>Loading...</div>}
       <Outlet />
     </div>
