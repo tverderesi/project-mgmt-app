@@ -9,7 +9,8 @@ const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof createUserValidator> }, context: any) => {
     try {
       const currentUser = await context.getUser();
-      if (currentUser.role !== "ADMIN" && input.role === "ADMIN") {
+
+      if (currentUser?.role !== "ADMIN" && input?.role === "ADMIN") {
         throw new Error("Unauthorized action!");
       }
 
@@ -23,6 +24,11 @@ const mutation = {
       }
       return user;
     } catch (error) {
+      if (error.code === 11000) {
+        const key = Object.keys(error.keyValue)[0].substring(0, 1).toUpperCase() + Object.keys(error.keyValue)[0].substring(1);
+
+        throw new Error(`${key} already exists!`);
+      }
       throw new Error(error.message);
     }
   },
