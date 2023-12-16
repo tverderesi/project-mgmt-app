@@ -20,6 +20,20 @@ enum Status {
 }
 
 """
+The Possible roles of a user.
+"""
+enum Role {
+  """
+  The user is a normal user.
+  """
+  USER
+  """
+  The user is an admin.
+  """
+  ADMIN
+}
+
+"""
 This scalar is used to represent the progress of a project or a task. It's an integer between 0 and 100.
 """
 scalar Percentage
@@ -104,6 +118,10 @@ type User {
   The clients that are associated with a specific user.
   """
   clients: [Client]!
+  """
+  The role of the user.
+  """
+  role: Role!
 }
 
 """
