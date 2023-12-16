@@ -27,6 +27,7 @@ export const Login = () => {
         username
         email
         photo
+        role
       }
     }
   `;
