@@ -1,11 +1,11 @@
 import { InMemoryCache, ApolloClient, ApolloProvider } from "@apollo/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import { ThemeProvider } from "./components/ui/ThemeProvider";
 import { ToastProvider } from "@/components/ui/toast";
-
 import { MainLayout } from "./MainLayout";
 import { Login } from "./pages/Login";
+import { AppLayout } from "./AppLayout";
+import { SignUp } from "./pages/SignUp";
 
 function App() {
   const cache = new InMemoryCache();
@@ -34,6 +34,11 @@ function App() {
             }
           >
             <Route path="login" element={<Login />} />
+            <Route path="sign-up" element={<SignUp />} />
+            <Route path="app" element={<AppLayout />}>
+              <Route path="" element={<div>App</div>} />
+              Ro
+            </Route>
           </Route>
         </Routes>
       </Router>
