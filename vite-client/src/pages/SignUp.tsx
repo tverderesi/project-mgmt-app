@@ -10,6 +10,7 @@ import { ModeToggle } from "@/components/ui/ModeToggle";
 import { useMutation, gql } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 export const SignUp = () => {
   const form = useForm({
     resolver: zodResolver(createUserValidator),
@@ -24,21 +25,45 @@ export const SignUp = () => {
         username
         email
         photo
+        role
       }
     }
   `;
 
-  const [signUp, { data, loading, called }] = useMutation(SIGN_UP, {
-    onCompleted: () => {},
+  const [signUp, { data, loading, reset }] = useMutation(SIGN_UP, {
     onError: (error) => {
+      if (error.message.includes("duplicate key error")) {
+        toast({
+          title: "Sign-up failed",
+          description: "Username already exists.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       toast({
         title: "Sign-up failed",
         description: error.message,
         variant: "destructive",
       });
     },
+
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          currentUser() {
+            return data.createUser;
+          },
+        },
+      });
+    },
   });
 
+  useEffect(() => {
+    if (data) {
+      reset();
+    }
+  }, [data]);
   return (
     <div className="h-full w-full p-2 flex flex-col justify-center items-center relative">
       <div className="absolute top-4 right-4">
@@ -47,8 +72,7 @@ export const SignUp = () => {
       <h4 className="scroll-m-20 text-3xl font-semibold tracking-tight text-center mb-6">Sign Up Form</h4>
       <div className="relative">
         {loading ||
-          !!data ||
-          (true && (
+          (!!data && (
             <div className="w-full h-full bg-background/90 absolute z-10 rounded-xl border border-border backdrop-blur-sm shadow flex flex-col">
               <div
                 className={cn(
@@ -61,10 +85,20 @@ export const SignUp = () => {
                     <Loader2 className="w-20 h-20 text-foreground animate-spin" strokeWidth={0.5} absoluteStrokeWidth />
                   )}
                   {true && <Smile className="w-20 h-20 text-foreground" />}
-                  <h4 className="text-foreground text-xl font-semibold tracking-tight text-center mb-6 absolute bottom-[15%] break-words">
-                    {loading && "Creating Account"}
-                    {true && `Welcome in, ${data?.createUser?.name || "Thomas"}!`}
-                  </h4>
+                  <div className="absolute bottom-[0%] flex flex-col items-center justify-between h-full py-10">
+                    <h4 className="text-foreground text-xl font-semibold tracking-tight text-center mb-6 break-words">
+                      {loading && "Creating Account"}
+                      {data && `Welcome in, ${data?.createUser?.name}!`}
+                    </h4>
+                    <Button
+                      onClick={() => {
+                        navigate("../login");
+                      }}
+                      className="font-semibold"
+                    >
+                      Log In
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -72,7 +106,11 @@ export const SignUp = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((data) => signUp({ variables: { input: data } }))}
-            className={cn("gap-4 grid grid-cols-2 p-4", true && "pointer-events-none select-none")}
+            className={cn(
+              "gap-4 grid grid-cols-2 p-4",
+              (loading || data) && "pointer-events-none select-none",
+              data && "opacity-0"
+            )}
           >
             <FormField
               control={form.control}
@@ -125,7 +163,7 @@ export const SignUp = () => {
                   <FormControl>
                     <Input placeholder="password" {...field} type="password" />
                   </FormControl>
-                  <FormDescription>This is your unique username.</FormDescription>
+                  <FormDescription>Repeat your password.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
