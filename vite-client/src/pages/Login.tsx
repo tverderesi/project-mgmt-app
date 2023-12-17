@@ -1,4 +1,4 @@
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
+import { LOGIN } from "../graphql/mutations";
 
 export const Login = () => {
   const { toast } = useToast();
@@ -19,18 +20,6 @@ export const Login = () => {
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
   });
-  const LOGIN = gql`
-    mutation Login($input: LoginInput!) {
-      login(input: $input) {
-        id
-        name
-        username
-        email
-        photo
-        role
-      }
-    }
-  `;
 
   const [login, { loading }] = useMutation(LOGIN, {
     update(cache, { data }) {
