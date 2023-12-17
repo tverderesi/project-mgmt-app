@@ -31,6 +31,7 @@ export function AppRouter() {
             <Route path="user" element={<UserDashboard />} />
             <Route path="user/projects" element={<div>Projects</div>} />
             <Route path="user/projects/new" element={<NewProject />} />
+
             <Route path="user/clients/new" element={<NewClient />} />
           </Route>
         </Route>
