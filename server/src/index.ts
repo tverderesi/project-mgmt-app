@@ -18,6 +18,7 @@ import { userResolvers } from "./graphql/resolvers/user";
 import bcrypt from "bcrypt";
 import cookieParser from "cookie-parser";
 import { Percentage } from "./graphql/custom_scalars/percentage";
+import { clientResolvers } from "./graphql/resolvers/client";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 //TODO: Implement logging
@@ -53,8 +54,8 @@ const port = process.env.PORT || 5000;
 const server = new ApolloServer({
   typeDefs: [typeDefs],
   resolvers: {
-    Query: { ...userResolvers.query },
-    Mutation: { ...userResolvers.mutation },
+    Query: { ...userResolvers.query, ...clientResolvers.query },
+    Mutation: { ...userResolvers.mutation, ...clientResolvers.mutation },
     Percentage,
   },
   introspection: process.env.NODE_ENV === "development",
