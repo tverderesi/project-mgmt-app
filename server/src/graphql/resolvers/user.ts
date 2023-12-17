@@ -130,7 +130,7 @@ const query = {
   user: async (_parent: any, { _id }, context: any) => {
     try {
       await isCurrentUserOrAdmin(context, _id);
-      const user = UserModel.findById(_id);
+      const user = await UserModel.findById(_id).populate("clients");
       if (!user) throw new Error("User not found!");
       return user;
     } catch (error) {
