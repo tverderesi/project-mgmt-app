@@ -13,11 +13,10 @@ export async function checkRoleAuthorization(context: any, role: Role) {
 
 export async function isCurrentUserOrAdmin(context: any, id: string) {
   const currentUser = await context.getUser();
+
   if (!currentUser) throw new Error("User not authenticated!");
-  if (currentUser.role !== "ADMIN" && currentUser.id !== id)
-    throw new Error("User not authorized!");
-  if (currentUser.role !== "ADMIN" && currentUser.id !== id)
-    throw new Error("User not authorized!");
+  if (currentUser.role !== "ADMIN" && currentUser.id !== id) throw new Error("User not authorized!");
+  if (currentUser.role !== "ADMIN" && currentUser.id !== id) throw new Error("User not authorized!");
 }
 
 export async function adminViewershipCheck(context, args) {
