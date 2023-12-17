@@ -9,28 +9,76 @@ import { createClientValidator } from "@/validators/client";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
-export const NewClient = () => {
-  createClientValidator.omit({ phone: true }).extend({
-    phone: z.string().min(11, "Invalid Phone number!").max(16, "Invalid Phone Number"),
-  });
+import { useEffect } from "react";
+import { useQuery } from "@apollo/client";
+import { CURRENT_USER, USER } from "@/graphql/queries";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandGroup } from "@/components/ui/command";
+import countryCodes from "@/assets/countryCodes.json";
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { CREATE_CLIENT } from "@/graphql/mutations";
+import { useMutation } from "@apollo/client";
+
+export const NewClient = ({ asSideItem = false }) => {
   type NewClient = z.infer<typeof createClientValidator>;
   const { toast } = useToast();
   const form = useForm<NewClient>({
     resolver: zodResolver(createClientValidator),
   });
 
-  const formatE164Number = (number: string) => {
-    const digitsAndSpaces = number.replace(/[^0-9\s]/g, "");
-    const max15Digits = digitsAndSpaces.replace(/\s/g, "").slice(0, 15);
-    return "+" + max15Digits;
+  const { data } = useQuery(CURRENT_USER);
+  const [createClient, { data: clientData, loading, reset }] = useMutation(CREATE_CLIENT, {
+    onCompleted: () => {
+      toast({
+        title: "Client created",
+        description: "Client created successfully.",
+      });
+      reset();
+    },
+    onError: (error) => {
+      toast({
+        title: "Client creation failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+    update(cache, { data }) {
+      cache.modify({
+        fields: {
+          clients(existingClients = []) {
+            const newClientRef = cache.writeFragment({
+              data: data.createClient,
+              fragment: USER,
+            });
+            return [...existingClients, newClientRef];
+          },
+        },
+      });
+    },
+  });
+
+  useEffect(() => {
+    if (data?.currentUser?.id) {
+      form.setValue("user", data?.currentUser?.id);
+    }
+  }, [data?.currentUser]);
+
+  const onSubmit = (data: NewClient) => {
+    data.phone = `${data.countryCode}${data.phone}`;
+    const { countryCode, ...rest } = data;
+    createClient({ variables: { input: rest } });
   };
 
   return (
-    <section className="h-full w-full relative py-2 flex flex-col items-center justify-center">
-      <TypographyH3 className="inline-flex gap-2 items-center">New Client</TypographyH3>
-
+    <section className={cn("h-full w-full relative flex flex-col items-center justify-start lg:justify-center p-2")}>
       <Form {...form}>
-        <form className="grid grid-cols-1 gap-y-4" onSubmit={form.handleSubmit((data) => console.log(data))}>
+        <form
+          className={cn("grid grid-cols-1  gap-y-4 gap-x-8 p-4 relative", !asSideItem && "lg:grid-cols-2")}
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <TypographyH3 className="inline-flex gap-2 items-center mb-8">New Client</TypographyH3>
           <FormField
             control={form.control}
             name="name"
@@ -51,10 +99,59 @@ export const NewClient = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
-                <FormControl className="max-w-lg">
+                <FormControl className="w-72">
                   <Input placeholder="client@email.com" {...field} />
                 </FormControl>
                 <FormDescription>Insert the client's email here.</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="countryCode"
+            render={({ field }) => (
+              <FormItem className="w-72">
+                <FormLabel>Country Phone Code</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn("w-72 justify-between", !field.value && "text-muted-foreground")}
+                      >
+                        {field.value ? countryCodes.find((country) => country.dial_code === field.value)?.name : "Select Country"}
+                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 p-0">
+                    <Command className="h-72">
+                      <CommandInput placeholder="Search Phone Code" className="h-9" />
+                      <CommandEmpty>No country found.</CommandEmpty>
+                      <ScrollArea className="h-72 overflow-auto">
+                        <CommandGroup>
+                          {countryCodes.map((country) => (
+                            <CommandItem
+                              value={country.name}
+                              key={country.code}
+                              onSelect={() => {
+                                form.setValue("countryCode", country.dial_code);
+                              }}
+                            >
+                              {country.name}
+                              <CheckIcon
+                                className={cn("ml-auto h-4 w-4", country.dial_code === field.value ? "opacity-100" : "opacity-0")}
+                              />
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </ScrollArea>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormDescription>Select the country phone code.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -66,25 +163,22 @@ export const NewClient = () => {
               return (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
-                  <FormControl className="max-w-lg">
-                    <Input {...field} onChange={(e) => field.onChange(formatE164Number(e.target.value))} />
+                  <FormControl className="w-72">
+                    <Input {...field} />
                   </FormControl>
-                  <FormDescription>Insert the client's phone here.</FormDescription>
+                  <FormDescription className="w-72">Insert the client's phone here.</FormDescription>
                   <FormMessage />
                 </FormItem>
               );
             }}
           />
-
-          <div className="inline-flex w-full items-center justify-end gap-4 absolute bottom-0 right-2">
-            <Button type="reset" className="gap-2" variant="destructive">
-              <RotateCcw className="h-4 w-4" />
-              Reset Form
-            </Button>
-            <Button type="submit" className="gap-2">
-              <UserPlus className="h-4 w-4" /> Add Client
-            </Button>
-          </div>
+          <Button type="reset" className="gap-2 mt-8 w-72 font-semibold" variant="destructive" onClick={() => form.reset()}>
+            <RotateCcw className="h-4 w-4" />
+            Reset Form
+          </Button>
+          <Button type="submit" className={cn("gap-2 w-72 font-semibold", !asSideItem && "lg:mt-8")}>
+            <UserPlus className="h-4 w-4" /> Add Client
+          </Button>
         </form>
       </Form>
     </section>
