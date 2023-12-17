@@ -80,6 +80,10 @@ input ClientInput {
   The phone of the client.
   """
   phone: String!
+  """
+  The User whom the client belongs to.
+  """
+  user: ID!
 }
 
 """
@@ -473,6 +477,10 @@ type Query {
   Returns the deleted Users.
   """
   deletedUsers: [User]!
+  """
+  Returns the deleted Clients.
+  """
+  deletedClients: [Client]!
 }
 
 """
