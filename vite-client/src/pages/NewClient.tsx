@@ -4,71 +4,40 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { UserPlus, RotateCcw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { AddClient, addClientSchema } from "../schemas/addClientSchema";
-import {
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  FormControl,
-} from "@/components/ui/form";
+import { FormDescription, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
+import { createClientValidator } from "@/validators/client";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
-import maskList from "@/assets/internationalPhoneMaskList.json";
-
 export const NewClient = () => {
+  createClientValidator.omit({ phone: true }).extend({
+    phone: z.string().min(11, "Invalid Phone number!").max(16, "Invalid Phone Number"),
+  });
+  type NewClient = z.infer<typeof createClientValidator>;
   const { toast } = useToast();
-  const addClientForm = useForm<z.infer<typeof addClientSchema>>({
-    resolver: zodResolver(addClientSchema),
-    mode: "onSubmit",
+  const form = useForm<NewClient>({
+    resolver: zodResolver(createClientValidator),
   });
 
-  const onSubmit: (addClient: AddClient) => void = (data) => {
-    console.log(data);
-    toast({
-      title: "Client added",
-      description: "The client was added successfully.",
-    });
-  };
-
-  const mask = (value: string) => {
-    let matrix = "+###############";
-
-    maskList.forEach((item) => {
-      const code = item.code.replace(/[\s#]/g, ""),
-        phone = value.replace(/[\s#-)(]/g, "");
-
-      if (phone.includes(code)) {
-        matrix = item.code;
-      }
-    });
-
-    let i = 0;
-    const val = value.replace(/\D/g, "");
-
-    return matrix.replace(/(?!\+)./g, function (a) {
-      return /[#\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a;
-    });
+  const formatE164Number = (number: string) => {
+    const digitsAndSpaces = number.replace(/[^0-9\s]/g, "");
+    const max15Digits = digitsAndSpaces.replace(/\s/g, "").slice(0, 15);
+    return "+" + max15Digits;
   };
 
   return (
-    <section className="space-y-4 h-full relative py-2">
-      <TypographyH3 className="inline-flex gap-2 items-center">
-        <UserPlus />
-        New Client
-      </TypographyH3>
+    <section className="h-full w-full relative py-2 flex flex-col items-center justify-center">
+      <TypographyH3 className="inline-flex gap-2 items-center">New Client</TypographyH3>
 
-      <Form {...addClientForm}>
-        <form onSubmit={addClientForm.handleSubmit(onSubmit)} className="space-y-4 ml-4">
+      <Form {...form}>
+        <form className="grid grid-cols-1 gap-y-4" onSubmit={form.handleSubmit((data) => console.log(data))}>
           <FormField
-            control={addClientForm.control}
+            control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Name</FormLabel>
-                <FormControl className="max-w-lg">
+                <FormControl className="w-72">
                   <Input placeholder="Client's Name" {...field} />
                 </FormControl>
                 <FormDescription>Insert the client's name here.</FormDescription>
@@ -77,7 +46,7 @@ export const NewClient = () => {
             )}
           />
           <FormField
-            control={addClientForm.control}
+            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -91,15 +60,14 @@ export const NewClient = () => {
             )}
           />
           <FormField
-            control={addClientForm.control}
+            control={form.control}
             name="phone"
             render={({ field }) => {
-              field.onChange = (e) => (e.target.value = mask(e.target.value));
               return (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl className="max-w-lg">
-                    <Input {...field} />
+                    <Input {...field} onChange={(e) => field.onChange(formatE164Number(e.target.value))} />
                   </FormControl>
                   <FormDescription>Insert the client's phone here.</FormDescription>
                   <FormMessage />

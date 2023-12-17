@@ -7,6 +7,7 @@ import { AppLayout } from "./layout/AppLayout";
 import { SignUp } from "./pages/SignUp";
 import { UserDashboard } from "./pages/UserDashboard";
 import { NewProject } from "./pages/NewProject";
+import { NewClient } from "./pages/NewClient";
 
 export function AppRouter() {
   return (
@@ -30,6 +31,7 @@ export function AppRouter() {
             <Route path="user" element={<UserDashboard />} />
             <Route path="user/projects" element={<div>Projects</div>} />
             <Route path="user/projects/new" element={<NewProject />} />
+            <Route path="user/clients/new" element={<NewClient />} />
           </Route>
         </Route>
       </Routes>

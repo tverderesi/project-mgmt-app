@@ -26,7 +26,6 @@ import { CommandLoading } from "cmdk";
 import { useNavigate } from "react-router-dom";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const NewProject = () => {
   type Project = z.infer<typeof createProjectValidator>;
