@@ -1,4 +1,4 @@
-import { IS_AUTHENTICATED } from "@/IS_AUTHENTICATED";
+import { CURRENT_USER } from "@/graphql/queries";
 import { Card, CardDescription, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import { PlusCircle } from "lucide-react";
@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CardStackIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import { USER } from "./USER";
+import { USER } from "@/graphql/queries";
 export const UserDashboard = () => {
   type User = {
     id: string;
@@ -27,7 +27,7 @@ export const UserDashboard = () => {
     currentUser: User;
   };
 
-  const { data: currentUser } = useQuery(IS_AUTHENTICATED);
+  const { data: currentUser } = useQuery(CURRENT_USER);
   const [user, { data, loading, error }] = useLazyQuery(USER);
 
   useEffect(() => {
