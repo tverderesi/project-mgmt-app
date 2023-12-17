@@ -1,22 +1,18 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { gql, useMutation, useApolloClient, useQuery } from "@apollo/client";
+import { useMutation, useApolloClient, useQuery } from "@apollo/client";
 import { useEffect } from "react";
 import { Button } from "../components/ui/button";
-import { IS_AUTHENTICATED } from "../IS_AUTHENTICATED";
+import { CURRENT_USER } from "../graphql/queries";
 import { ModeToggle } from "@/components/ui/ModeToggle";
+import { LOGOUT } from "@/graphql/mutations";
 
 export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const client = useApolloClient();
-  const LOGOUT = gql`
-    mutation Mutation {
-      logout
-    }
-  `;
 
-  const { data, loading, error } = useQuery(IS_AUTHENTICATED);
+  const { data, loading, error } = useQuery(CURRENT_USER);
 
   useEffect(() => {
     if (error) navigate("../login");
