@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 export const clientValidator = z.object({
-  _id: z.string().optional(),
+  id: z.string().optional(),
   name: z.string().optional(),
   email: z.string().email().optional(),
   deletedAt: z.string().optional(),
   phone: z.string().optional(),
   photo: z.any().optional(),
-  userId: z.string().optional(),
+  user: z.string().optional(),
   limit: z.number().optional(),
   skip: z.number().optional(),
   sort: z.string().optional(),
@@ -25,7 +25,11 @@ export const createClientValidator = clientValidator
     name: true,
     email: true,
     phone: true,
-    userId: true,
+    user: true,
+  })
+  .extend({
+    phone: z.string(),
+    countryCode: z.string(),
   });
 
 export const updateClientValidator = clientValidator
@@ -35,4 +39,4 @@ export const updateClientValidator = clientValidator
     skip: true,
     sort: true,
   })
-  .required({ id: true, userId: true });
+  .required({ id: true, user: true });
