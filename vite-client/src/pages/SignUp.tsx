@@ -7,28 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/ui/ModeToggle";
-import { useMutation, gql } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
+import { SIGN_UP } from "@/graphql/mutations";
 export const SignUp = () => {
   const form = useForm({
     resolver: zodResolver(createUserValidator),
   });
   const { toast } = useToast();
   const navigate = useNavigate();
-  const SIGN_UP = gql`
-    mutation CreateUser($input: UserInput!) {
-      createUser(input: $input) {
-        id
-        name
-        username
-        email
-        photo
-        role
-      }
-    }
-  `;
 
   const [signUp, { data, loading, reset }] = useMutation(SIGN_UP, {
     onError: (error) => {
