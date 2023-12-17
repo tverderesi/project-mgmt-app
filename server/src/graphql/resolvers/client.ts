@@ -3,7 +3,7 @@ import { z } from "zod";
 import { clientValidator, createClientValidator, updateClientValidator } from "@/validators/client";
 import { checkAuthentication, isCurrentUserOrAdmin, adminViewershipCheck, checkRoleAuthorization } from "@/utils/auth";
 import { checkRequiredFields } from "@/utils/field";
-
+import { UserModel } from "@/models/User";
 const query = {
   clients: async (parent: any, args: Partial<z.infer<typeof clientValidator>>, context) => {
     try {
@@ -46,14 +46,16 @@ const query = {
 };
 
 const mutation = {
-  createClient: async (parent: any, args: z.infer<typeof createClientValidator>, context) => {
+  createClient: async (parent: any, { input }: { input: z.infer<typeof createClientValidator> }, context) => {
     try {
       await checkAuthentication(context);
-      await isCurrentUserOrAdmin(context, args.userId);
+      await isCurrentUserOrAdmin(context, input.user);
 
-      checkRequiredFields(args, createClientValidator);
+      checkRequiredFields(input, createClientValidator);
 
-      const client = await ClientModel.create(args);
+      const client = await ClientModel.create(input);
+      await UserModel.findByIdAndUpdate(input.user, { $push: { clients: client._id } });
+
       return client;
     } catch (error) {
       throw new Error(error.message);
@@ -62,8 +64,8 @@ const mutation = {
   updateClient: async (parent: any, args: z.infer<typeof updateClientValidator>, context) => {
     try {
       await checkAuthentication(context);
-      await isCurrentUserOrAdmin(context, args.userId);
-      const updatedClient = ClientModel.findByIdAndUpdate(args._id, args, { new: true });
+      await isCurrentUserOrAdmin(context, args.user);
+      const updatedClient = ClientModel.findByIdAndUpdate(args.id, args, { new: true });
       return updatedClient;
     } catch (error) {
       throw new Error(error.message);
