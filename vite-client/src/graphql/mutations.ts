@@ -39,3 +39,15 @@ export const CREATE_CLIENT = gql`
     }
   }
 `;
+
+export const CREATE_PROJECT = gql`
+  mutation CreateProject($input: ProjectInput!) {
+    createProject(input: $input) {
+      id
+      name
+      description
+      progress
+      status
+    }
+  }
+`;
