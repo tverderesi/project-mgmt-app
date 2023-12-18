@@ -1,29 +1,33 @@
-import express from "express";
-import dotenv from "dotenv";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-import cors from "cors";
-import { connectDB } from "../config/db";
-import passport from "passport";
-import MongoStore from "connect-mongo";
-import session from "express-session";
-import { v4 as uuidv4 } from "uuid";
-import { GraphQLLocalStrategy, buildContext } from "graphql-passport";
-import { fileURLToPath } from "url";
-import path from "path";
-import { readFileSync } from "fs";
-import bodyParser from "body-parser";
-import { UserModel, User } from "./models/User";
-import { userResolvers } from "./graphql/resolvers/user";
 import bcrypt from "bcrypt";
+import bodyParser from "body-parser";
+import MongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import session from "express-session";
+import { readFileSync } from "fs";
+import { GraphQLLocalStrategy, buildContext } from "graphql-passport";
+import passport from "passport";
+import path from "path";
+import { fileURLToPath } from "url";
+import { v4 as uuidv4 } from "uuid";
+import { connectDB } from "../config/db";
 import { Percentage } from "./graphql/custom_scalars/percentage";
 import { clientResolvers } from "./graphql/resolvers/client";
+import { projectResolvers } from "./graphql/resolvers/project";
+import { userResolvers } from "./graphql/resolvers/user";
+import { User, UserModel } from "./models/User";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 //TODO: Implement logging
+
 const typeDefs = readFileSync(path.join(__dirname, "graphql", "typeDefs.graphql"), "utf-8");
 const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
+
 dotenv.config({ path: envPath });
 passport.use(
   new GraphQLLocalStrategy(async (username: string, password: string, done) => {
@@ -54,8 +58,8 @@ const port = process.env.PORT || 5000;
 const server = new ApolloServer({
   typeDefs: [typeDefs],
   resolvers: {
-    Query: { ...userResolvers.query, ...clientResolvers.query },
-    Mutation: { ...userResolvers.mutation, ...clientResolvers.mutation },
+    Query: { ...userResolvers.query, ...clientResolvers.query, ...projectResolvers.query },
+    Mutation: { ...userResolvers.mutation, ...clientResolvers.mutation, ...projectResolvers.mutation },
     Percentage,
   },
   introspection: process.env.NODE_ENV === "development",
