@@ -5,16 +5,21 @@ export const projectValidator = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   deletedAt: z.string().optional(),
-  userId: z.string().optional(),
-  clientId: z.string().optional(),
+  user: z.string().optional(),
+  client: z.string().optional(),
   autoProgress: z.boolean().optional(),
   progress: z
     .number()
-    .refine((arg) => arg < 0 || arg > 100, {
-      message: "Progress must be between 0 and 100",
-      path: ["progress"],
-    })
-    .transform((arg) => Math.round(arg))
+    .refine(
+      (arg) => {
+        console.log(arg);
+        return arg > 0 || arg < 100;
+      },
+      {
+        message: "Progress must be between 0 and 100",
+        path: ["progress"],
+      }
+    )
     .optional(),
   status: z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"]).optional(),
   limit: z.number().optional(),
@@ -30,7 +35,7 @@ export const createProjectValidator = projectValidator
     skip: true,
     sort: true,
   })
-  .required({ name: true, description: true, userId: true, status: true, progress: true });
+  .required({ name: true, description: true, user: true, status: true, progress: true, client: true });
 
 export const updateProjectValidator = projectValidator
   .omit({

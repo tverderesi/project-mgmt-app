@@ -3,7 +3,7 @@ import { z } from "zod";
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
 
 export const userValidator = z.object({
-  _id: z.string().optional(),
+  id: z.string().optional(),
   name: z.string().optional(),
   email: z.string().email().optional(),
   username: z.string().optional(),
@@ -18,7 +18,7 @@ export const userValidator = z.object({
 
 export const createUserValidator = userValidator
   .omit({
-    _id: true,
+    id: true,
     deletedAt: true,
     projects: true,
     clients: true,
@@ -60,7 +60,7 @@ export const createUserValidator = userValidator
   });
 
 export const updateUserValidator = userValidator
-  .required({ _id: true })
+  .required({ id: true })
   .extend({
     oldPassword: z.string({ required_error: "Password is required!" }),
     password: z.string({ required_error: "Password is required!" }).regex(passwordRegex, {
