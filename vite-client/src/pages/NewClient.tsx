@@ -44,19 +44,8 @@ export const NewClient = ({ asSideItem = false }) => {
         variant: "destructive",
       });
     },
-    update(cache, { data }) {
-      cache.modify({
-        fields: {
-          clients(existingClients = []) {
-            const newClientRef = cache.writeFragment({
-              data: data.createClient,
-              fragment: USER,
-            });
-            return [...existingClients, newClientRef];
-          },
-        },
-      });
-    },
+    refetchQueries: [{ query: USER, variables: { id: data?.currentUser?.id } }],
+    awaitRefetchQueries: true,
   });
 
   useEffect(() => {
@@ -86,7 +75,7 @@ export const NewClient = ({ asSideItem = false }) => {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl className="w-72">
-                  <Input placeholder="Client's Name" {...field} />
+                  <Input placeholder="Client's Name" {...field} autoComplete="off" />
                 </FormControl>
                 <FormDescription>Insert the client's name here.</FormDescription>
                 <FormMessage />
@@ -100,7 +89,7 @@ export const NewClient = ({ asSideItem = false }) => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl className="w-72">
-                  <Input placeholder="client@email.com" {...field} />
+                  <Input placeholder="client@email.com" {...field} autoComplete="off" />
                 </FormControl>
                 <FormDescription>Insert the client's email here.</FormDescription>
                 <FormMessage />
@@ -164,7 +153,7 @@ export const NewClient = ({ asSideItem = false }) => {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl className="w-72">
-                    <Input {...field} />
+                    <Input {...field} autoComplete="off" />
                   </FormControl>
                   <FormDescription className="w-72">Insert the client's phone here.</FormDescription>
                   <FormMessage />
