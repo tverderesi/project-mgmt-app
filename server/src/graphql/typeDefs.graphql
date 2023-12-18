@@ -8,7 +8,7 @@ enum Status {
   """
   The project or task is open, i.e., it's not started yet.
   """
-  OPEN
+  NOT_STARTED
   """
   The project or task is in progress.
   """
@@ -232,6 +232,10 @@ type Project {
   The progress of the project, it's a number between 0 and 100.
   """
   progress: Percentage!
+  """
+  If the progress should be updated automatically based on the progress of the tasks.
+  """
+  autoProgress: Boolean!
 }
 
 """
@@ -267,15 +271,15 @@ input ProjectInput {
   """
   The description of the project.
   """
-  description: String!
+  description: String
   """
   The id of the client that is associated with the project.
   """
-  clientId: ID!
+  client: ID!
   """
   The id of the user that is associated with the project.
   """
-  userId: ID!
+  user: ID!
   """
   The status of the project.
   """
@@ -431,6 +435,10 @@ input ProjectFilter {
   The progress of the project, it's a number between 0 and 100.
   """
   progress: Percentage
+  """
+  if the progress should be updated automatically based on the progress of the tasks.
+  """
+  autoProgress: Boolean
 }
 
 """
@@ -481,6 +489,10 @@ type Query {
   Returns the deleted Clients.
   """
   deletedClients: [Client]!
+  """
+  Returns the deleted Projects.
+  """
+  deletedProjects: [Project]!
 }
 
 """

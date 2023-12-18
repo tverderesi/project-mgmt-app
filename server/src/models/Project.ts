@@ -5,9 +5,9 @@ import { Task } from "./Task";
 import { Audit, auditSchema } from "./Audit";
 //TODO: Add Deadlines
 export interface Project extends Audit, mongoose.Document {
-  _id?: string;
+  id?: string;
   name: string;
-  description: string;
+  description?: string;
   client: Client;
   autoProgress: boolean;
   progress: number;
@@ -19,7 +19,7 @@ export interface Project extends Audit, mongoose.Document {
 const projectSchema = new mongoose.Schema<Project>(
   {
     name: { type: String, required: true },
-    description: { type: String, required: true },
+    description: { type: String },
     client: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
     autoProgress: { type: Boolean, default: false },
     status: {
