@@ -29,7 +29,7 @@ export const NewClient = ({ asSideItem = false }) => {
   });
 
   const { data } = useQuery(CURRENT_USER);
-  const [createClient, { data: clientData, loading, reset }] = useMutation(CREATE_CLIENT, {
+  const [createClient, { reset }] = useMutation(CREATE_CLIENT, {
     onCompleted: () => {
       toast({
         title: "Client created",

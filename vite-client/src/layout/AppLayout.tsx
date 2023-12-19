@@ -12,7 +12,10 @@ export const AppLayout: React.FC = () => {
 
   const client = useApolloClient();
 
-  const { data, loading, error } = useQuery(CURRENT_USER);
+  const { data, loading, error } = useQuery(CURRENT_USER, {
+    pollInterval: 60000,
+    refetchWritePolicy: "merge",
+  });
 
   useEffect(() => {
     if (error) navigate("../login");
@@ -34,8 +37,8 @@ export const AppLayout: React.FC = () => {
 
   const [logout] = useMutation(LOGOUT);
   return (
-    <div className="h-full w-full p-2 relative">
-      <div className="absolute">
+    <div className="h-full w-full p-2 lg:px-4 relative">
+      <div className="fixed z-30 top-0 bg-background/80  -mx-4 -mt-2 border-b border-bottom border-border shadow-sm backdrop-blur w-screen h-16">
         <ModeToggle />
         <Button
           variant="outline"
@@ -47,6 +50,7 @@ export const AppLayout: React.FC = () => {
           Logout
         </Button>
       </div>
+
       {loading && <div>Loading...</div>}
       <Outlet />
     </div>

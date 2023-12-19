@@ -23,16 +23,18 @@ const query = {
     }
   },
 
-  project: async (parent: any, { _id }: { _id: string }, context) => {
+  project: async (parent: any, { id }: { id: string }, context) => {
     try {
       await checkAuthentication(context);
-
-      const project = await ProjectModel.findById(_id);
-
+      console.log(id);
+      const project = await ProjectModel.findById(id).populate("client");
+      console.log("why");
+      console.log(project);
       if (!project) throw new Error("Project not found!");
 
       return project;
     } catch (error) {
+      console.log(error.message);
       throw new Error(error.message);
     }
   },

@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { TypedDocumentNode, gql } from "@apollo/client";
 
 export const CURRENT_USER = gql`
   query CurrentUser {
@@ -15,7 +15,7 @@ export const CURRENT_USER = gql`
 
 export const USER = gql`
   query User($id: ID!) {
-    user(_id: $id) {
+    user(id: $id) {
       id
       name
       username
@@ -23,13 +23,46 @@ export const USER = gql`
       password
       photo
       projects {
+        id
         name
+        status
+        progress
+        client {
+          id
+          name
+        }
       }
       clients {
         id
         name
       }
       role
+      projectCount
+    }
+  }
+`;
+
+export const PROJECT: TypedDocumentNode<any> = gql`
+  query Project($id: ID!) {
+    project(id: $id) {
+      id
+      name
+      description
+      status
+      progress
+      autoProgress
+      client {
+        id
+        name
+        phone
+        email
+      }
+      tasks {
+        id
+        name
+        status
+        progress
+      }
     }
   }
 `;

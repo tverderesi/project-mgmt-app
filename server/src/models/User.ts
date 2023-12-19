@@ -23,11 +23,12 @@ const userSchema = new mongoose.Schema<User>(
     email: { type: String, required: true, unique: true, maxlength: 64 },
     password: { type: String, required: true, maxlength: 64 },
     photo: { type: String, required: false },
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Client" }],
     role: { type: String, enum: roles, default: "USER" },
   },
   {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
     timestamps: true,
     autoIndex: true,
   }
@@ -35,4 +36,17 @@ const userSchema = new mongoose.Schema<User>(
 
 userSchema.add(auditSchema);
 
+userSchema.virtual("projects", {
+  ref: "Project",
+  localField: "_id",
+  foreignField: "user",
+  justOne: false,
+});
+
+userSchema.virtual("projectCount", {
+  ref: "Project",
+  localField: "_id",
+  foreignField: "user",
+  count: true,
+});
 export const UserModel = mongoose.model<User>("User", userSchema);

@@ -26,8 +26,6 @@ import { NewClient } from "./NewClient";
 import { CREATE_PROJECT } from "@/graphql/mutations";
 
 export const NewProject = () => {
-  type Project = z.infer<typeof createProjectValidator>;
-
   const { toast } = useToast();
   const form = useForm<z.infer<typeof createProjectValidator>>({
     resolver: zodResolver(createProjectValidator),
