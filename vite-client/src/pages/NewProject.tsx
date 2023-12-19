@@ -75,7 +75,7 @@ export const NewProject = () => {
   }, [data?.currentUser?.id]);
 
   return (
-    <section className="flex flex-col justify-start lg:justify-center items-center h-full w-full pt-8">
+    <section className="flex flex-col justify-start md:justify-center items-center h-full w-full pt-8">
       <Sheet>
         {loading || userLoading ? (
           <div className="h-full w-full flex flex-col items-center justify-center">
@@ -88,7 +88,7 @@ export const NewProject = () => {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit((data) => createProject({ variables: { input: data } }))}
-                className=" grid grid-cols-1 lg:grid-cols-2 gap-y-4 gap-x-0  lg:gap-4 lg:gap-x-8 pb-8 lg:pb-0"
+                className=" grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-0  md:gap-4 md:gap-x-8 pb-8 md:pb-0"
               >
                 <FormField
                   control={form.control}
@@ -108,7 +108,7 @@ export const NewProject = () => {
                   control={form.control}
                   name="status"
                   render={({ field }) => (
-                    <FormItem className="w-72 col-span-2 lg:col-span-1 grid-rows-2">
+                    <FormItem className="w-72 col-span-2 md:col-span-1 grid-rows-2">
                       <FormLabel>Status</FormLabel>
                       <FormControl>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -136,7 +136,7 @@ export const NewProject = () => {
                   control={form.control}
                   name="description"
                   render={({ field }) => (
-                    <FormItem className="w-72 col-span-2 lg:col-span-1 grid-rows-2">
+                    <FormItem className="w-72 col-span-2 md:col-span-1 grid-rows-2">
                       <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea placeholder="Description" className="min-h-[7.5rem] max-h-[7.5rem]" {...field} />
@@ -150,7 +150,7 @@ export const NewProject = () => {
                   control={form.control}
                   name="client"
                   render={({ field }) => (
-                    <FormItem className="w-72 col-span-2 lg:col-span-1 grid-rows-2">
+                    <FormItem className="w-72 col-span-2 md:col-span-1 grid-rows-2">
                       <FormLabel>Client</FormLabel>
                       <FormControl>
                         <>
@@ -215,7 +215,7 @@ export const NewProject = () => {
                           </Popover>
                         </>
                       </FormControl>
-                      <FormDescription>You can create a client or an existing one.</FormDescription>
+                      <FormDescription>You can create a client or pick an existing one.</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -258,7 +258,7 @@ export const NewProject = () => {
                   control={form.control}
                   name="autoProgress"
                   render={({ field }) => (
-                    <FormItem className="col-span-2 lg:col-span-1 flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow w-72">
+                    <FormItem className="col-span-2 md:col-span-1 flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow w-72">
                       <FormControl>
                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
@@ -275,15 +275,15 @@ export const NewProject = () => {
                     <RotateCcw className="h-4 w-4" />
                     Reset Form
                   </Button>
-                  <Button type="submit" className="gap-2">
-                    <PlusCircle className="h-4 w-4" /> Add Client
+                  <Button type="submit" className="gap-2 font-semibold">
+                    <PlusCircle className="h-4 w-4" /> Create Project
                   </Button>
                 </div>
               </form>
             </Form>
           </>
         )}
-        <SheetContent>
+        <SheetContent className="max-md:w-screen">
           <NewClient asSideItem />
         </SheetContent>
       </Sheet>

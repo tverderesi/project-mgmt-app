@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Project } from "./Project";
 import { User } from "./User";
 import { Audit, auditSchema } from "./Audit";
-// TODO: Add Deadlines
+
 export interface Task extends Audit, mongoose.Document {
   _id?: string;
   name: string;

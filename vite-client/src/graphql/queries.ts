@@ -1,6 +1,6 @@
 import { TypedDocumentNode, gql } from "@apollo/client";
 
-export const CURRENT_USER = gql`
+export const CURRENT_USER: TypedDocumentNode<any> = gql`
   query CurrentUser {
     currentUser {
       id
@@ -37,11 +37,40 @@ export const USER = gql`
         name
       }
       role
-      projectCount
     }
   }
 `;
 
+interface TaskCount {
+  status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  count: number;
+}
+
+interface UserStatsData {
+  userStats: {
+    projectCount: number;
+    clientCount: number;
+    taskCount: TaskCount[];
+    totalTaskCount: number;
+  };
+}
+
+interface UserStatsVariables {
+  userStatsId: string;
+}
+export const USER_STATS: TypedDocumentNode<UserStatsData, UserStatsVariables> = gql`
+  query UserStats($userStatsId: ID!) {
+    userStats(id: $userStatsId) {
+      projectCount
+      clientCount
+      totalTaskCount
+      taskCount {
+        status
+        count
+      }
+    }
+  }
+`;
 export const PROJECT: TypedDocumentNode<any> = gql`
   query Project($id: ID!) {
     project(id: $id) {

@@ -49,6 +49,18 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        rose: {
+          100: "#ffe2de",
+          200: "#ffc5be",
+          300: "#ffa99d",
+          400: "#ff8c7d",
+          500: "#ff6f5c",
+          600: "#cc594a",
+          700: "#994337",
+          800: "#662c25",
+          900: "#331612",
+          950: "#1a0809",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

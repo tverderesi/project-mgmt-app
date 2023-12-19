@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ModeToggle } from "@/components/ui/ModeToggle";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";

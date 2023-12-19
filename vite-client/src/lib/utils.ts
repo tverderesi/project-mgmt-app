@@ -23,3 +23,10 @@ export const statusDTO = (status: string) => {
       return status;
   }
 };
+export const formatName = (name: string) => {
+  const nameArray = name.split(" ");
+  const isFullName = nameArray.length > 1;
+  const firstName = nameArray[0];
+  const lastNameInitial = nameArray[nameArray.length - 1]?.split("")[0];
+  return `${firstName}${isFullName ? ` ${lastNameInitial}. ` : ""}`;
+};

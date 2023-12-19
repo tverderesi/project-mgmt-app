@@ -7,11 +7,21 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import { ModeToggle } from "@/components/ui/ModeToggle";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { LOGIN } from "../graphql/mutations";
 
+const Logo = () => (
+  <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
+    <h1 className="text-6xl font-bold text-right h-full flex flex-col justify-center mr-5 text-white">
+      Project <br /> mgmt <br /> app <br />
+      <span className="mt-1">
+        [<span className="text-3xl leading-[3.75rem] align-middle pb-2">working title</span>]
+      </span>
+    </h1>
+  </div>
+);
 export const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -45,14 +55,7 @@ export const Login = () => {
 
   return (
     <div className="h-screen w-screen flex flex-row">
-      <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
-        <h1 className="text-6xl font-bold text-right h-full flex flex-col justify-center mr-5 text-white">
-          Project <br /> mgmt <br /> app <br />
-          <span className="mt-1">
-            [<span className="text-3xl leading-[3.75rem] align-middle pb-2">working title</span>]
-          </span>
-        </h1>
-      </div>
+      <Logo />
       <div className="bg-background dark:bg-background/90 w-full lg:max-w-lg h-screen flex flex-col justify-center relative">
         <div className="bg-gradient-to-br from-blue-500 to-pink-600  h-full w-full -z-10 absolute " />
         <div className="absolute top-4 right-4">

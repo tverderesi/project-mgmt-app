@@ -63,7 +63,6 @@ const Projects = ({ data, loading, error }: { data: any; loading: boolean; error
           </CardHeader>
 
           <CardContent className="px-6 h-auto">
-            <div className="h-full w-full bg-red-500"></div>
             <div className="flex w-full gap-3 overflow-x-scroll  snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
               {data.user.projectCount === 0 && <p>You don't have any projects yet!</p>}
               {data.user.projects.map((project: any) => {
@@ -114,7 +113,7 @@ const Projects = ({ data, loading, error }: { data: any; loading: boolean; error
               </Link>
             </Button>
             <Button
-              className="font-semibold  hover:bg-emerald-700 hover:text-secondary dark:text-secondary-foreground dark:hover:border-emerald-700 shadow-none"
+              className="font-semibold  hover:bg-rose-500 hover:text-secondary dark:text-secondary-foreground dark:hover:text-primary dark:hover:border-rose-500 shadow-none"
               variant="outline"
               asChild
             >

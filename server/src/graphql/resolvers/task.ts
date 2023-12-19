@@ -83,3 +83,5 @@ export const mutation = {
     }
   },
 };
+
+export const taskResolvers = { mutation, query };

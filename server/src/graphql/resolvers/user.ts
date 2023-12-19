@@ -4,7 +4,6 @@ import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
 import { transformToUser } from "../../utils/dtos/transformToUser";
 import { isCurrentUserOrAdmin, checkRoleAuthorization, checkAuthentication } from "@/utils/auth";
-import { ProjectModel } from "@/models/Project";
 
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof createUserValidator> }, context: any) => {
@@ -134,10 +133,28 @@ const query = {
       const user = await UserModel.findById(id)
         .populate("clients")
         .populate("projectCount")
+        .populate("clientCount")
+        .populate("taskCount")
         .populate({
           path: "projects",
           populate: { path: "client", model: "Client" },
         });
+
+      if (!user) throw new Error("User not found!");
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  },
+
+  userStats: async (_parent: any, { id }, context: any) => {
+    try {
+      await isCurrentUserOrAdmin(context, id);
+      const user = await UserModel.findById(id)
+        .populate("projectCount")
+        .populate("clientCount")
+        .populate("totalTaskCount")
+        .populate("taskCount");
 
       if (!user) throw new Error("User not found!");
       return user;

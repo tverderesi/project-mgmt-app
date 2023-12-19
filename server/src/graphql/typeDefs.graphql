@@ -1,7 +1,7 @@
 # TODO: Separate the schema into multiple files using graphql-tools
 
 """
-This enum is used to represent the status of a project or a task.
+This enum represents the status of a project or a task.
 """
 enum Status {
   #TODO Add IMPEDED, LATE, CANCELED and ARCHIVED statuses.
@@ -34,12 +34,12 @@ enum Role {
 }
 
 """
-This scalar is used to represent the progress of a project or a task. It's an integer between 0 and 100.
+This scalar represents the progress of a project or a task. It's an integer between 0 and 100.
 """
 scalar Percentage
 
 """
-This type is used to represent a client in the database. It is created by an user when they want to add a new client to the database.
+This type represents a client in the database. It is created by an user when they want to add a new client to the database.
 """
 type Client {
   """
@@ -65,6 +65,20 @@ type Client {
 }
 
 """
+This type represents a count of Tasks for a specific User, grouped by Status.
+"""
+type TaskCount {
+  """
+  The status of the tasks.
+  """
+  status: Status!
+  """
+  The amount of tasks for a specific user and status.
+  """
+  count: Int!
+}
+
+"""
 The ClientInput type is used as an input to create a new client.
 """
 input ClientInput {
@@ -87,7 +101,7 @@ input ClientInput {
 }
 
 """
-This type is used to represent a user in the database. This is the type that do the operations.
+This type represents a user in the database. This is the type that do the operations.
 """
 type User {
   """
@@ -126,10 +140,28 @@ type User {
   The role of the user.
   """
   role: Role!
+}
+
+"""
+The UserStats type is used to return the stats of a specific user.
+"""
+type UserStats {
   """
   The amount of projects associated with a specific user.
   """
   projectCount: Int!
+  """
+  The amount of clients associated with a specific user.
+  """
+  clientCount: Int!
+  """
+  The amount of tasks associated with a specific user, grouped by status.
+  """
+  taskCount: [TaskCount]!
+  """
+  The amount of tasks associated with a specific user.
+  """
+  totalTaskCount: Int!
 }
 
 """
@@ -201,7 +233,7 @@ input UpdateUserInput {
 }
 
 """
-This type is used to represent a project in the database. It is created by an user when they want to add a new project to the database.
+This type represents a project in the database. It is created by an user when they want to add a new project to the database.
 """
 type Project {
   """
@@ -329,7 +361,7 @@ input UpdateProjectInput {
 }
 
 """
-This type is used to represent a task in the database. It is created by an user when they want to add a task to a project.
+This type represents a task in the database. It is created by an user when they want to add a task to a project.
 """
 type Task {
   """
@@ -497,6 +529,10 @@ type Query {
   Returns the deleted Projects.
   """
   deletedProjects: [Project]!
+  """
+  Returns the users stats.
+  """
+  userStats(id: ID!): UserStats!
 }
 
 """

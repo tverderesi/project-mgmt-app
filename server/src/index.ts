@@ -20,6 +20,7 @@ import { clientResolvers } from "./graphql/resolvers/client";
 import { projectResolvers } from "./graphql/resolvers/project";
 import { userResolvers } from "./graphql/resolvers/user";
 import { User, UserModel } from "./models/User";
+import { taskResolvers } from "./graphql/resolvers/task";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -58,8 +59,8 @@ const port = process.env.PORT || 5000;
 const server = new ApolloServer({
   typeDefs: [typeDefs],
   resolvers: {
-    Query: { ...userResolvers.query, ...clientResolvers.query, ...projectResolvers.query },
-    Mutation: { ...userResolvers.mutation, ...clientResolvers.mutation, ...projectResolvers.mutation },
+    Query: { ...userResolvers.query, ...clientResolvers.query, ...projectResolvers.query, ...taskResolvers.query },
+    Mutation: { ...userResolvers.mutation, ...clientResolvers.mutation, ...projectResolvers.mutation, ...taskResolvers.mutation },
     Percentage,
   },
   introspection: process.env.NODE_ENV === "development",
