@@ -9,12 +9,8 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-
-import { Separator } from "@/components/ui/separator";
-import { Mail, PhoneCall, User2, UserCircle2 } from "lucide-react";
+import { Mail, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { EnvelopeClosedIcon, MobileIcon, Pencil1Icon } from "@radix-ui/react-icons";
 export const Project = () => {
   const params = useParams<{ id: string }>();
 
