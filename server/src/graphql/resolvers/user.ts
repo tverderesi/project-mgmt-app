@@ -164,6 +164,7 @@ const query = {
   },
 
   currentUser: async (_parent: any, _args: any, context: any) => {
+    await checkAuthentication(context);
     return await context.getUser();
   },
 

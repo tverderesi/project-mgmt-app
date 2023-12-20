@@ -15,23 +15,20 @@ import {
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatName, statusDTO } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { forwardRef, ElementRef, ComponentPropsWithoutRef } from "react";
-import { FolderOpen, List, Loader2, UserCircle2 } from "lucide-react";
+import { FolderOpen, UserCircle2 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
-
+import { ErrorBoundary } from "react-error-boundary";
 export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,7 +41,6 @@ export const AppLayout: React.FC = () => {
   useEffect(() => {
     if (error) navigate("../login");
     if (data?.currentUser === null) navigate("../login");
-
     if (data?.currentUser?.role) {
       const href = `/app/${data?.currentUser?.role.toLowerCase()}`;
       if (!location.pathname.split(href)[1]) navigate(`..${href}`);
@@ -52,30 +48,14 @@ export const AppLayout: React.FC = () => {
     }
   }, [data, error]);
 
-  const userRolePath = `./${data?.currentUser?.role?.toLowerCase()}`;
-
   return (
     <div className="h-full w-full p-2 lg:px-4 relative">
-      <Suspense fallback={<div>Loading...</div>}>
-        <div className="fixed z-30 top-0 bg-background/80 -mx-4 border-b border-bottom border-border shadow-sm backdrop-blur w-screen h-16 flex flex-row items-center justify-between px-8">
-          <ModeToggle />
-          <NavigationMenuItem asChild className="font-bold ml-2">
-            <Link to={`./${userRolePath}`}>mgmt.app</Link>
-          </NavigationMenuItem>
-          <div className="hidden  flex-grow max-w-full justify-center items-center md:flex flex-row">
-            <NavigationMenu>
-              <NavigationMenuList>
-                <ProjectNavigationItem data={data} userRolePath={userRolePath} />
-                <ClientNavigationItem data={data} userRolePath={userRolePath} />
-                <TaskNavigationItem data={data} userRolePath={userRolePath} />
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
-          <AvatarDropdown />
+      {loading && (
+        <div className="absolute inset-0 bg-background/80 backdrop-blur flex items-center justify-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
         </div>
-      </Suspense>
-      {loading && <div>Loading...</div>}
-
+      )}
+      {data && <Navbar />}
       <Outlet />
     </div>
   );
@@ -90,20 +70,22 @@ const AvatarDropdown = () => {
       unsubscribe();
     };
   }, [client]);
-  const { data } = useSuspenseQuery(CURRENT_USER);
-
+  const {
+    data: { currentUser },
+    error,
+  } = useSuspenseQuery(CURRENT_USER);
   const [logout] = useMutation(LOGOUT);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="float-right">
-          {data.currentUser?.photo && <AvatarImage src={`data:image/png;base64,${data.currentUser.photo}`} />}
-          <AvatarFallback>{data.currentUser?.name.split("")[0]}</AvatarFallback>
+          {currentUser?.photo && <AvatarImage src={`data:image/png;base64,${currentUser?.photo}`} />}
+          <AvatarFallback>{currentUser?.name?.split("")[0]}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" alignOffset={5} className="mt-1">
-        <DropdownMenuLabel>Hi, {formatName(data?.currentUser?.name)}!</DropdownMenuLabel>
+        <DropdownMenuLabel>Hi, {formatName(currentUser?.name)}!</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
@@ -118,22 +100,6 @@ const AvatarDropdown = () => {
     </DropdownMenu>
   );
 };
-
-{
-  /* <DropdownMenuTrigger asChild></DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Account</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => {
-            logout();
-            client.resetStore();
-          }}
-        >
-          Logout
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu> */
-}
 
 const ListItem = forwardRef<ElementRef<typeof Link>, ComponentPropsWithoutRef<typeof Link>>(
   ({ className, title, children, ...props }, ref) => {
@@ -157,6 +123,35 @@ const ListItem = forwardRef<ElementRef<typeof Link>, ComponentPropsWithoutRef<ty
   }
 );
 ListItem.displayName = "ListItem";
+function Navbar() {
+  const { data } = useQuery(CURRENT_USER);
+  const userRolePath = `./${data?.currentUser?.role?.toLowerCase()}`;
+  return (
+    <div className="fixed z-30 top-0 bg-background/80 -mx-4 border-b border-bottom border-border shadow-sm backdrop-blur w-screen h-16 flex flex-row items-center justify-between px-8">
+      <ModeToggle />
+      <Suspense fallback={<div>Loading...</div>}>
+        <NavigationMenuItem asChild className="font-bold ml-2">
+          <Link to={`./${userRolePath}`}>mgmt.app</Link>
+        </NavigationMenuItem>
+        <div className="hidden  flex-grow max-w-full justify-center items-center md:flex flex-row">
+          <NavigationMenu>
+            <NavigationMenuList>
+              <ProjectNavigationItem data={data} userRolePath={userRolePath} />
+              <ClientNavigationItem data={data} userRolePath={userRolePath} />
+              <TaskNavigationItem data={data} userRolePath={userRolePath} />
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+      </Suspense>
+      <ErrorBoundary fallback={<div>Something went wrong</div>}>
+        <Suspense fallback={<div>Loading...</div>}>
+          <AvatarDropdown />
+        </Suspense>
+      </ErrorBoundary>
+    </div>
+  );
+}
+Navbar.displayName = "Navbar";
 function ProjectNavigationItem({ data, userRolePath }: { data: any; userRolePath: string }) {
   return (
     <NavigationMenuItem>

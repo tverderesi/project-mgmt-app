@@ -1,56 +1,21 @@
-import Header from './components/Header';
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import NotFound from './pages/NotFound';
-import Project from './pages/Project';
-
-const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        clients: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
-        projects: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
-      },
-    },
-  },
-});
-
-const client = new ApolloClient({
-  uri: `https://project-mgmt-server-vnup.onrender.com/graphql`,
-  cache: cache,
-});
+import { InMemoryCache, ApolloClient, ApolloProvider } from "@apollo/client";
+import { AppRouter } from "./AppRouter";
 
 function App() {
+  const cache = new InMemoryCache();
+
+  const client = new ApolloClient({
+    uri: import.meta.env.VITE_GRAPHQL_SERVER as string,
+    cache: cache,
+    credentials: "include",
+    headers: {
+      "client-name": "vite-client",
+      "client-version": "1.0.0",
+    },
+  });
   return (
     <ApolloProvider client={client}>
-      <Router>
-        <Header />
-        <div className='container'>
-          <Routes>
-            <Route
-              path='/'
-              element={<Home />}
-            />
-            <Route
-              path='/projects/:id'
-              element={<Project />}
-            />
-            <Route
-              path='*'
-              element={<NotFound />}
-            />
-          </Routes>
-        </div>
-      </Router>
+      <AppRouter />
     </ApolloProvider>
   );
 }
