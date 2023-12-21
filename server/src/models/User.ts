@@ -47,7 +47,10 @@ userSchema.virtual("projectCount", {
   ref: "Project",
   localField: "_id",
   foreignField: "user",
-  count: true,
+  get: async function () {
+    const count = await this.model("Project").countDocuments({ user: this._id });
+    return count || 0;
+  },
 });
 
 userSchema.virtual("clientCount", {
@@ -63,6 +66,7 @@ userSchema.virtual("totalTaskCount", {
   foreignField: "user",
   get: async function () {
     const count = await this.model("Task").countDocuments({ user: this._id });
+    console.log("count", count);
     return count || 0;
   },
 });
