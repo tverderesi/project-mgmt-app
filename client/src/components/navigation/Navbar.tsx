@@ -14,7 +14,7 @@ export function Navbar() {
     <div className="fixed z-30 top-0 bg-background/80 -mx-4 border-b border-bottom border-border shadow-sm backdrop-blur w-screen h-16 flex flex-row items-center justify-between px-8">
       <ModeToggle />
       <NavigationMenuItem asChild className="font-bold ml-2">
-        <Link to={`./app`}>mgmt.app</Link>
+        <Link to={`./user`}>mgmt.app</Link>
       </NavigationMenuItem>
       <div className="hidden  flex-grow max-w-full justify-center items-center md:flex flex-row">
         <NavigationMenu>
