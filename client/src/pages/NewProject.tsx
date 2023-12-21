@@ -11,7 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { TypographyH3 } from "@/components/ui/typography";
 import { useToast } from "@/components/ui/use-toast";
-import { CURRENT_USER, USER } from "@/graphql/queries";
+import { USER, CURRENT_USER } from "@/graphql/queries/user";
 import { cn, toTitleCase } from "@/lib/utils";
 import { createProjectValidator } from "@/validators/project";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
@@ -23,7 +23,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { NewClient } from "./NewClient";
-import { CREATE_PROJECT } from "@/graphql/mutations";
+import { CREATE_PROJECT } from "@/graphql/mutations/project";
 
 export const NewProject = () => {
   const { toast } = useToast();

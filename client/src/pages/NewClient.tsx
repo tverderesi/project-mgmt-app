@@ -11,14 +11,14 @@ import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { CURRENT_USER, USER } from "@/graphql/queries";
+import { CURRENT_USER, USER } from "@/graphql/queries/user";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandGroup } from "@/components/ui/command";
 import countryCodes from "@/assets/countryCodes.json";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { CREATE_CLIENT } from "@/graphql/mutations";
+import { CREATE_CLIENT } from "@/graphql/mutations/client";
 import { useMutation } from "@apollo/client";
 
 export const NewClient = ({ asSideItem = false }) => {
