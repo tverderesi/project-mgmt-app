@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema<User>(
     password: { type: String, required: true, maxlength: 64 },
     photo: { type: String, required: false },
     clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Client" }],
+    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     role: { type: String, enum: roles, default: "USER" },
   },
   {
@@ -35,13 +36,6 @@ const userSchema = new mongoose.Schema<User>(
 );
 
 userSchema.add(auditSchema);
-
-userSchema.virtual("projects", {
-  ref: "Project",
-  localField: "_id",
-  foreignField: "user",
-  justOne: false,
-});
 
 userSchema.virtual("projectCount", {
   ref: "Project",

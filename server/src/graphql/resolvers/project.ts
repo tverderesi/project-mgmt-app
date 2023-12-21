@@ -28,7 +28,6 @@ const query = {
       await checkAuthentication(context);
       console.log(id);
       const project = await ProjectModel.findById(id).populate("client");
-      console.log("why");
       console.log(project);
       if (!project) throw new Error("Project not found!");
 
