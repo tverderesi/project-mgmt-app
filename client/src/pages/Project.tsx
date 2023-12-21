@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { PROJECT } from "@/graphql/queries";
+import { PROJECT } from "@/graphql/queries/project";
 import { useSuspenseQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { statusDTO } from "@/lib/utils";

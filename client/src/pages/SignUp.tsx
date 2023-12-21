@@ -11,7 +11,7 @@ import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
-import { SIGN_UP } from "@/graphql/mutations";
+import { SIGN_UP } from "@/graphql/mutations/user";
 export const SignUp = () => {
   const form = useForm({
     resolver: zodResolver(createUserValidator),
