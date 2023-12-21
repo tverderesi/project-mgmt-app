@@ -2,9 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useApolloClient } from "@apollo/client";
 import { useEffect } from "react";
 import { LOGOUT } from "@/graphql/mutations/auth";
-import { Button, ButtonProps } from "@/components/ui/button";
 
-export const LogoutButton = ({ ...props }: ButtonProps) => {
+export const LogoutButton = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
   useEffect(() => {
@@ -21,8 +20,8 @@ export const LogoutButton = ({ ...props }: ButtonProps) => {
   };
 
   return (
-    <Button {...props} onClick={handleLogout}>
+    <span className="h-full w-full cursor-pointer" onClick={handleLogout}>
       Logout
-    </Button>
+    </span>
   );
 };
