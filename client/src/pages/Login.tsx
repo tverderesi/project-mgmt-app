@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { LOGIN } from "../graphql/mutations";
+import { LOGIN } from "@/graphql/mutations/auth";
 
 const Logo = () => (
   <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
@@ -25,7 +25,6 @@ const Logo = () => (
 export const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
