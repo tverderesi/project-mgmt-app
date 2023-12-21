@@ -2,10 +2,8 @@ import { loginSchema } from "@/validators/auth";
 import { TypedDocumentNode, gql } from "@apollo/client";
 import { z } from "zod";
 import { userValidator } from "@/validators/user";
+import { Input } from "../shared/interfaces";
 
-interface Input<T> {
-  input: T;
-}
 export const LOGIN: TypedDocumentNode<{ login: z.infer<typeof userValidator> }, Input<z.infer<typeof loginSchema>>> = gql`
   mutation Login($input: LoginInput!) {
     login(input: $input) {

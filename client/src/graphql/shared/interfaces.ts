@@ -54,3 +54,6 @@ export interface Project {
   client: Omit<Client, "projects">;
   Tasks: Task[];
 }
+export interface Input<T> {
+  input: T;
+}
