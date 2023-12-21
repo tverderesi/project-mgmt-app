@@ -27,7 +27,7 @@ export function NoProjectsCard() {
       </CardContent>
       <CardFooter className="px-3 pb-3 flex flex-row justify-between items-center">
         <Button size="sm" variant="outline-rose" className="items-center gap-1" asChild>
-          <Link to={`./project/new`}>
+          <Link to={`./projects/new`}>
             <PlusIcon /> New Project
           </Link>
         </Button>
