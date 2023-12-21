@@ -35,7 +35,7 @@ export const createProjectValidator = projectValidator
     skip: true,
     sort: true,
   })
-  .required({ name: true, description: true, user: true, status: true, progress: true, client: true });
+  .required({ name: true, description: true, user: true, status: true, progress: true, client: true, autoProgress: true });
 
 export const updateProjectValidator = projectValidator
   .omit({
