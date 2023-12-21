@@ -327,7 +327,7 @@ input ProjectInput {
   """
   If the progress should be updated automatically based on the progress of the tasks.
   """
-  autoProgress: Boolean
+  autoProgress: Boolean!
 }
 
 """
