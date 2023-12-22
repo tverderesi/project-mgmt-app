@@ -139,7 +139,7 @@ const query = {
           path: "projects",
           populate: { path: "client", model: "Client" },
         });
-
+      console.log("user", user);
       if (!user) throw new Error("User not found!");
       return user;
     } catch (error) {

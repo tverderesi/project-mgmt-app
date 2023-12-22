@@ -30,7 +30,7 @@ export const AvatarDropdown = () => {
       <DropdownMenuContent align="end" alignOffset={5} className="mt-1">
         <DropdownMenuLabel>Hi, {formatName(name)}!</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
+        <DropdownMenuItem className="font-medium">
           <LogoutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>

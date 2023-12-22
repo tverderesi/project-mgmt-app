@@ -6,7 +6,7 @@ import {
   CLIENT_FRAGMENT,
   PROJECT_FRAGMENT,
   USER_FRAGMENT,
-} from "../fragments/user";
+} from "../fragments";
 import { UserStats, QueryByUserId, User } from "../shared/interfaces";
 
 export const USER_STATS: TypedDocumentNode<{ userStats: UserStats }, QueryByUserId> = gql`
