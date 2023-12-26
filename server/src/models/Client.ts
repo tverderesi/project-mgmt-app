@@ -4,7 +4,6 @@ import { User } from "./User";
 import { Audit, auditSchema } from "./Audit";
 
 export interface Client extends Audit, mongoose.Document {
-  _id?: string;
   name: string;
   email: string;
   phone: string;
@@ -24,5 +23,16 @@ const clientSchema = new mongoose.Schema<Client>(
 );
 
 clientSchema.add(auditSchema);
+
+clientSchema.pre<Client>("save", function (next) {
+  if (this.isNew) {
+    this.createdBy = this.user.id;
+  }
+
+  if (this.isModified()) {
+    this.updatedBy = this.user.id;
+  }
+  next();
+});
 
 export const ClientModel = mongoose.model<Client>("Client", clientSchema);
