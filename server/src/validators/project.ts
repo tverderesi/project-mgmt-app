@@ -1,42 +1,39 @@
 import { z } from "zod";
+import { queryPaginationParams } from "./shared";
+import { statuses } from "./shared";
 
-export const projectValidator = z.object({
-  id: z.string().optional(),
-  name: z.string().optional(),
-  description: z.string().optional(),
-  deletedAt: z.string().optional(),
-  user: z.string().optional(),
-  client: z.string().optional(),
-  autoProgress: z.boolean().optional(),
+const base = z.object({
+  id: z.string(),
+  name: z.string().min(2).max(100),
+  description: z.string(),
+  deletedAt: z.string().datetime(),
+  user: z.string(),
+  client: z.string(),
+  autoProgress: z.boolean(),
   progress: z
     .number()
     .refine((arg) => arg > 0 || arg < 100, {
       message: "Progress must be between 0 and 100",
       path: ["progress"],
     })
-    .transform((arg) => Math.round(arg))
-    .optional(),
-  status: z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"]).optional(),
-  limit: z.number().optional(),
-  skip: z.number().optional(),
-  sort: z.string().optional(),
+    .transform(Math.round),
+
+  status: z.enum(statuses),
 });
 
-export const createProjectValidator = projectValidator
-  .omit({
-    id: true,
-    deletedAt: true,
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({ name: true, user: true, client: true, status: true });
+const query = base.partial().extend(queryPaginationParams);
 
-export const updateProjectValidator = projectValidator
-  .omit({
-    deletedAt: true,
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({ id: true, user: true });
+const create = base.omit({ deletedAt: true, id: true }).partial({ description: true });
+
+const update = base.partial({
+  name: true,
+  description: true,
+  status: true,
+  autoProgress: true,
+  progress: true,
+  deletedAt: true,
+  client: true,
+});
+
+const project = { base, query, create, update };
+export default project;
