@@ -21,6 +21,7 @@ import passport from "./passportStrategy";
 import { UserModel } from "./models/User";
 import { logger } from "./utils/logger";
 import { fileURLToPath } from "url";
+import { rateLimit } from "express-rate-limit";
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
@@ -28,7 +29,13 @@ export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "d
 //Configuring environment variables
 dotenv.config({ path: envPath });
 
-//Creating the server
+//Initializing rate limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+});
+
+//Creating Apollo Server
 const typeDefs = readFileSync(path.join(__dirname, "graphql", "typeDefs.graphql"), "utf-8");
 const server = new ApolloServer({
   typeDefs: [typeDefs],
@@ -40,7 +47,7 @@ const server = new ApolloServer({
   introspection: process.env.NODE_ENV === "development",
 });
 
-//Starting the server
+//Starting Express server
 await server.start();
 
 //Initializing the express server
@@ -55,6 +62,8 @@ app.use(
         : "https://project-mgmt-app-drab.vercel.app/",
   })
 );
+
+app.use(limiter);
 
 //Initializing the express server-side session storage
 app.use(
