@@ -1,31 +1,20 @@
 import { z } from "zod";
+import { queryPaginationParams, statuses } from "./shared";
 
-export const taskValidator = z.object({
-  _id: z.string().optional(),
+export const base = z.object({
+  id: z.string(),
   name: z.string(),
   description: z.string().optional(),
-  projectId: z.string(),
-  userId: z.string(),
-  status: z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"]),
+  project: z.string(),
+  user: z.string(),
+  status: z.enum(statuses),
   progress: z.number().max(100).min(0).transform(Math.round),
-  limit: z.number().optional(),
-  skip: z.number().optional(),
-  sort: z.string().optional(),
 });
 
-export const createTaskValidator = taskValidator
-  .omit({
-    _id: true,
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({ name: true, projectId: true, userId: true, status: true });
+export const query = base.extend(queryPaginationParams);
 
-export const updateTaskValidator = taskValidator
-  .omit({
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({ _id: true, projectId: true, userId: true });
+export const update = base.partial({ name: true, description: true, status: true, progress: true, project: true, user: true });
+
+export const create = base.omit({ id: true });
+
+export default { base, query, update, create };
