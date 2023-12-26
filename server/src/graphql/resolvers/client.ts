@@ -91,6 +91,8 @@ const mutation = {
     //TODO: Implment project update to remove client from projects or delete projects
 
     const purgedClient = await ClientModel.findByIdAndDelete(id);
+    if (!purgedClient) throw new Error("Client not found!");
+
     return purgedClient;
   },
 };
