@@ -13,7 +13,7 @@ export const base = z.object({
 
 export const query = base.extend(queryPaginationParams);
 
-export const update = base.partial({ name: true, description: true, status: true, progress: true, project: true, user: true });
+export const update = base.partial({ name: true, description: true, status: true, progress: true, project: true });
 
 export const create = base.omit({ id: true });
 
