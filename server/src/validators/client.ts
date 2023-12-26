@@ -1,38 +1,29 @@
 import { z } from "zod";
+import { queryPaginationParams } from "./shared";
 
-export const clientValidator = z.object({
-  id: z.string().optional(),
-  name: z.string().optional(),
-  email: z.string().email().optional(),
-  deletedAt: z.string().optional(),
+const base = z.object({
+  id: z.string(),
+  name: z.string().min(2).max(100),
+  email: z.string().email().min(2).max(70),
+  deletedAt: z.string().datetime(),
   user: z.string(),
-  phone: z.string().optional(),
-  photo: z.any().optional(),
-  limit: z.number().optional(),
-  skip: z.number().optional(),
-  sort: z.string().optional(),
+  phone: z.string().max(15),
 });
 
-export const createClientValidator = clientValidator
-  .omit({
-    _id: true,
-    deletedAt: true,
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({
-    name: true,
-    email: true,
-    phone: true,
-    user: true,
-  });
+const query = base.partial().extend(queryPaginationParams);
 
-export const updateClientValidator = clientValidator
-  .omit({
-    deletedAt: true,
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({ id: true, user: true });
+const create = base.omit({ deletedAt: true, id: true }).required({
+  name: true,
+  email: true,
+  phone: true,
+  user: true,
+});
+
+const update = base.partial({
+  name: true,
+  email: true,
+  phone: true,
+  deletedAt: true,
+});
+
+export default { base, query, create, update };
