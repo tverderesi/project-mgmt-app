@@ -35,5 +35,4 @@ const update = base.partial({
   client: true,
 });
 
-const project = { base, query, create, update };
-export default project;
+export default { base, query, create, update };
