@@ -3,10 +3,10 @@ import { Project } from "./Project";
 import { Client } from "./Client";
 import { Audit, auditSchema } from "./Audit";
 import bcrypt from "bcrypt";
-const roles = ["ADMIN", "USER"] as const;
+import { countTasksByType } from "../utils/countTasksByType";
+import { roles } from "@/validators/shared";
 
 export interface User extends Audit, mongoose.Document {
-  _id?: string;
   name: string;
   username: string;
   email: string;
@@ -14,8 +14,9 @@ export interface User extends Audit, mongoose.Document {
   photo?: string;
   projects: Project[];
   clients: Client[];
-  role: "ADMIN" | "USER";
+  role: (typeof roles)[number];
 }
+
 const userSchema = new mongoose.Schema<User>(
   {
     name: { type: String, required: true, maxlength: 100 },
@@ -73,41 +74,21 @@ userSchema.virtual("taskCount", {
 });
 
 userSchema.pre<User>("save", async function (next) {
-  const count = await this.model("User").countDocuments({ username: this.username });
-  if (count > 0) {
-    next(new Error("Username already exists!"));
-  }
   if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
     this.password = hashedPassword;
   }
 
+  if (this.isNew) {
+    this.createdBy = this._id || "";
+  }
+
+  if (this.isModified()) {
+    this.updatedBy = this._id || "";
+  }
+
   next();
 });
 
 export const UserModel = mongoose.model<User>("User", userSchema);
-
-async function countTasksByType() {
-  type TaskCount = Array<{ status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED"; count: number }>;
-  const initialTaskCount: TaskCount = [
-    { status: "NOT_STARTED", count: 0 },
-    { status: "IN_PROGRESS", count: 0 },
-    { status: "COMPLETED", count: 0 },
-  ];
-  const foundTaskCount = await mongoose
-    .model("Task")
-    .aggregate([{ $match: { user: this._id } }, { $group: { _id: "$status", count: { $sum: 1 } } }]);
-  if (foundTaskCount.length === 0) {
-    return initialTaskCount;
-  }
-  const taskCount = initialTaskCount.map((status) => {
-    const foundStatus = foundTaskCount.find((found) => found._id === status.status);
-    if (foundStatus) {
-      return { status: foundStatus._id, count: foundStatus.count };
-    }
-    return status;
-  });
-
-  return taskCount;
-}
