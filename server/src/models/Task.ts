@@ -2,14 +2,15 @@ import mongoose from "mongoose";
 import { Project } from "./Project";
 import { User } from "./User";
 import { Audit, auditSchema } from "./Audit";
+import { Status, statuses } from "@/validators/shared";
 
 export interface Task extends Audit, mongoose.Document {
-  _id?: string;
   name: string;
   description: string;
+  deadline: Date | false;
   project: Project;
   user: User;
-  status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  status: Status;
   progress: number;
 }
 
@@ -18,15 +19,23 @@ const taskSchema = new mongoose.Schema<Task>({
   description: { type: String },
   project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  status: {
-    type: String,
-    enum: ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"],
-    default: "NOT_STARTED",
-  },
+  status: { type: String, enum: statuses, default: "NOT_STARTED" },
   progress: { type: Number, default: 0, max: 100, min: 0, transform: Math.round },
 });
 
 taskSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    this.createdBy = this.user.id;
+  }
+
+  if (this.isModified()) {
+    this.updatedBy = this.user.id;
+  }
+
+  if (this.deadline) {
+    this.deadline = new Date(this.deadline);
+  }
+
   if (this.status === "COMPLETED") {
     this.progress = 100;
   }
