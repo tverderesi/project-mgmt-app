@@ -27,7 +27,7 @@ const query = {
     return project;
   },
 
-  deletedProjects: async (_parent: any, args: z.infer<typeof projectV.query>, context: any) => {
+  deletedProjects: async (_parent, args: z.infer<typeof projectV.query>, context) => {
     await checkAuthentication(context);
     await adminViewershipCheck(context, args);
 
@@ -43,7 +43,7 @@ const query = {
 };
 
 const mutation = {
-  createProject: async (_parent: any, { input }: { input: z.infer<typeof projectV.create> }, context: any) => {
+  createProject: async (_parent, { input }: { input: z.infer<typeof projectV.create> }, context) => {
     await checkAuthentication(context);
     await adminViewershipCheck(context, input);
 
@@ -57,7 +57,7 @@ const mutation = {
     return project;
   },
 
-  updateProject: async (_parent: any, args: z.infer<typeof projectV.update>, context: any) => {
+  updateProject: async (_parent, args: z.infer<typeof projectV.update>, context) => {
     checkRequiredFields(args, projectV.update);
 
     await checkAuthentication(context);
@@ -69,7 +69,7 @@ const mutation = {
     return project;
   },
 
-  deleteProject: async (_parent: any, { id }: { id: string }, context: any) => {
+  deleteProject: async (_parent, { id }: { id: string }, context) => {
     await checkAuthentication(context);
     await isCurrentUserOrAdmin(context, id);
 
@@ -79,7 +79,7 @@ const mutation = {
     return project;
   },
 
-  restoreProject: async (_parent: any, { id }: { id: string }, context: any) => {
+  restoreProject: async (_parent, { id }: { id: string }, context) => {
     await checkAuthentication(context);
     await isCurrentUserOrAdmin(context, id);
 
@@ -89,16 +89,14 @@ const mutation = {
     return project;
   },
 
-  purgeProject: async (_parent: any, { id }: { id: string }, context: any) => {
-    try {
-      await checkAuthentication(context);
-      await isCurrentUserOrAdmin(context, id);
-      const project = await ProjectModel.findByIdAndDelete(id);
-      if (!project) throw new Error("Project not found!");
-      return project;
-    } catch (error) {
-      throw new Error(error.message);
-    }
+  purgeProject: async (_parent, { id }: { id: string }, context) => {
+    await checkAuthentication(context);
+    await isCurrentUserOrAdmin(context, id);
+
+    const project = await ProjectModel.findByIdAndDelete(id);
+    if (!project) throw new Error("Project not found!");
+
+    return project;
   },
 };
 
