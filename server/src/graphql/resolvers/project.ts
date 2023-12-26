@@ -7,7 +7,7 @@ import { projectValidator, createProjectValidator, updateProjectValidator } from
 import { z } from "zod";
 
 const query = {
-  projects: async (_parent: any, args: z.infer<typeof projectValidator>, context: any) => {
+  projects: async (_parent, args: z.infer<typeof projectValidator>, context) => {
     try {
       await checkAuthentication(context);
       await adminViewershipCheck(context, args);
@@ -23,12 +23,10 @@ const query = {
     }
   },
 
-  project: async (parent: any, { id }: { id: string }, context) => {
+  project: async (_parent, { id }: { id: string }, context) => {
     try {
       await checkAuthentication(context);
-      console.log(id);
       const project = await ProjectModel.findById(id).populate("client");
-      console.log(project);
       if (!project) throw new Error("Project not found!");
 
       return project;

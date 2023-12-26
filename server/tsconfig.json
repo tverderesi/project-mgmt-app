@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "dist/types",
+    "declarationMap": true,
     "rootDirs": ["src"],
     "outDir": "dist",
     "lib": ["es2020"],

@@ -1,3 +1,4 @@
+import { logger } from "@/utils/logger";
 import mongoose from "mongoose";
 
 export const connectDB = async () => {
@@ -6,5 +7,5 @@ export const connectDB = async () => {
   }
   const conn = await mongoose.connect(`${process.env.MONGO_URI}`);
 
-  console.log(`MongoDB Connected at ${conn.connection.host}:${conn.connection.port}`);
+  logger.verbose(`MongoDB Connected at ${conn.connection.host}:${conn.connection.port}`);
 };

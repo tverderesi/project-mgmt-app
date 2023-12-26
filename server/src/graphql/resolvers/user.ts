@@ -2,7 +2,6 @@ import { UserModel } from "@/models/User";
 import { createUserValidator, updateUserValidator, userValidator } from "@/validators/user";
 import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
-import { transformToUser } from "../../utils/dtos/transformToUser";
 import { isCurrentUserOrAdmin, checkRoleAuthorization, checkAuthentication } from "@/utils/auth";
 
 const mutation = {
@@ -16,9 +15,7 @@ const mutation = {
 
       checkRequiredFields(input, createUserValidator);
 
-      const newUser = transformToUser({ ...input });
-
-      const user = await UserModel.create(newUser);
+      const user = await UserModel.create(input);
       if (!user) {
         throw new Error("Error creating user!");
       }
@@ -56,9 +53,9 @@ const mutation = {
         await checkRoleAuthorization(context, "ADMIN");
       }
 
-      const updatedUser = transformToUser(input);
+      const { _id, ...rest } = input;
 
-      const user = await UserModel.findByIdAndUpdate(input._id, updatedUser, { new: true });
+      const user = await UserModel.findByIdAndUpdate(_id, rest, { new: true });
 
       if (!user) {
         throw new Error("Error updating user!");
@@ -73,7 +70,6 @@ const mutation = {
     try {
       await isCurrentUserOrAdmin(context, _id);
       const user = await UserModel.findByIdAndUpdate(_id, { deletedAt: new Date() }, { new: true });
-
       if (!user) {
         throw new Error("Error deleting user!");
       }
@@ -137,9 +133,11 @@ const query = {
         .populate("taskCount")
         .populate({
           path: "projects",
-          populate: { path: "client", model: "Client" },
+          populate: {
+            path: "client",
+            model: "Client",
+          },
         });
-      console.log("user", user);
       if (!user) throw new Error("User not found!");
       return user;
     } catch (error) {

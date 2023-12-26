@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Project } from "./Project";
 import { Client } from "./Client";
 import { Audit, auditSchema } from "./Audit";
-
+import bcrypt from "bcrypt";
 const roles = ["ADMIN", "USER"] as const;
 
 export interface User extends Audit, mongoose.Document {
@@ -60,7 +60,6 @@ userSchema.virtual("totalTaskCount", {
   foreignField: "user",
   get: async function () {
     const count = await this.model("Task").countDocuments({ user: this._id });
-    console.log("count", count);
     return count || 0;
   },
 });
@@ -71,6 +70,20 @@ userSchema.virtual("taskCount", {
   foreignField: "user",
   justOne: false,
   get: countTasksByType,
+});
+
+userSchema.pre<User>("save", async function (next) {
+  const count = await this.model("User").countDocuments({ username: this.username });
+  if (count > 0) {
+    next(new Error("Username already exists!"));
+  }
+  if (this.isModified("password")) {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword;
+  }
+
+  next();
 });
 
 export const UserModel = mongoose.model<User>("User", userSchema);
