@@ -15,7 +15,7 @@ export const AppLayout: React.FC = () => {
   });
 
   useEffect(() => {
-    if (error || data?.currentUser) navigate("../login");
+    if (error) navigate("../login");
 
     if (data?.currentUser?.role) {
       const href = `/app/${data?.currentUser?.role?.toLowerCase()}`;

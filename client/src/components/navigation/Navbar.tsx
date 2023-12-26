@@ -6,7 +6,7 @@ import { ClientNavigationItem } from "./nav-items";
 import { ProjectNavigationItem } from "./nav-items";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AvatarDropdown } from "../../layout/AvatarDropdown";
+import { AvatarDropdown } from "./AvatarDropdown";
 
 export function Navbar() {
   const SuspenseAvatarDropDown = withSuspense(AvatarDropdown, <Skeleton className="w-10 h-10" />);

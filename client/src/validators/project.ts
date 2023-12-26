@@ -12,7 +12,6 @@ export const projectValidator = z.object({
     .number()
     .refine(
       (arg) => {
-        console.log(arg);
         return arg > 0 || arg < 100;
       },
       {

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatName } from "@/lib/utils";
-import { LogoutButton } from "../components/auth/LogoutButton";
+import { LogoutButton } from "../auth/LogoutButton";
 
 export const AvatarDropdown = () => {
   const {

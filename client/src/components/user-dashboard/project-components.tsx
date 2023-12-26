@@ -113,7 +113,6 @@ const ProjectCarouselItems = () => {
   if (projectCount === 0) {
     return <NoProjectsCard />;
   }
-
   return (
     <>
       {projects.map((project) => {

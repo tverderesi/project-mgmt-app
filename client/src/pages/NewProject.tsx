@@ -230,7 +230,6 @@ export const NewProject = () => {
                       <FormControl>
                         <Slider
                           onValueChange={(e) => {
-                            console.log("onvaluechange", e);
                             const value = e[0];
                             field.onChange(value);
                           }}
