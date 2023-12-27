@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, ElementRef, Suspense, forwardRef } from "react";
 import { NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ProjectCountWidget, TaskCountWidget, UserCountWidget } from "./widgets";
+import { ProjectCountWidget, TaskCountWidget, ClientCountWidget } from "./widgets";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,7 @@ export function TaskNavigationItem() {
 TaskNavigationItem.displayName = "TaskNavigationItem";
 
 export function ClientNavigationItem() {
-  const SuspenseUserCountWidget = withSuspense(UserCountWidget, <Skeleton className=" w-full h-full" />);
+  const SuspenseUserCountWidget = withSuspense(ClientCountWidget, <Skeleton className=" w-full h-full" />);
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="font-semibold">Clients</NavigationMenuTrigger>

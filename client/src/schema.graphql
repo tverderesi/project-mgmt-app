@@ -1,0 +1,22 @@
+
+type Query {
+  
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+type User {
+  id: ID!
+  name: String!
+  username: String!
+  email: String!
+  photo: String
+  role: Role
+}
+
+type Mutation {
+  login(email: String!, password: String!): User
+}

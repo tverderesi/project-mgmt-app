@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useMutation } from "react-relay";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,7 @@ import { LOGIN } from "@/graphql/mutations/auth";
 
 const Logo = () => (
   <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
-    <h1 className="text-6xl font-bold text-right h-full flex flex-col justify-center mr-5 text-white">
-      Project <br /> mgmt <br /> app <br />
-      <span className="mt-1">
-        [<span className="text-3xl leading-[3.75rem] align-middle pb-2">working title</span>]
-      </span>
-    </h1>
+    <h1 className="text-6xl font-bold text-right h-full flex flex-col justify-center mr-5 text-white">mgmt.app</h1>
   </div>
 );
 export const Login = () => {
@@ -30,27 +25,7 @@ export const Login = () => {
     mode: "onSubmit",
   });
 
-  const [login, { loading }] = useMutation(LOGIN, {
-    update(cache, { data }) {
-      cache.modify({
-        fields: {
-          currentUser() {
-            return data.login;
-          },
-        },
-      });
-    },
-    onCompleted: () => {
-      navigate("../app");
-    },
-    onError: (error) => {
-      toast({
-        title: "Login failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
+  const [login, isInFlight] = useMutation(LOGIN);
 
   return (
     <div className="h-screen w-screen flex flex-row">
@@ -61,13 +36,27 @@ export const Login = () => {
           <ModeToggle />
         </div>
         <h1 className="text-xl font-bold text-right flex flex-col justify-center mr-5 text-foreground absolute top-[12.5%] left-1/4 w-1/2 lg:hidden">
-          Project <br /> mgmt <br /> app <br />
-          <span className="mt-1">
-            [<span className="text-sm align-middle pb-1.5">working title</span>]
-          </span>
+          mgmt.app
         </h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit((data) => login({ variables: { input: data } }))} className="space-y-4 mx-auto">
+          <form
+            onSubmit={form.handleSubmit((data) =>
+              login({
+                variables: { input: data },
+                onCompleted() {
+                  navigate("../app");
+                },
+                onError: (error) => {
+                  toast({
+                    title: "Login failed",
+                    description: error.message,
+                    variant: "destructive",
+                  });
+                },
+              })
+            )}
+            className="space-y-4 mx-auto"
+          >
             <FormField
               control={form.control}
               name="user"
@@ -94,8 +83,8 @@ export const Login = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="mx-[4.5rem] w-36 font-semibold relative">
-              {loading && <Loader2 className="animate-spin text-foregound h-4 absolute left-2" />}
+            <Button type="submit" className="mx-[4.5rem] w-36 font-semibold relative" disabled={isInFlight}>
+              {isInFlight && <Loader2 className="animate-spin text-foregound h-4 absolute left-2" />}
               Login
             </Button>
           </form>

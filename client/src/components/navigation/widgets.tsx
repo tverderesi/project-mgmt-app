@@ -1,26 +1,47 @@
-import { useSuspenseQuery } from "@apollo/client";
 import { PROJECT_COUNT_BY_USER, TASK_COUNT, USER_STATS } from "@/graphql/queries/user";
 import { statusDTO } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { useCurrentUser } from "@/hooks/suspense-hooks";
-import { TaskStats } from "@/graphql/shared/interfaces";
 import { UserCircle2 } from "lucide-react";
 import { FolderOpen } from "lucide-react";
+import { loadQuery, usePreloadedQuery } from "react-relay";
+import { RelayEnvironment } from "@/RelayEnvironment";
+export type Enum<T extends readonly any[]> = T[number];
 
+export const statuses = ["NOT_STARTED", "IN_PROGRESS", "COMPLETED", "ARCHIVED", "CANCELLED", "OVERDUE", "ON_HOLD"] as const;
 export function TaskCountWidget() {
   const { id } = useCurrentUser();
+  const queryReference = loadQuery<{
+    variables: { id: string };
+    response: {
+      userStats: {
+        taskCount: {
+          count: number;
+          status: Enum<typeof statuses>;
+        }[];
+        totalTaskCount: number;
+      };
+    };
+  }>(RelayEnvironment, TASK_COUNT, { id });
   const {
-    data: {
-      userStats: { taskCount, totalTaskCount },
-    },
-  } = useSuspenseQuery(TASK_COUNT, {
-    variables: { id },
-  });
+    userStats: { taskCount, totalTaskCount },
+  } = usePreloadedQuery<{
+    variables: { id: string };
+    response: {
+      userStats: {
+        taskCount: {
+          count: number;
+          status: Enum<typeof statuses>;
+        }[];
+        totalTaskCount: number;
+      };
+    };
+  }>(TASK_COUNT, queryReference);
 
   return (
     <li className="row-span-1 lg:row-span-3 py-2 pb-3 lg:bg-rose-500 rounded-md dark:lg:text-primary-foreground flex  flex-row lg:flex-col items-center justify-start lg:justify-center w-full h-full">
       <div className="font-semibold text-sm lg:mt-1 flex flex-col items-center justify-around w-full h-full">
-        {taskCount.map((task: TaskStats) => (
+        {taskCount.map((task) => (
           <div className="space-y-2 w-full px-2">
             <span>
               {task.count} {statusDTO(task.status)}
@@ -34,7 +55,7 @@ export function TaskCountWidget() {
 }
 TaskCountWidget.displayName = "TaskCountWidget";
 
-export function UserCountWidget() {
+export function ClientCountWidget() {
   const { id } = useCurrentUser();
   const {
     data: {
@@ -52,7 +73,7 @@ export function UserCountWidget() {
     </li>
   );
 }
-UserCountWidget.displayName = "UserCountWidget";
+ClientCountWidget.displayName = "ClientCountWidget";
 
 export function ProjectCountWidget() {
   const { id } = useCurrentUser();
