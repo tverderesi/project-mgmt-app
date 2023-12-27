@@ -7,8 +7,9 @@ import {
   USER_FRAGMENT,
 } from "../fragments";
 import { UserStats, QueryByUserId, User } from "../shared/interfaces";
+import { graphql as gql } from "react-relay";
 
-export const USER_STATS: TypedDocumentNode<{ userStats: UserStats }, QueryByUserId> = gql`
+export const USER_STATS = gql`
   query UserStats($id: ID!) {
     userStats(id: $id) {
       ...ProjectCountFragment
@@ -16,9 +17,6 @@ export const USER_STATS: TypedDocumentNode<{ userStats: UserStats }, QueryByUser
       ...TaskCountFragment
     }
   }
-  ${PROJECT_COUNT_FRAGMENT}
-  ${CLIENT_COUNT_FRAGMENT}
-  ${TASK_COUNT_FRAGMENT}
 `;
 
 export const CLIENT_COUNT_BY_USER: TypedDocumentNode<{ userStats: Pick<UserStats, "clientCount"> }, QueryByUserId> = gql`
@@ -48,13 +46,12 @@ export const TASK_COUNT: TypedDocumentNode<{ userStats: Pick<UserStats, "totalTa
   ${TASK_COUNT_FRAGMENT}
 `;
 
-export const CURRENT_USER: TypedDocumentNode<{ currentUser: User }> = gql`
+export const CURRENT_USER = gql`
   query CurrentUser {
     currentUser {
       ...UserFragment
     }
   }
-  ${USER_FRAGMENT}
 `;
 
 export const USER: TypedDocumentNode<{ user: User }, QueryByUserId> = gql`
