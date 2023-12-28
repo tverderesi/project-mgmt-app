@@ -1,5 +1,7 @@
+import { Enum, statuses } from "@/components/navigation/widgets";
+
 export interface TaskStats {
-  status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  status: Enum<typeof statuses>;
   count: number;
 }
 
@@ -31,7 +33,7 @@ export interface UserStats {
   totalTaskCount: number;
 }
 
-export interface QueryByUserId {
+export interface QueryById {
   id: string;
 }
 

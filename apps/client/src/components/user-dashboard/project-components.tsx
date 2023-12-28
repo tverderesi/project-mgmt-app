@@ -7,12 +7,14 @@ import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { USER } from "@/graphql/queries/user";
 import { USER_STATS } from "@/graphql/queries/user";
-import { useSuspenseQuery } from "@apollo/client";
 import { PlusCircle } from "lucide-react";
 import { statusDTO } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { useCurrentUser } from "../../hooks/suspense-hooks";
+import { loadQuery, usePreloadedQuery } from "react-relay";
+import { RelayEnvironment } from "@/RelayEnvironment";
+import { QueryById } from "@/graphql/shared/interfaces";
 
 export function NoProjectsCard() {
   return (
@@ -79,11 +81,18 @@ ProjectsSection.displayName = "ProjectsSection";
 
 function ProjectCount() {
   const { id } = useCurrentUser();
+  const preloadedQuery = loadQuery<{
+    variables: QueryById;
+    response: {
+      userStats: {
+        projectCount: number;
+      };
+    };
+  }>(RelayEnvironment, USER_STATS, { id });
   const {
-    data: {
-      userStats: { projectCount },
-    },
-  } = useSuspenseQuery(USER_STATS, { variables: { id } });
+    userStats: { projectCount },
+  } = usePreloadedQuery(USER_STATS, preloadedQuery);
+
   return <>{projectCount} Projects</>;
 }
 
@@ -100,16 +109,37 @@ const ProjectCardFallback = () => {
 
 const ProjectCarouselItems = () => {
   const { id } = useCurrentUser();
+  const preloadedQuery = loadQuery<{
+    variables: QueryById;
+    response: {
+      userStats: {
+        projectCount: number;
+      };
+    };
+  }>(RelayEnvironment, USER_STATS, { id });
   const {
-    data: {
-      userStats: { projectCount },
-    },
-  } = useSuspenseQuery(USER_STATS, { variables: { id } });
+    userStats: { projectCount },
+  } = usePreloadedQuery(USER_STATS, preloadedQuery);
+
+  const preloadedUserQuery = loadQuery<{
+    variables: QueryById;
+    response: {
+      user: {
+        projects: {
+          id: string;
+          name: string;
+          status: string;
+          client: {
+            name: string;
+          };
+        }[];
+      };
+    };
+  }>(RelayEnvironment, USER, { id });
   const {
-    data: {
-      user: { projects },
-    },
-  } = useSuspenseQuery(USER, { variables: { id } });
+    user: { projects },
+  } = usePreloadedQuery(USER, preloadedUserQuery);
+
   if (projectCount === 0) {
     return <NoProjectsCard />;
   }

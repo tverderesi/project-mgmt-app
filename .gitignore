@@ -7,3 +7,4 @@ client/node_modules
 /server/logs/logs-2023-12-26-10.log
 /server/logs/audit/error-audit.json
 /server/logs/audit/logs-audit.json
+.turbo
