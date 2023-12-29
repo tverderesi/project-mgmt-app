@@ -9,11 +9,18 @@ const fetchFn: FetchFunction = async (request, variables) => {
       Accept: "application/graphql-response+json; charset=utf-8, application/json; charset=utf-8",
       "Content-Type": "application/json",
     },
+    credentials: "include",
     body: JSON.stringify({
       query: request.text, // <-- The GraphQL document composed by Relay
       variables,
     }),
   });
+
+  const json = await resp.json();
+
+  if (json.errors) {
+    throw new Error(json.errors[0].message);
+  }
 
   return await resp.json();
 };

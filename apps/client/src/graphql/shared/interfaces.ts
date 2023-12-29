@@ -1,4 +1,4 @@
-import { Enum, statuses } from "@/components/navigation/widgets";
+import { Enum, statuses } from "@/components/navigation/Enum";
 
 export interface TaskStats {
   status: Enum<typeof statuses>;
@@ -34,7 +34,7 @@ export interface UserStats {
 }
 
 export interface QueryById {
-  id: string;
+  id: string | undefined;
 }
 
 export interface Task {

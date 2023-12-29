@@ -1,16 +1,7 @@
-import { clientValidator, createClientValidator } from "@/validators/client";
-import { TypedDocumentNode, gql } from "@apollo/client";
-import { z } from "zod";
+import { graphql } from "relay-runtime";
 
-export const CREATE_CLIENT: TypedDocumentNode<
-  {
-    createClient: z.infer<typeof clientValidator>;
-  },
-  {
-    input: Omit<z.infer<typeof createClientValidator>, "id" | "countryCode">;
-  }
-> = gql`
-  mutation CreateClient($input: ClientInput!) {
+export const CREATE_CLIENT = graphql`
+  mutation clientCreateClientMutation($input: ClientInput!) {
     createClient(input: $input) {
       phone
       name

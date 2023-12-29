@@ -1,5 +1,12 @@
 # TODO: Separate the schema into multiple files using graphql-tools
-
+union CurrentUserResult = User | ErrorArray
+type ErrorArray {
+  errors: [Error]
+}
+type Error {
+  path: [String!]
+  message: String!
+}
 """
 This enum represents the status of a project or a task.
 """
@@ -516,7 +523,7 @@ type Query {
   """
   Returns the current user.
   """
-  currentUser: User
+  currentUser: CurrentUserResult
   """
   Returns the deleted Users.
   """

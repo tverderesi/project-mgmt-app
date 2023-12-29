@@ -1,3 +1,4 @@
+import { statuses } from "@/components/navigation/Enum";
 import { z } from "zod";
 
 export const projectValidator = z.object({
@@ -20,7 +21,7 @@ export const projectValidator = z.object({
       }
     )
     .optional(),
-  status: z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"]).optional(),
+  status: z.enum(statuses).optional(),
   limit: z.number().optional(),
   skip: z.number().optional(),
   sort: z.string().optional(),

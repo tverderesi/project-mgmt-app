@@ -12,7 +12,7 @@ import { statusDTO } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { useCurrentUser } from "../../hooks/suspense-hooks";
-import { loadQuery, usePreloadedQuery } from "react-relay";
+import { loadQuery, useLazyLoadQuery, usePreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "@/RelayEnvironment";
 import { QueryById } from "@/graphql/shared/interfaces";
 
@@ -81,17 +81,16 @@ ProjectsSection.displayName = "ProjectsSection";
 
 function ProjectCount() {
   const { id } = useCurrentUser();
-  const preloadedQuery = loadQuery<{
+  const {
+    userStats: { projectCount },
+  } = useLazyLoadQuery<{
     variables: QueryById;
     response: {
       userStats: {
         projectCount: number;
       };
     };
-  }>(RelayEnvironment, USER_STATS, { id });
-  const {
-    userStats: { projectCount },
-  } = usePreloadedQuery(USER_STATS, preloadedQuery);
+  }>(USER_STATS, { id });
 
   return <>{projectCount} Projects</>;
 }
@@ -109,19 +108,20 @@ const ProjectCardFallback = () => {
 
 const ProjectCarouselItems = () => {
   const { id } = useCurrentUser();
-  const preloadedQuery = loadQuery<{
+  const {
+    userStats: { projectCount },
+  } = useLazyLoadQuery<{
     variables: QueryById;
     response: {
       userStats: {
         projectCount: number;
       };
     };
-  }>(RelayEnvironment, USER_STATS, { id });
-  const {
-    userStats: { projectCount },
-  } = usePreloadedQuery(USER_STATS, preloadedQuery);
+  }>(USER_STATS, { id });
 
-  const preloadedUserQuery = loadQuery<{
+  const {
+    user: { projects },
+  } = useLazyLoadQuery<{
     variables: QueryById;
     response: {
       user: {
@@ -135,14 +135,12 @@ const ProjectCarouselItems = () => {
         }[];
       };
     };
-  }>(RelayEnvironment, USER, { id });
-  const {
-    user: { projects },
-  } = usePreloadedQuery(USER, preloadedUserQuery);
+  }>(USER, { id });
 
   if (projectCount === 0) {
     return <NoProjectsCard />;
   }
+
   return (
     <>
       {projects.map((project) => {

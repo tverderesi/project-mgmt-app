@@ -1,11 +1,82 @@
-
 type Query {
-  
+  user(id: ID!): User
+  users: [User]
+  userStats(id: ID!): UserStats
+  currentUser: CurrentUserResult
+  project(id: ID!): Project
+  projects: [Project]
+}
+union CurrentUserResult = User | ErrorArray
+
+type ErrorArray {
+  errors: [Error]
+}
+type Error {
+  path: [String!]
+  message: String!
+}
+
+input ProjectInput {
+  name: String!
+  description: String
+  clientId: ID!
+  userId: ID!
+  status: String!
+  progress: Int!
+  autoProgress: Boolean!
+}
+
+type Client {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  projects: [Project]
+}
+
+type Project {
+  id: ID!
+  name: String!
+  client: Client!
+  description: String
+  user: User!
+  tasks: [Task]
+  status: String!
+  progress: Int!
+  autoProgress: Boolean!
+}
+
+type Task {
+  id: ID!
+  name: String!
+  description: String
+  project: Project!
+  user: User!
+  status: String!
+  progress: Int!
+  autoProgress: Boolean!
+}
+
+type taskCount {
+  status: String
+  count: Int
+}
+
+type UserStats {
+  projectCount: Int!
+  clientCount: Int!
+  totalTaskCount: Int!
+  taskCount: [taskCount]!
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+input LoginInput {
+  user: String!
+  password: String!
 }
 
 type User {
@@ -15,8 +86,30 @@ type User {
   email: String!
   photo: String
   role: Role
+  projects: [Project]
+  clients: [Client]
+}
+
+input UserInput {
+  name: String!
+  username: String!
+  email: String!
+  confirmEmail: String!
+  password: String!
+  confirmPassword: String!
+  photo: String
+}
+
+input ClientInput {
+  name: String!
+  email: String!
+  phone: String!
 }
 
 type Mutation {
-  login(email: String!, password: String!): User
+  login(input: LoginInput): User
+  createUser(input: UserInput): User
+  createProject(input: ProjectInput): Project
+  logout: Boolean
+  createClient(input: ClientInput): Client
 }

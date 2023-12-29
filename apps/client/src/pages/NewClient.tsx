@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
-import { useQuery } from "@apollo/client";
 import { CURRENT_USER, USER } from "@/graphql/queries/user";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -19,45 +18,66 @@ import countryCodes from "@/assets/countryCodes.json";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { CREATE_CLIENT } from "@/graphql/mutations/client";
-import { useMutation } from "@apollo/client";
-
+import { useMutation, usePreloadedQuery, loadQuery } from "react-relay";
+import { RelayEnvironment } from "@/RelayEnvironment";
 export const NewClient = ({ asSideItem = false }) => {
   type NewClient = z.infer<typeof createClientValidator>;
   const { toast } = useToast();
+
   const form = useForm<NewClient>({
     resolver: zodResolver(createClientValidator),
   });
 
-  const { data } = useQuery(CURRENT_USER);
-  const [createClient, { reset }] = useMutation(CREATE_CLIENT, {
-    onCompleted: () => {
-      toast({
-        title: "Client created",
-        description: "Client created successfully.",
-      });
-      reset();
-    },
-    onError: (error) => {
-      toast({
-        title: "Client creation failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-    refetchQueries: [{ query: USER, variables: { id: data?.currentUser?.id } }],
-    awaitRefetchQueries: true,
-  });
+  const queryRef = loadQuery<{
+    variables: Record<string, never>;
+    response: {
+      currentUser: {
+        id: string;
+      };
+    };
+  }>(RelayEnvironment, CURRENT_USER, {});
+  const {
+    currentUser: { id },
+  } = usePreloadedQuery(CURRENT_USER, queryRef);
+
+  const [createClient] = useMutation(CREATE_CLIENT);
 
   useEffect(() => {
-    if (data?.currentUser?.id) {
-      form.setValue("user", data?.currentUser?.id);
+    if (id) {
+      form.setValue("user", id);
     }
-  }, [data?.currentUser]);
+  }, [id]);
 
   const onSubmit = (data: NewClient) => {
     data.phone = `${data.countryCode}${data.phone}`;
     const { countryCode, ...rest } = data;
-    createClient({ variables: { input: rest } });
+    createClient({
+      variables: { input: rest },
+      onCompleted: () => {
+        toast({
+          title: "Client created successfully",
+          description: "The client was created successfully.",
+        });
+        form.reset();
+      },
+      onError: (error) => {
+        toast({
+          title: "Client creation failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+      updater: (store) => {
+        const newClient = store.getRootField("createClient");
+        const clients = store?.getRoot()?.getLinkedRecords("clients", { user: id });
+        if (clients) {
+          const updatedClients = [...clients, newClient];
+          store.getRoot().setLinkedRecords(updatedClients, "clients", { user: id });
+        } else {
+          store.getRoot().setLinkedRecords([newClient], "clients", { user: id });
+        }
+      },
+    });
   };
 
   return (

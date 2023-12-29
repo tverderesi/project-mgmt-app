@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { LOGIN } from "@/graphql/mutations/auth";
+import { authLoginMutation } from "@/graphql/mutations/auth";
 
 const Logo = () => (
   <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
@@ -25,7 +25,7 @@ export const Login = () => {
     mode: "onSubmit",
   });
 
-  const [login, isInFlight] = useMutation(LOGIN);
+  const [login, isInFlight] = useMutation(authLoginMutation);
 
   return (
     <div className="h-screen w-screen flex flex-row">
@@ -43,6 +43,14 @@ export const Login = () => {
             onSubmit={form.handleSubmit((data) =>
               login({
                 variables: { input: data },
+                updater: (store, data) => {
+                  //Set the login mutation response to the current user
+                  if (data && "login" in data && data.login) {
+                    const user = store.getRootField("login");
+                    console.log(user);
+                    store.getRoot().setLinkedRecord(user, "currentUser");
+                  }
+                },
                 onCompleted() {
                   navigate("../app");
                 },

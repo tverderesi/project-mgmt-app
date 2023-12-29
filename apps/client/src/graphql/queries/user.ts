@@ -1,8 +1,7 @@
-import { UserStats } from "../shared/interfaces";
-import { graphql as gql } from "react-relay";
+import { graphql } from "react-relay";
 
-export const USER_STATS = gql`
-  query UserStats($id: ID!) {
+export const USER_STATS = graphql`
+  query userUserStatsQuery($id: ID!) {
     userStats(id: $id) {
       projectCount
       clientCount
@@ -15,20 +14,28 @@ export const USER_STATS = gql`
   }
 `;
 
-export const CURRENT_USER = gql`
-  query CurrentUser {
+export const CURRENT_USER = graphql`
+  query userCurrentUserQuery {
     currentUser {
-      id
-      name
-      username
-      email
-      role
+      ... on User {
+        id
+        name
+        username
+        email
+        role
+      }
+      ... on ErrorArray {
+        errors {
+          path
+          message
+        }
+      }
     }
   }
 `;
 
-export const USER = gql`
-  query User($id: ID!) {
+export const USER = graphql`
+  query userUserQuery($id: ID!) {
     user(id: $id) {
       id
       name
@@ -36,6 +43,20 @@ export const USER = gql`
       email
       photo
       role
+      projects {
+        id
+        name
+        description
+        progress
+        status
+        autoProgress
+        client {
+          id
+          name
+          email
+          phone
+        }
+      }
     }
   }
 `;

@@ -1,8 +1,7 @@
-import { TypedDocumentNode, gql } from "@apollo/client";
-import { Project, QueryByUserId } from "@/graphql/shared/interfaces";
+import { graphql } from "relay-runtime";
 
-export const PROJECT: TypedDocumentNode<{ project: Project }, QueryByUserId> = gql`
-  query Project($id: ID!) {
+export const PROJECT = graphql`
+  query projectProjectQuery($id: ID!) {
     project(id: $id) {
       id
       name
@@ -11,10 +10,18 @@ export const PROJECT: TypedDocumentNode<{ project: Project }, QueryByUserId> = g
       progress
       autoProgress
       client {
-        ...ClientFragment
+        id
+        name
+        email
+        phone
       }
       tasks {
-        ...TaskFragment
+        id
+        name
+        description
+        status
+        progress
+        autoProgress
       }
     }
   }

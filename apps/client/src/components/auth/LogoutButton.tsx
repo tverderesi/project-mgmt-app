@@ -1,22 +1,28 @@
 import { useNavigate } from "react-router-dom";
-import { useMutation, useApolloClient } from "@apollo/client";
-import { useEffect } from "react";
-import { LOGOUT } from "@/graphql/mutations/auth";
-
+import { useMutation } from "react-relay";
+import { authLogoutMutation } from "@/graphql/mutations/auth";
 export const LogoutButton = () => {
-  const client = useApolloClient();
   const navigate = useNavigate();
-  useEffect(() => {
-    const unsubscribe = client.onResetStore(() => new Promise(() => navigate("../login")));
-    return () => {
-      unsubscribe();
+
+  const [logout] = useMutation<{
+    variables: Record<string, never>;
+    response: {
+      logout: {
+        success: boolean;
+      };
     };
-  }, [client]);
-  const [logout] = useMutation(LOGOUT);
+  }>(authLogoutMutation);
 
   const handleLogout = async () => {
-    await logout();
-    client.resetStore();
+    logout({
+      updater: (store) => {
+        store.invalidateStore();
+      },
+      variables: {},
+      onCompleted: () => {
+        navigate("/login");
+      },
+    });
   };
 
   return (

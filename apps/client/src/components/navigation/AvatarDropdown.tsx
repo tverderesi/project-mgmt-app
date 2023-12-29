@@ -1,4 +1,3 @@
-import { useSuspenseQuery } from "@apollo/client";
 import { CURRENT_USER } from "@/graphql/queries/user";
 import {
   DropdownMenu,
@@ -11,13 +10,23 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatName } from "@/lib/utils";
 import { LogoutButton } from "../auth/LogoutButton";
+import { loadQuery, usePreloadedQuery } from "react-relay";
+import { RelayEnvironment } from "@/RelayEnvironment";
+
+const loadedQuery = loadQuery<{
+  response: {
+    currentUser: {
+      name: string;
+      photo: string;
+    };
+  };
+  variables: Record<string, never>;
+}>(RelayEnvironment, CURRENT_USER, {});
 
 export const AvatarDropdown = () => {
   const {
-    data: {
-      currentUser: { photo, name },
-    },
-  } = useSuspenseQuery(CURRENT_USER);
+    currentUser: { photo, name },
+  } = usePreloadedQuery(CURRENT_USER, loadedQuery);
 
   return (
     <DropdownMenu>

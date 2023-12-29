@@ -1,11 +1,7 @@
-import { loginSchema } from "@/validators/auth";
-import { TypedDocumentNode, gql } from "@apollo/client";
-import { z } from "zod";
-import { userValidator } from "@/validators/user";
-import { Input } from "../shared/interfaces";
+import { graphql } from "relay-runtime";
 
-export const LOGIN: TypedDocumentNode<{ login: z.infer<typeof userValidator> }, Input<z.infer<typeof loginSchema>>> = gql`
-  mutation Login($input: LoginInput!) {
+export const authLoginMutation = graphql`
+  mutation authLoginMutation($input: LoginInput!) {
     login(input: $input) {
       id
       name
@@ -17,8 +13,8 @@ export const LOGIN: TypedDocumentNode<{ login: z.infer<typeof userValidator> }, 
   }
 `;
 
-export const LOGOUT: TypedDocumentNode<{ logout: boolean }> = gql`
-  mutation Mutation {
+export const authLogoutMutation = graphql`
+  mutation authLogoutMutation {
     logout
   }
 `;
