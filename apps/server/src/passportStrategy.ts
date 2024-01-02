@@ -2,18 +2,34 @@ import bcrypt from "bcrypt";
 import { GraphQLLocalStrategy } from "graphql-passport";
 import passport from "passport";
 import { User, UserModel } from "./models/User";
-
+export class CustomError extends Error {
+  type: string;
+  constructor(message: string, type: string) {
+    super(message);
+    this.name = "CustomError";
+    this.type = type;
+  }
+}
 passport.use(
   new GraphQLLocalStrategy(async (username: string, password: string, done) => {
     const isEmail = username?.includes("@");
     const foundUser = await UserModel.findOne({ [isEmail ? "email" : "username"]: username });
-    if (username === null) {
-      done(new Error("User not found!"), null);
+
+    if (foundUser === null) {
+      const error = {
+        type: "AUTHENTICATION_ERROR",
+        message: "User not found!",
+      };
+      done(new Error(JSON.stringify(error)), null);
     }
 
     const decryptedPassword = await bcrypt.compare(password, foundUser?.password as string);
     if (!decryptedPassword) {
-      done(new Error("Incorrect password!"), null);
+      const error = {
+        type: "AUTHENTICATION_ERROR",
+        message: "User not found!",
+      };
+      done(new Error(JSON.stringify(error)), null);
     }
 
     return done(null, foundUser);

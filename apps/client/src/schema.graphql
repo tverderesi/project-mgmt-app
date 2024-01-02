@@ -2,18 +2,9 @@ type Query {
   user(id: ID!): User
   users: [User]
   userStats(id: ID!): UserStats
-  currentUser: CurrentUserResult
+  currentUser: CurrentUserOutput
   project(id: ID!): Project
   projects: [Project]
-}
-union CurrentUserResult = User | ErrorArray
-
-type ErrorArray {
-  errors: [Error]
-}
-type Error {
-  path: [String!]
-  message: String!
 }
 
 input ProjectInput {
@@ -88,6 +79,16 @@ type User {
   role: Role
   projects: [Project]
   clients: [Client]
+}
+
+type Error {
+  type: String
+  message: String
+}
+
+type CurrentUserOutput {
+  currentUser: User
+  error: Error
 }
 
 input UserInput {

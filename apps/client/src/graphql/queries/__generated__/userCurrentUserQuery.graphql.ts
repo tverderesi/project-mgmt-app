@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ddedea9beca9c86d3c8ef57231011052>>
+ * @generated SignedSource<<51e6a9c92c7b786776d471b78fb9f090>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,15 +13,17 @@ export type Role = "ADMIN" | "USER" | "%future added value";
 export type userCurrentUserQuery$variables = Record<PropertyKey, never>;
 export type userCurrentUserQuery$data = {
   readonly currentUser: {
-    readonly email?: string;
-    readonly errors?: ReadonlyArray<{
-      readonly message: string;
-      readonly path: ReadonlyArray<string> | null | undefined;
-    } | null | undefined> | null | undefined;
-    readonly id?: string;
-    readonly name?: string;
-    readonly role?: Role | null | undefined;
-    readonly username?: string;
+    readonly currentUser: {
+      readonly email: string;
+      readonly id: string;
+      readonly name: string;
+      readonly role: Role | null | undefined;
+      readonly username: string;
+    } | null | undefined;
+    readonly error: {
+      readonly message: string | null | undefined;
+      readonly type: string | null | undefined;
+    } | null | undefined;
   } | null | undefined;
 };
 export type userCurrentUserQuery = {
@@ -30,114 +32,19 @@ export type userCurrentUserQuery = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "id",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "name",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "username",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "email",
-      "storageKey": null
-    },
-    {
-      "alias": null,
-      "args": null,
-      "kind": "ScalarField",
-      "name": "role",
-      "storageKey": null
-    }
-  ],
-  "type": "User",
-  "abstractKey": null
-},
-v1 = {
-  "kind": "InlineFragment",
-  "selections": [
-    {
-      "alias": null,
-      "args": null,
-      "concreteType": "Error",
-      "kind": "LinkedField",
-      "name": "errors",
-      "plural": true,
-      "selections": [
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "path",
-          "storageKey": null
-        },
-        {
-          "alias": null,
-          "args": null,
-          "kind": "ScalarField",
-          "name": "message",
-          "storageKey": null
-        }
-      ],
-      "storageKey": null
-    }
-  ],
-  "type": "ErrorArray",
-  "abstractKey": null
-};
-return {
-  "fragment": {
-    "argumentDefinitions": [],
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "userCurrentUserQuery",
+var v0 = [
+  {
+    "alias": null,
+    "args": null,
+    "concreteType": "CurrentUserOutput",
+    "kind": "LinkedField",
+    "name": "currentUser",
+    "plural": false,
     "selections": [
       {
         "alias": null,
         "args": null,
-        "concreteType": null,
-        "kind": "LinkedField",
-        "name": "currentUser",
-        "plural": false,
-        "selections": [
-          (v0/*: any*/),
-          (v1/*: any*/)
-        ],
-        "storageKey": null
-      }
-    ],
-    "type": "Query",
-    "abstractKey": null
-  },
-  "kind": "Request",
-  "operation": {
-    "argumentDefinitions": [],
-    "kind": "Operation",
-    "name": "userCurrentUserQuery",
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": null,
+        "concreteType": "User",
         "kind": "LinkedField",
         "name": "currentUser",
         "plural": false,
@@ -146,27 +53,97 @@ return {
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "__typename",
+            "name": "id",
             "storageKey": null
           },
-          (v0/*: any*/),
-          (v1/*: any*/)
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "username",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "email",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "role",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "Error",
+        "kind": "LinkedField",
+        "name": "error",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "message",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "type",
+            "storageKey": null
+          }
         ],
         "storageKey": null
       }
-    ]
+    ],
+    "storageKey": null
+  }
+];
+return {
+  "fragment": {
+    "argumentDefinitions": [],
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "userCurrentUserQuery",
+    "selections": (v0/*: any*/),
+    "type": "Query",
+    "abstractKey": null
+  },
+  "kind": "Request",
+  "operation": {
+    "argumentDefinitions": [],
+    "kind": "Operation",
+    "name": "userCurrentUserQuery",
+    "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "253be6505c7648cd5c87ad479ee6f21a",
+    "cacheID": "6aba725672e0b54f2f3c86231743b2fd",
     "id": null,
     "metadata": {},
     "name": "userCurrentUserQuery",
     "operationKind": "query",
-    "text": "query userCurrentUserQuery {\n  currentUser {\n    __typename\n    ... on User {\n      id\n      name\n      username\n      email\n      role\n    }\n    ... on ErrorArray {\n      errors {\n        path\n        message\n      }\n    }\n  }\n}\n"
+    "text": "query userCurrentUserQuery {\n  currentUser {\n    currentUser {\n      id\n      name\n      username\n      email\n      role\n    }\n    error {\n      message\n      type\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "05938c968955ccdb78eba9010f1ab04a";
+(node as any).hash = "99cd3db1bc8497c4967a3e37a3c98369";
 
 export default node;

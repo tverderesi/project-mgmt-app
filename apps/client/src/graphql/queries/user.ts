@@ -17,18 +17,16 @@ export const USER_STATS = graphql`
 export const CURRENT_USER = graphql`
   query userCurrentUserQuery {
     currentUser {
-      ... on User {
+      currentUser {
         id
         name
         username
         email
         role
       }
-      ... on ErrorArray {
-        errors {
-          path
-          message
-        }
+      error {
+        message
+        type
       }
     }
   }

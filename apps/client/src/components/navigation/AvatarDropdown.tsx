@@ -7,37 +7,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatName } from "@/lib/utils";
 import { LogoutButton } from "../auth/LogoutButton";
 import { loadQuery, usePreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "@/RelayEnvironment";
+import {
+  userCurrentUserQuery$data,
+  userCurrentUserQuery$variables,
+} from "@/graphql/queries/__generated__/userCurrentUserQuery.graphql";
 
 const loadedQuery = loadQuery<{
-  response: {
-    currentUser: {
-      name: string;
-      photo: string;
-    };
-  };
-  variables: Record<string, never>;
+  response: userCurrentUserQuery$data;
+  variables: userCurrentUserQuery$variables;
 }>(RelayEnvironment, CURRENT_USER, {});
 
 export const AvatarDropdown = () => {
-  const {
-    currentUser: { photo, name },
-  } = usePreloadedQuery(CURRENT_USER, loadedQuery);
+  const data = usePreloadedQuery(CURRENT_USER, loadedQuery);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="float-right">
-          {photo && <AvatarImage src={`data:image/png;base64,${photo}`} />}
-          <AvatarFallback>{name?.split("")[0]}</AvatarFallback>
+          <AvatarFallback>{data?.currentUser?.currentUser?.name?.split("")[0]}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" alignOffset={5} className="mt-1">
-        <DropdownMenuLabel>Hi, {formatName(name)}!</DropdownMenuLabel>
+        <DropdownMenuLabel>Hi, {formatName(data?.currentUser?.currentUser?.name as string)}!</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="font-medium">
           <LogoutButton />

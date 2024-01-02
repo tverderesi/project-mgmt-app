@@ -3,7 +3,6 @@ import { createUserValidator, updateUserValidator, userValidator } from "@/valid
 import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
 import { isCurrentUserOrAdmin, checkRoleAuthorization, checkAuthentication } from "@/utils/auth";
-
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof createUserValidator> }, context: any) => {
     try {
@@ -162,8 +161,13 @@ const query = {
   },
 
   currentUser: async (_parent: any, _args: any, context: any) => {
-    await checkAuthentication(context);
-    return await context.getUser();
+    try {
+      await checkAuthentication(context);
+      const user = await context.getUser();
+      return { data: { user }, error: null };
+    } catch (error) {
+      return { data: null, error: { type: error.type, message: error.message } };
+    }
   },
 
   deletedUsers: async (_parent: any, args: z.infer<typeof userValidator>, context: any) => {

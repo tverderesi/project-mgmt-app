@@ -18,11 +18,7 @@ const fetchFn: FetchFunction = async (request, variables) => {
 
   const json = await resp.json();
 
-  if (json.errors) {
-    throw new Error(json.errors[0].message);
-  }
-
-  return await resp.json();
+  return json;
 };
 
 function createRelayEnvironment() {

@@ -5,43 +5,27 @@ import { CURRENT_USER } from "@/graphql/queries/user";
 import { Navbar } from "../components/navigation/Navbar";
 import { ErrorBoundary } from "react-error-boundary";
 import { RelayEnvironment } from "@/RelayEnvironment";
-
+import type {
+  userCurrentUserQuery$data,
+  userCurrentUserQuery$variables,
+} from "@/graphql/queries/__generated__/userCurrentUserQuery.graphql";
 const queryReference = loadQuery<{
-  response: {
-    errors: {
-      message: string;
-    }[];
-
-    currentUser: {
-      role: string;
-    };
-  };
-  variables: Record<string, never>;
+  response: userCurrentUserQuery$data;
+  variables: userCurrentUserQuery$variables;
 }>(RelayEnvironment, CURRENT_USER, {});
 export const AppLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const data = usePreloadedQuery<{
-    variables: Record<string, never>;
-    response: {
-      currentUser: {
-        role: string;
-      };
-    };
+    response: userCurrentUserQuery$data;
+    variables: userCurrentUserQuery$variables;
   }>(CURRENT_USER, queryReference);
-  // useEffect(() => {
-  //   console.log(data, isPending);
-
-  //   if (!isPending && data?.currentUser?.role) {
-  //
-  //   }
-  // }, [data.currentUser, isPending]);
-
   useEffect(() => {
-    console.log(data);
-    if (data.currentUser.role) {
-      const role = data.currentUser.role;
+    if (data?.currentUser?.error) {
+      navigate("/login");
+    }
+    if (data?.currentUser?.currentUser?.role) {
+      const role = data?.currentUser?.currentUser?.role;
       const href = `/app/${role.toLowerCase()}`;
       if (location.pathname !== href) navigate(href);
     }

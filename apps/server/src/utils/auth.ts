@@ -1,8 +1,10 @@
+import { CustomError } from "@/passportStrategy";
+
 type Role = "ADMIN" | "USER";
 
 export async function checkAuthentication(context: any) {
   const currentUser = await context.getUser();
-  if (!currentUser) throw new Error("User not authenticated!");
+  if (!currentUser) throw new CustomError("User not authenticated!", "AUTHENTICATION_ERROR");
 }
 
 export async function checkRoleAuthorization(context: any, role: Role) {

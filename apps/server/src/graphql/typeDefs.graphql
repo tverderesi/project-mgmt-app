@@ -143,7 +143,7 @@ type Query {
   project(id: ID!): Project!
   tasks(filter: TaskFilter): [Task]!
   task(id: ID!): Task!
-  currentUser: User
+  currentUser: CurrentUserOutput
   deletedUsers: [User]!
   deletedClients: [Client]!
   deletedProjects: [Project]!
@@ -159,6 +159,16 @@ input ClientFilter {
 input TaskFilter {
   name: String
   status: Status
+}
+
+type CurrentUserOutput {
+  currentUser: User
+  error: Error
+}
+
+type Error {
+  type: String
+  message: String
 }
 
 type Mutation {
@@ -182,6 +192,6 @@ type Mutation {
   deleteTask(id: ID!): String!
   restoreTask(id: ID!): String!
   purgeTask(id: ID!): String!
-  login(input: LoginInput!): User!
+  login(input: LoginInput!): User
   logout: Boolean!
 }
