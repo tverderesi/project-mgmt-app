@@ -1,10 +1,6 @@
 node_modules
 .env
 client/node_modules
-/server/logs
-/server/dist
-/server/logs/errors-2023-12-26-10.log
-/server/logs/logs-2023-12-26-10.log
-/server/logs/audit/error-audit.json
-/server/logs/audit/logs-audit.json
+/apps/server/logs
+/apps/server/dist
 .turbo

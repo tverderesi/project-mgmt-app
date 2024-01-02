@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { loadQuery, usePreloadedQuery } from "react-relay";
-import { Suspense, useEffect, useTransition } from "react";
+import { Suspense, useEffect } from "react";
 import { CURRENT_USER } from "@/graphql/queries/user";
 import { Navbar } from "../components/navigation/Navbar";
 import { ErrorBoundary } from "react-error-boundary";
@@ -59,6 +59,7 @@ export const AppLayout: React.FC = () => {
         >
           <Navbar />
         </Suspense>
+        <Outlet />
       </ErrorBoundary>
     </div>
   );

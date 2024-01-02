@@ -11,7 +11,6 @@ export interface User extends Audit, mongoose.Document {
   username: string;
   email: string;
   password: string;
-  photo?: string;
   projects: Project[];
   clients: Client[];
   role: (typeof roles)[number];
@@ -23,7 +22,6 @@ const userSchema = new mongoose.Schema<User>(
     username: { type: String, required: true, unique: true, maxlength: 32 },
     email: { type: String, required: true, unique: true, maxlength: 64 },
     password: { type: String, required: true, maxlength: 64 },
-    photo: { type: String, required: false },
     clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Client" }],
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     role: { type: String, enum: roles, default: "USER" },

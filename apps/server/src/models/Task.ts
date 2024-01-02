@@ -20,7 +20,6 @@ const taskSchema = new mongoose.Schema<Task>({
   project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   status: { type: String, enum: statuses, default: "NOT_STARTED" },
-  progress: { type: Number, default: 0, max: 100, min: 0, transform: Math.round },
 });
 
 taskSchema.pre("save", async function (next) {
@@ -31,16 +30,8 @@ taskSchema.pre("save", async function (next) {
   if (this.isModified()) {
     this.updatedBy = this.user.id;
   }
-
   if (this.deadline) {
     this.deadline = new Date(this.deadline);
-  }
-
-  if (this.status === "COMPLETED") {
-    this.progress = 100;
-  }
-  if (this.status == "NOT_STARTED") {
-    this.progress = 0;
   }
   next();
 });

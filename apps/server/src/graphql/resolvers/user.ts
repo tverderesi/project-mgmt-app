@@ -162,14 +162,8 @@ const query = {
   },
 
   currentUser: async (_parent: any, _args: any, context: any) => {
-    try {
-      await checkAuthentication(context);
-      return await context.getUser();
-    } catch (error) {
-      //map the errors to an array of errors and return it
-
-      return [{ path: "name", message: error.message }];
-    }
+    await checkAuthentication(context);
+    return await context.getUser();
   },
 
   deletedUsers: async (_parent: any, args: z.infer<typeof userValidator>, context: any) => {

@@ -10,8 +10,6 @@ export interface Project extends Audit, mongoose.Document {
   description?: string;
   deadline: Date | false;
   client: Client;
-  autoProgress: boolean;
-  progress: number;
   status: Status;
   tasks: Task[];
   user: User;
@@ -23,13 +21,12 @@ const projectSchema = new mongoose.Schema<Project>(
     description: { type: String },
     client: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
     deadline: { type: Date || false },
-    autoProgress: { type: Boolean, default: false },
     status: {
       type: String,
       enum: statuses,
       default: "NOT_STARTED",
     },
-    progress: { type: Number, default: 0, max: 100, min: 0, transform: Math.round },
+
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
   },
@@ -47,12 +44,6 @@ projectSchema.pre("save", async function (next) {
     this.updatedBy = this.user.id;
   }
 
-  if (!this.autoProgress) {
-    return next();
-  }
-  const tasks = await mongoose.model("Task").find({ project: this._id, status: "COMPLETED" });
-  const progress = Math.round((tasks.length / this.tasks.length) * 100);
-  this.progress = progress;
   next();
 });
 

@@ -12,7 +12,6 @@ import { buildContext } from "graphql-passport";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "./config/db";
-import { Percentage } from "./graphql/custom_scalars/percentage";
 import { clientResolvers } from "./graphql/resolvers/client";
 import { projectResolvers } from "./graphql/resolvers/project";
 import { userResolvers } from "./graphql/resolvers/user";
@@ -42,7 +41,6 @@ const server = new ApolloServer({
   resolvers: {
     Query: { ...userResolvers.query, ...clientResolvers.query, ...projectResolvers.query, ...taskResolvers.query },
     Mutation: { ...userResolvers.mutation, ...clientResolvers.mutation, ...projectResolvers.mutation, ...taskResolvers.mutation },
-    Percentage,
   },
   introspection: process.env.NODE_ENV === "development",
 });
