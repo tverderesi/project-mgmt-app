@@ -134,22 +134,6 @@ input ProjectFilter {
   user: ID
 }
 
-type Query {
-  clients(filter: ClientFilter): [Client]!
-  client(id: ID!): Client
-  users(filter: UserFilter): [User]
-  user(id: ID!): User!
-  projects(filter: ProjectFilter): [Project]!
-  project(id: ID!): Project!
-  tasks(filter: TaskFilter): [Task]!
-  task(id: ID!): Task!
-  currentUser: CurrentUserOutput
-  deletedUsers: [User]!
-  deletedClients: [Client]!
-  deletedProjects: [Project]!
-  userStats(id: ID!): UserStats!
-}
-
 input ClientFilter {
   name: String
   email: String
@@ -161,37 +145,31 @@ input TaskFilter {
   status: Status
 }
 
-type CurrentUserOutput {
-  currentUser: User
-  error: Error
-}
-
-type Error {
-  type: String
-  message: String
+type Query {
+  clients(filter: ClientFilter): [Client]!
+  client(id: ID!): Client
+  users(filter: UserFilter): [User]
+  user(id: ID!): User!
+  projects(filter: ProjectFilter): [Project]!
+  project(id: ID!): Project!
+  tasks(filter: TaskFilter): [Task]!
+  task(id: ID!): Task!
+  me: User
 }
 
 type Mutation {
   createClient(input: ClientInput!): Client!
   updateClient(id: ID!, input: ClientInput!): Client!
   deleteClient(id: ID!): String!
-  restoreClient(id: ID!): String!
-  purgeClient(id: ID!): String!
   createUser(input: UserInput!): User!
   updateUser(input: UpdateUserInput!): User!
   deleteUser(id: ID!): String!
-  restoreUser(id: ID!): String!
-  purgeUser(id: ID!): String!
   createProject(input: ProjectInput!): Project!
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   deleteProject(id: ID!): String!
-  restoreProject(id: ID!): String!
-  purgeProject(id: ID!): String!
   createTask(input: TaskInput!): Task!
   updateTask(id: ID!, input: UpdateTaskInput!): Task!
   deleteTask(id: ID!): String!
-  restoreTask(id: ID!): String!
-  purgeTask(id: ID!): String!
   login(input: LoginInput!): User
   logout: Boolean!
 }

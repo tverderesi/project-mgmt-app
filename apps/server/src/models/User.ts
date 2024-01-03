@@ -1,12 +1,11 @@
-import mongoose from "mongoose";
+import { Document, Schema, model } from "mongoose";
 import { Project } from "./Project";
 import { Client } from "./Client";
-import { Audit, auditSchema } from "./Audit";
 import bcrypt from "bcrypt";
 import { countTasksByType } from "../utils/countTasksByType";
 import { roles } from "@/validators/shared";
 
-export interface User extends Audit, mongoose.Document {
+export interface User extends Document {
   name: string;
   username: string;
   email: string;
@@ -16,14 +15,14 @@ export interface User extends Audit, mongoose.Document {
   role: (typeof roles)[number];
 }
 
-const userSchema = new mongoose.Schema<User>(
+const userSchema = new Schema<User>(
   {
     name: { type: String, required: true, maxlength: 100 },
     username: { type: String, required: true, unique: true, maxlength: 32 },
     email: { type: String, required: true, unique: true, maxlength: 64 },
     password: { type: String, required: true, maxlength: 64 },
-    clients: [{ type: mongoose.Schema.Types.ObjectId, ref: "Client" }],
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+    clients: [{ type: Schema.Types.ObjectId, ref: "Client" }],
+    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
     role: { type: String, enum: roles, default: "USER" },
   },
   {
@@ -33,8 +32,6 @@ const userSchema = new mongoose.Schema<User>(
     autoIndex: true,
   }
 );
-
-userSchema.add(auditSchema);
 
 userSchema.virtual("projectCount", {
   ref: "Project",
@@ -78,15 +75,7 @@ userSchema.pre<User>("save", async function (next) {
     this.password = hashedPassword;
   }
 
-  if (this.isNew) {
-    this.createdBy = this._id || "";
-  }
-
-  if (this.isModified()) {
-    this.updatedBy = this._id || "";
-  }
-
   next();
 });
 
-export const UserModel = mongoose.model<User>("User", userSchema);
+export const UserModel = model<User>("User", userSchema);
