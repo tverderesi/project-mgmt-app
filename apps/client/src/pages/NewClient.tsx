@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
-import { CURRENT_USER, USER } from "@/graphql/queries/user";
+import { ME, USER } from "@/graphql/queries/user";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandGroup } from "@/components/ui/command";
@@ -20,6 +20,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { CREATE_CLIENT } from "@/graphql/mutations/client";
 import { useMutation, usePreloadedQuery, loadQuery } from "react-relay";
 import { RelayEnvironment } from "@/RelayEnvironment";
+import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
 export const NewClient = ({ asSideItem = false }) => {
   type NewClient = z.infer<typeof createClientValidator>;
   const { toast } = useToast();
@@ -28,25 +29,16 @@ export const NewClient = ({ asSideItem = false }) => {
     resolver: zodResolver(createClientValidator),
   });
 
-  const queryRef = loadQuery<{
-    variables: Record<string, never>;
-    response: {
-      currentUser: {
-        id: string;
-      };
-    };
-  }>(RelayEnvironment, CURRENT_USER, {});
-  const {
-    currentUser: { id },
-  } = usePreloadedQuery(CURRENT_USER, queryRef);
+  const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
+  const { me } = usePreloadedQuery(ME, queryRef);
 
   const [createClient] = useMutation(CREATE_CLIENT);
 
   useEffect(() => {
-    if (id) {
-      form.setValue("user", id);
+    if (me?.id) {
+      form.setValue("user", me?.id);
     }
-  }, [id]);
+  }, [me?.id]);
 
   const onSubmit = (data: NewClient) => {
     data.phone = `${data.countryCode}${data.phone}`;
@@ -69,12 +61,12 @@ export const NewClient = ({ asSideItem = false }) => {
       },
       updater: (store) => {
         const newClient = store.getRootField("createClient");
-        const clients = store?.getRoot()?.getLinkedRecords("clients", { user: id });
+        const clients = store?.getRoot()?.getLinkedRecords("clients", { user: me?.id });
         if (clients) {
           const updatedClients = [...clients, newClient];
-          store.getRoot().setLinkedRecords(updatedClients, "clients", { user: id });
+          store.getRoot().setLinkedRecords(updatedClients, "clients", { user: me?.id });
         } else {
-          store.getRoot().setLinkedRecords([newClient], "clients", { user: id });
+          store.getRoot().setLinkedRecords([newClient], "clients", { user: me?.id });
         }
       },
     });

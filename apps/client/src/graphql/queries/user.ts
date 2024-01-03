@@ -14,8 +14,8 @@ export const USER_STATS = graphql`
   }
 `;
 
-export const CURRENT_USER = graphql`
-  query userCurrentUserQuery {
+export const ME = graphql`
+  query userMeQuery {
     me {
       id
       name
@@ -45,6 +45,10 @@ export const USER = graphql`
           email
           phone
         }
+      }
+      clients {
+        id
+        name
       }
     }
   }

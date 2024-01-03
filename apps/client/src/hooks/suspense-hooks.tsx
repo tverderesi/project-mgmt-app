@@ -1,16 +1,11 @@
-import { CURRENT_USER } from "@/graphql/queries/user";
-import { User } from "@/graphql/shared/interfaces";
+import { ME } from "@/graphql/queries/user";
+
 import { loadQuery, usePreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "@/RelayEnvironment";
+import { userMeQuery, userMeQuery$data } from "@/graphql/queries/__generated__/userMeQuery.graphql";
 
-export function useCurrentUser(): { rolePath: string } & User {
-  const currentUserQuery = loadQuery<{ variables: Record<string, never>; response: { currentUser: User } }>(
-    RelayEnvironment,
-    CURRENT_USER,
-    {}
-  );
-
-  const { currentUser } = usePreloadedQuery(CURRENT_USER, currentUserQuery);
-
-  return { ...currentUser, rolePath: `app/${currentUser.role.toLowerCase()}` };
+export function useCurrentUser() {
+  const queryReference = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
+  const { me } = usePreloadedQuery(ME, queryReference);
+  return { ...me, rolePath: `app/${me?.role.toLowerCase()}` };
 }

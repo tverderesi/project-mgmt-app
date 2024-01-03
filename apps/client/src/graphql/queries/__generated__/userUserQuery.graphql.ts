@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8b7ca401832bbd0e00f7ceba440697f7>>
+ * @generated SignedSource<<7c7da214911b7048d9d12cca2d2951bd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,6 +16,10 @@ export type userUserQuery$variables = {
 };
 export type userUserQuery$data = {
   readonly user: {
+    readonly clients: ReadonlyArray<{
+      readonly id: string;
+      readonly name: string;
+    } | null | undefined>;
     readonly email: string;
     readonly id: string;
     readonly name: string;
@@ -148,6 +152,19 @@ v4 = [
           }
         ],
         "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "Client",
+        "kind": "LinkedField",
+        "name": "clients",
+        "plural": true,
+        "selections": [
+          (v1/*: any*/),
+          (v2/*: any*/)
+        ],
+        "storageKey": null
       }
     ],
     "storageKey": null
@@ -171,16 +188,16 @@ return {
     "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "fc35a57735f1369fed56df1d489b8f45",
+    "cacheID": "880501944c3de7623a37d102a73be998",
     "id": null,
     "metadata": {},
     "name": "userUserQuery",
     "operationKind": "query",
-    "text": "query userUserQuery(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    role\n    projects {\n      id\n      name\n      description\n      status\n      client {\n        id\n        name\n        email\n        phone\n      }\n    }\n  }\n}\n"
+    "text": "query userUserQuery(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    role\n    projects {\n      id\n      name\n      description\n      status\n      client {\n        id\n        name\n        email\n        phone\n      }\n    }\n    clients {\n      id\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d88aeed136532bcc886542bf38d417ef";
+(node as any).hash = "6e5690efc446b8f78ef343f4a236670c";
 
 export default node;

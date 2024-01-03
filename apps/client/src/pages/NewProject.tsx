@@ -11,7 +11,7 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { TypographyH3 } from "@/components/ui/typography";
 import { useToast } from "@/components/ui/use-toast";
-import { USER, CURRENT_USER } from "@/graphql/queries/user";
+import { USER, ME } from "@/graphql/queries/user";
 import { cn, toTitleCase } from "@/lib/utils";
 import { createProjectValidator } from "@/validators/project";
 import { useMutation, loadQuery, usePreloadedQuery } from "react-relay";
@@ -26,6 +26,8 @@ import { NewClient } from "./NewClient";
 import { CREATE_PROJECT } from "@/graphql/mutations/project";
 import { RelayEnvironment } from "@/RelayEnvironment";
 import { QueryById } from "@/graphql/shared/interfaces";
+import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
+import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 export const NewProject = () => {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof createProjectValidator>>({
@@ -41,32 +43,10 @@ export const NewProject = () => {
 
   const status = createProjectValidator.shape.status.Values;
   const statusEnum = Object.values(status).map((status) => ({ value: status, label: toTitleCase(status) }));
-  const currentUserQuery = loadQuery<{
-    variables: Record<string, never>;
-    response: {
-      currentUser: {
-        id: string;
-      };
-    };
-  }>(RelayEnvironment, CURRENT_USER, {});
-  const {
-    currentUser: { id },
-  } = usePreloadedQuery(CURRENT_USER, currentUserQuery);
-
-  const queryRef = loadQuery<{
-    variables: QueryById;
-    response: {
-      user: {
-        clients: {
-          id: string;
-          name: string;
-        }[];
-      };
-    };
-  }>(RelayEnvironment, USER, { id });
-  const {
-    user: { clients },
-  } = usePreloadedQuery(USER, queryRef);
+  const currentUserQuery = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
+  const { me } = usePreloadedQuery(ME, currentUserQuery);
+  const queryRef = loadQuery<userUserQuery>(RelayEnvironment, USER, { id: me?.id || "" });
+  const { user } = usePreloadedQuery(USER, queryRef);
 
   const [createProject, isInFlight] = useMutation(CREATE_PROJECT);
 
@@ -84,11 +64,11 @@ export const NewProject = () => {
 
   useEffect(() => {
     (async function getUser() {
-      if (id) {
-        form.setValue("user", id);
+      if (user?.id) {
+        form.setValue("user", user?.id);
       }
     })();
-  }, [id]);
+  }, [user?.id]);
 
   return (
     <section className="flex flex-col justify-start md:justify-center items-center h-full w-full pt-8">
@@ -199,15 +179,13 @@ export const NewProject = () => {
                               role="combobox"
                               className={cn("w-72 justify-between", !field.value && "text-muted-foreground")}
                             >
-                              {field.value
-                                ? clients.find((client: { id: string }) => client.id === field.value)?.name
-                                : "Select Client"}
+                              {field.value ? user?.clients.find((client) => client?.id === field.value)?.name : "Select Client"}
                               <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-72 p-0">
-                          {clients.length === 0 ? (
+                          {user?.clients.length === 0 ? (
                             <div className="py-6 text-center text-sm">No Clients Found.</div>
                           ) : (
                             <Command value={field.value} onValueChange={field.onChange}>
@@ -216,17 +194,20 @@ export const NewProject = () => {
                               <CommandInput placeholder="Search Client..." className="h-9" />
                               <ScrollArea className="max-h-72 overflow-auto">
                                 <CommandGroup>
-                                  {clients.map((client: { id: string; name: string }) => (
+                                  {user?.clients.map((client) => (
                                     <CommandItem
-                                      value={client.id}
-                                      key={client.id}
+                                      value={client?.id}
+                                      key={client?.id}
                                       onSelect={() => {
-                                        form.setValue("client", client.id);
+                                        form.setValue("client", client?.id as string);
                                       }}
                                     >
-                                      {client.name}
+                                      {client?.name}
                                       <CheckIcon
-                                        className={cn("ml-auto h-4 w-4", client.id === field.value ? "opacity-100" : "opacity-0")}
+                                        className={cn(
+                                          "ml-auto h-4 w-4",
+                                          client?.id === field.value ? "opacity-100" : "opacity-0"
+                                        )}
                                       />
                                     </CommandItem>
                                   ))}
