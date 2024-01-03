@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<111cd3d74a9a713ff3cab7369c430fc6>>
+ * @generated SignedSource<<8b7ca401832bbd0e00f7ceba440697f7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,6 +10,7 @@
 
 import { ConcreteRequest, Query } from 'relay-runtime';
 export type Role = "ADMIN" | "USER" | "%future added value";
+export type Status = "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED" | "%future added value";
 export type userUserQuery$variables = {
   id: string;
 };
@@ -18,24 +19,21 @@ export type userUserQuery$data = {
     readonly email: string;
     readonly id: string;
     readonly name: string;
-    readonly photo: string | null | undefined;
     readonly projects: ReadonlyArray<{
-      readonly autoProgress: boolean;
       readonly client: {
         readonly email: string;
         readonly id: string;
         readonly name: string;
         readonly phone: string;
       };
-      readonly description: string | null | undefined;
+      readonly description: string;
       readonly id: string;
       readonly name: string;
-      readonly progress: number;
-      readonly status: string;
+      readonly status: Status;
     } | null | undefined> | null | undefined;
-    readonly role: Role | null | undefined;
+    readonly role: Role;
     readonly username: string;
-  } | null | undefined;
+  };
 };
 export type userUserQuery = {
   response: userUserQuery$data;
@@ -100,13 +98,6 @@ v4 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "photo",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
         "name": "role",
         "storageKey": null
       },
@@ -131,21 +122,7 @@ v4 = [
             "alias": null,
             "args": null,
             "kind": "ScalarField",
-            "name": "progress",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
             "name": "status",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "autoProgress",
             "storageKey": null
           },
           {
@@ -194,16 +171,16 @@ return {
     "selections": (v4/*: any*/)
   },
   "params": {
-    "cacheID": "700921b1f315a312db15e5346fd0679a",
+    "cacheID": "fc35a57735f1369fed56df1d489b8f45",
     "id": null,
     "metadata": {},
     "name": "userUserQuery",
     "operationKind": "query",
-    "text": "query userUserQuery(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    photo\n    role\n    projects {\n      id\n      name\n      description\n      progress\n      status\n      autoProgress\n      client {\n        id\n        name\n        email\n        phone\n      }\n    }\n  }\n}\n"
+    "text": "query userUserQuery(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    role\n    projects {\n      id\n      name\n      description\n      status\n      client {\n        id\n        name\n        email\n        phone\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "5397d39ede3f462a6bbd248f8b05ea47";
+(node as any).hash = "d88aeed136532bcc886542bf38d417ef";
 
 export default node;

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<df5553a8dd4f314c64ec8e1b446cb4a1>>
+ * @generated SignedSource<<3a6db9abb5513028e60c8d025eccfb37>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,6 @@ export type UserInput = {
   email: string;
   name: string;
   password: string;
-  photo?: string | null | undefined;
   username: string;
 };
 export type userCreateUserMutation$variables = {
@@ -28,9 +27,9 @@ export type userCreateUserMutation$data = {
     readonly id: string;
     readonly name: string;
     readonly photo: string | null | undefined;
-    readonly role: Role | null | undefined;
+    readonly role: Role;
     readonly username: string;
-  } | null | undefined;
+  };
 };
 export type userCreateUserMutation = {
   response: userCreateUserMutation$data;

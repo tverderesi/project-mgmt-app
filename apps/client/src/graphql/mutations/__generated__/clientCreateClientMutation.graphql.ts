@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<51b0685fa9372c3c1ca61333fc6b7d77>>
+ * @generated SignedSource<<ad8cac7a5da2a802778e0e60b1ff31c9>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,6 +13,7 @@ export type ClientInput = {
   email: string;
   name: string;
   phone: string;
+  user: string;
 };
 export type clientCreateClientMutation$variables = {
   input: ClientInput;
@@ -22,7 +23,7 @@ export type clientCreateClientMutation$data = {
     readonly email: string;
     readonly name: string;
     readonly phone: string;
-  } | null | undefined;
+  };
 };
 export type clientCreateClientMutation = {
   response: clientCreateClientMutation$data;

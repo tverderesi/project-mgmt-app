@@ -16,14 +16,6 @@ const query = {
     const project = await ProjectModel.findById(id).populate("client");
     return project;
   },
-
-  deletedProjects: async (_parent, args: z.infer<typeof projectV.query>, context) => {
-    const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT) } = args;
-    const projects = await ProjectModel.find({ deletedAt: { $ne: null } })
-      .limit(limit)
-      .skip(skip);
-    return projects;
-  },
 };
 
 const mutation = {

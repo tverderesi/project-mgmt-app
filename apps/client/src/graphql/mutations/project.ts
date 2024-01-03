@@ -6,7 +6,6 @@ export const CREATE_PROJECT = graphql`
       id
       name
       description
-      progress
       status
     }
   }

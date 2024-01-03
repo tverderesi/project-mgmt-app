@@ -35,17 +35,13 @@ type User {
   username: String!
   email: String!
   password: String!
-  photo: String
   projects: [Project]
   clients: [Client]!
   role: Role!
-}
-
-type UserStats {
-  projectCount: Int!
-  clientCount: Int!
-  taskCountByStatus: [TaskCountByStatus]!
-  totalTaskCount: Int!
+  clientCount: Int
+  projectCount: Int
+  totalTaskCount: Int
+  taskCountByStatus: [TaskCountByStatus]
 }
 
 input UserInput {

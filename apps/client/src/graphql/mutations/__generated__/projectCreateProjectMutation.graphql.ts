@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7ba2dfa4b9f47394aafeb40c704de78b>>
+ * @generated SignedSource<<6d1ecbfc072e57cc433c4d3117551130>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,26 +9,24 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
+export type Status = "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED" | "%future added value";
 export type ProjectInput = {
-  autoProgress: boolean;
-  clientId: string;
+  client: string;
   description?: string | null | undefined;
   name: string;
-  progress: number;
-  status: string;
-  userId: string;
+  status: Status;
+  user: string;
 };
 export type projectCreateProjectMutation$variables = {
   input: ProjectInput;
 };
 export type projectCreateProjectMutation$data = {
   readonly createProject: {
-    readonly description: string | null | undefined;
+    readonly description: string;
     readonly id: string;
     readonly name: string;
-    readonly progress: number;
-    readonly status: string;
-  } | null | undefined;
+    readonly status: Status;
+  };
 };
 export type projectCreateProjectMutation = {
   response: projectCreateProjectMutation$data;
@@ -83,13 +81,6 @@ v1 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "progress",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
         "name": "status",
         "storageKey": null
       }
@@ -115,16 +106,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "d4466be84500f8484a9776c037da665a",
+    "cacheID": "6d70a8080f4b23a51dd24d7f16f2b9c8",
     "id": null,
     "metadata": {},
     "name": "projectCreateProjectMutation",
     "operationKind": "mutation",
-    "text": "mutation projectCreateProjectMutation(\n  $input: ProjectInput!\n) {\n  createProject(input: $input) {\n    id\n    name\n    description\n    progress\n    status\n  }\n}\n"
+    "text": "mutation projectCreateProjectMutation(\n  $input: ProjectInput!\n) {\n  createProject(input: $input) {\n    id\n    name\n    description\n    status\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "582929a7ac79e634428e796d12ce3ac5";
+(node as any).hash = "6e6f94ade57f7c877fac1685f13a4f55";
 
 export default node;

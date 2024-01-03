@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<51e6a9c92c7b786776d471b78fb9f090>>
+ * @generated SignedSource<<94346f6894da07d6861672a643f7843c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,18 +12,12 @@ import { ConcreteRequest, Query } from 'relay-runtime';
 export type Role = "ADMIN" | "USER" | "%future added value";
 export type userCurrentUserQuery$variables = Record<PropertyKey, never>;
 export type userCurrentUserQuery$data = {
-  readonly currentUser: {
-    readonly currentUser: {
-      readonly email: string;
-      readonly id: string;
-      readonly name: string;
-      readonly role: Role | null | undefined;
-      readonly username: string;
-    } | null | undefined;
-    readonly error: {
-      readonly message: string | null | undefined;
-      readonly type: string | null | undefined;
-    } | null | undefined;
+  readonly me: {
+    readonly email: string;
+    readonly id: string;
+    readonly name: string;
+    readonly role: Role;
+    readonly username: string;
   } | null | undefined;
 };
 export type userCurrentUserQuery = {
@@ -36,80 +30,44 @@ var v0 = [
   {
     "alias": null,
     "args": null,
-    "concreteType": "CurrentUserOutput",
+    "concreteType": "User",
     "kind": "LinkedField",
-    "name": "currentUser",
+    "name": "me",
     "plural": false,
     "selections": [
       {
         "alias": null,
         "args": null,
-        "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "currentUser",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "name",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "username",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "email",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "role",
-            "storageKey": null
-          }
-        ],
+        "kind": "ScalarField",
+        "name": "id",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
-        "concreteType": "Error",
-        "kind": "LinkedField",
-        "name": "error",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "message",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "type",
-            "storageKey": null
-          }
-        ],
+        "kind": "ScalarField",
+        "name": "name",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "username",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "email",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "role",
         "storageKey": null
       }
     ],
@@ -134,16 +92,16 @@ return {
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "6aba725672e0b54f2f3c86231743b2fd",
+    "cacheID": "19e0601496f9f83e3bf952ece76cddef",
     "id": null,
     "metadata": {},
     "name": "userCurrentUserQuery",
     "operationKind": "query",
-    "text": "query userCurrentUserQuery {\n  currentUser {\n    currentUser {\n      id\n      name\n      username\n      email\n      role\n    }\n    error {\n      message\n      type\n    }\n  }\n}\n"
+    "text": "query userCurrentUserQuery {\n  me {\n    id\n    name\n    username\n    email\n    role\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "99cd3db1bc8497c4967a3e37a3c98369";
+(node as any).hash = "4dcd4a4f71ec6d479c7cbbaad3c8ddc2";
 
 export default node;

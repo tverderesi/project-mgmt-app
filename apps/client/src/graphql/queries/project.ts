@@ -7,8 +7,6 @@ export const PROJECT = graphql`
       name
       description
       status
-      progress
-      autoProgress
       client {
         id
         name
@@ -20,8 +18,6 @@ export const PROJECT = graphql`
         name
         description
         status
-        progress
-        autoProgress
       }
     }
   }

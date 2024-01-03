@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<fa8fdbb677fdf43bbe513802cf72fb95>>
+ * @generated SignedSource<<242258fa3fdfa7b18cae25c0a0e892e7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type authLogoutMutation$variables = Record<PropertyKey, never>;
 export type authLogoutMutation$data = {
-  readonly logout: boolean | null | undefined;
+  readonly logout: boolean;
 };
 export type authLogoutMutation = {
   response: authLogoutMutation$data;

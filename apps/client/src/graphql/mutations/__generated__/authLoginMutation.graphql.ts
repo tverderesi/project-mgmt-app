@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<6f2eaf24c933be70700adaafce415c81>>
+ * @generated SignedSource<<58bed45c1272e34f651bba60519a8845>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -23,7 +23,7 @@ export type authLoginMutation$data = {
     readonly id: string;
     readonly name: string;
     readonly photo: string | null | undefined;
-    readonly role: Role | null | undefined;
+    readonly role: Role;
     readonly username: string;
   } | null | undefined;
 };

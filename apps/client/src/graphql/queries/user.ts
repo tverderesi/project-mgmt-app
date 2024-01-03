@@ -2,11 +2,11 @@ import { graphql } from "react-relay";
 
 export const USER_STATS = graphql`
   query userUserStatsQuery($id: ID!) {
-    userStats(id: $id) {
+    user(id: $id) {
       projectCount
       clientCount
       totalTaskCount
-      taskCount {
+      taskCountByStatus {
         status
         count
       }
@@ -16,18 +16,12 @@ export const USER_STATS = graphql`
 
 export const CURRENT_USER = graphql`
   query userCurrentUserQuery {
-    currentUser {
-      currentUser {
-        id
-        name
-        username
-        email
-        role
-      }
-      error {
-        message
-        type
-      }
+    me {
+      id
+      name
+      username
+      email
+      role
     }
   }
 `;
@@ -39,15 +33,12 @@ export const USER = graphql`
       name
       username
       email
-      photo
       role
       projects {
         id
         name
         description
-        progress
         status
-        autoProgress
         client {
           id
           name

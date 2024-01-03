@@ -35,7 +35,7 @@ const limiter = rateLimit({
 });
 
 //Creating Apollo Server
-const typeDefs = readFileSync(path.join(__dirname, "graphql", "typeDefs.graphql"), "utf-8");
+const typeDefs = readFileSync(path.join(__dirname, "graphql", "schema.graphql"), "utf-8");
 const server = new ApolloServer({
   typeDefs: [typeDefs],
   resolvers: {

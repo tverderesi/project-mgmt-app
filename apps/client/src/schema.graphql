@@ -1,20 +1,12 @@
-type Query {
-  user(id: ID!): User
-  users: [User]
-  userStats(id: ID!): UserStats
-  currentUser: CurrentUserOutput
-  project(id: ID!): Project
-  projects: [Project]
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
 }
 
-input ProjectInput {
-  name: String!
-  description: String
-  clientId: ID!
-  userId: ID!
-  status: String!
-  progress: Int!
-  autoProgress: Boolean!
+enum Role {
+  USER
+  ADMIN
 }
 
 type Client {
@@ -22,52 +14,19 @@ type Client {
   name: String!
   email: String!
   phone: String!
-  projects: [Project]
+  projects: [Project]!
 }
 
-type Project {
-  id: ID!
+type TaskCountByStatus {
+  status: Status!
+  count: Int!
+}
+
+input ClientInput {
   name: String!
-  client: Client!
-  description: String
-  user: User!
-  tasks: [Task]
-  status: String!
-  progress: Int!
-  autoProgress: Boolean!
-}
-
-type Task {
-  id: ID!
-  name: String!
-  description: String
-  project: Project!
-  user: User!
-  status: String!
-  progress: Int!
-  autoProgress: Boolean!
-}
-
-type taskCount {
-  status: String
-  count: Int
-}
-
-type UserStats {
-  projectCount: Int!
-  clientCount: Int!
-  totalTaskCount: Int!
-  taskCount: [taskCount]!
-}
-
-enum Role {
-  ADMIN
-  USER
-}
-
-input LoginInput {
-  user: String!
-  password: String!
+  email: String!
+  phone: String!
+  user: ID!
 }
 
 type User {
@@ -75,20 +34,15 @@ type User {
   name: String!
   username: String!
   email: String!
+  password: String!
   photo: String
-  role: Role
   projects: [Project]
-  clients: [Client]
-}
-
-type Error {
-  type: String
-  message: String
-}
-
-type CurrentUserOutput {
-  currentUser: User
-  error: Error
+  clients: [Client]!
+  role: Role!
+  clientCount: Int
+  projectCount: Int
+  totalTaskCount: Int
+  taskCountByStatus: [TaskCountByStatus]
 }
 
 input UserInput {
@@ -98,19 +52,121 @@ input UserInput {
   confirmEmail: String!
   password: String!
   confirmPassword: String!
-  photo: String
 }
 
-input ClientInput {
+input UpdateUserInput {
+  id: ID!
+  name: String
+  email: String
+  password: String
+  oldPassword: String
+  username: String
+}
+
+type Project {
+  id: ID!
   name: String!
-  email: String!
-  phone: String!
+  description: String!
+  client: Client!
+  user: User!
+  tasks: [Task]!
+  status: Status!
+}
+
+input UserFilter {
+  name: String
+  username: String
+  email: String
+  role: String
+}
+
+input ProjectInput {
+  name: String!
+  description: String
+  client: ID!
+  user: ID!
+  status: Status!
+}
+
+input UpdateProjectInput {
+  name: String
+  description: String
+  status: Status
+  client: ID
+  user: ID
+}
+
+type Task {
+  id: ID!
+  name: String!
+  description: String
+  project: Project!
+  user: User!
+  status: Status!
+}
+
+input TaskInput {
+  name: String!
+  description: String
+  project: ID!
+  user: ID!
+  status: Status!
+}
+
+input UpdateTaskInput {
+  name: String
+  description: String
+  status: Status
+}
+
+input LoginInput {
+  user: String!
+  password: String!
+}
+
+input ProjectFilter {
+  name: String
+  status: Status
+  client: ID
+  user: ID
+}
+
+input ClientFilter {
+  name: String
+  email: String
+  phone: String
+}
+
+input TaskFilter {
+  name: String
+  status: Status
+}
+
+type Query {
+  clients(filter: ClientFilter): [Client]!
+  client(id: ID!): Client
+  users(filter: UserFilter): [User]
+  user(id: ID!): User!
+  projects(filter: ProjectFilter): [Project]!
+  project(id: ID!): Project!
+  tasks(filter: TaskFilter): [Task]!
+  task(id: ID!): Task!
+  me: User
 }
 
 type Mutation {
-  login(input: LoginInput): User
-  createUser(input: UserInput): User
-  createProject(input: ProjectInput): Project
-  logout: Boolean
-  createClient(input: ClientInput): Client
+  createClient(input: ClientInput!): Client!
+  updateClient(id: ID!, input: ClientInput!): Client!
+  deleteClient(id: ID!): String!
+  createUser(input: UserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(id: ID!): String!
+  createProject(input: ProjectInput!): Project!
+  updateProject(id: ID!, input: UpdateProjectInput!): Project!
+  deleteProject(id: ID!): String!
+  createTask(input: TaskInput!): Task!
+  updateTask(id: ID!, input: UpdateTaskInput!): Task!
+  deleteTask(id: ID!): String!
+  login(input: LoginInput!): User
+  logout: Boolean!
 }

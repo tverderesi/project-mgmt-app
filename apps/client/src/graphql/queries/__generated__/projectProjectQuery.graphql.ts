@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<47010ad6fc6dbdc4ef3bb4ee554983c6>>
+ * @generated SignedSource<<14f698061d9733b9889694a93683cfd3>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,32 +9,29 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
+export type Status = "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED" | "%future added value";
 export type projectProjectQuery$variables = {
   id: string;
 };
 export type projectProjectQuery$data = {
   readonly project: {
-    readonly autoProgress: boolean;
     readonly client: {
       readonly email: string;
       readonly id: string;
       readonly name: string;
       readonly phone: string;
     };
-    readonly description: string | null | undefined;
+    readonly description: string;
     readonly id: string;
     readonly name: string;
-    readonly progress: number;
-    readonly status: string;
+    readonly status: Status;
     readonly tasks: ReadonlyArray<{
-      readonly autoProgress: boolean;
       readonly description: string | null | undefined;
       readonly id: string;
       readonly name: string;
-      readonly progress: number;
-      readonly status: string;
-    } | null | undefined> | null | undefined;
-  } | null | undefined;
+      readonly status: Status;
+    } | null | undefined>;
+  };
 };
 export type projectProjectQuery = {
   response: projectProjectQuery$data;
@@ -77,21 +74,7 @@ v4 = {
   "name": "status",
   "storageKey": null
 },
-v5 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "progress",
-  "storageKey": null
-},
-v6 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "autoProgress",
-  "storageKey": null
-},
-v7 = [
+v5 = [
   {
     "alias": null,
     "args": [
@@ -110,8 +93,6 @@ v7 = [
       (v2/*: any*/),
       (v3/*: any*/),
       (v4/*: any*/),
-      (v5/*: any*/),
-      (v6/*: any*/),
       {
         "alias": null,
         "args": null,
@@ -150,9 +131,7 @@ v7 = [
           (v1/*: any*/),
           (v2/*: any*/),
           (v3/*: any*/),
-          (v4/*: any*/),
-          (v5/*: any*/),
-          (v6/*: any*/)
+          (v4/*: any*/)
         ],
         "storageKey": null
       }
@@ -166,7 +145,7 @@ return {
     "kind": "Fragment",
     "metadata": null,
     "name": "projectProjectQuery",
-    "selections": (v7/*: any*/),
+    "selections": (v5/*: any*/),
     "type": "Query",
     "abstractKey": null
   },
@@ -175,19 +154,19 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "projectProjectQuery",
-    "selections": (v7/*: any*/)
+    "selections": (v5/*: any*/)
   },
   "params": {
-    "cacheID": "941e31d61a168bda8d602dd4ad70197b",
+    "cacheID": "22a57971c16f926d8ba0717dfe4201c5",
     "id": null,
     "metadata": {},
     "name": "projectProjectQuery",
     "operationKind": "query",
-    "text": "query projectProjectQuery(\n  $id: ID!\n) {\n  project(id: $id) {\n    id\n    name\n    description\n    status\n    progress\n    autoProgress\n    client {\n      id\n      name\n      email\n      phone\n    }\n    tasks {\n      id\n      name\n      description\n      status\n      progress\n      autoProgress\n    }\n  }\n}\n"
+    "text": "query projectProjectQuery(\n  $id: ID!\n) {\n  project(id: $id) {\n    id\n    name\n    description\n    status\n    client {\n      id\n      name\n      email\n      phone\n    }\n    tasks {\n      id\n      name\n      description\n      status\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "c5204017795218ed8ae52bd3e5584ee5";
+(node as any).hash = "a8fe6de65ee1b749fa195de975727329";
 
 export default node;
