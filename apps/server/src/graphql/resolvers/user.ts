@@ -12,6 +12,7 @@ const mutation = {
 
   updateUser: async (_parent: any, { input }: { input: z.infer<typeof userV.update> }, context: any) => {
     const me = await context.getUser();
+
     if (!me) return { user: null, error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
     if (me.id !== input.id && me.role !== "ADMIN")
       return {
@@ -20,11 +21,16 @@ const mutation = {
       };
 
     const error = checkRequiredFields(input, userV.update);
+
     if (error) return { user: null, error };
     const { id, ...rest } = input;
     try {
-      const user = await UserModel.findByIdAndUpdate(id, rest, { new: true });
+      const user = await UserModel.findById(id);
+
       if (!user) return { user: null, error: { type: "USER_ERROR_NOT_FOUND", message: "User not found!" } };
+      user.set(rest);
+      await user.save();
+      return { user, error: {} };
     } catch (e) {
       if (e.code === 11000) {
         const duplicatedFields = Object.keys(e.keyPattern);
@@ -51,13 +57,18 @@ const mutation = {
   },
 
   login: async (_parent: any, { input: { user: username, password } }, context) => {
-    const loggedUser = await context.authenticate("graphql-local", {
-      username,
-      password,
-    });
+    try {
+      const loggedUser = await context.authenticate("graphql-local", {
+        username,
+        password,
+      });
 
-    await context.login(loggedUser);
-    return loggedUser.user;
+      await context.login(loggedUser);
+      return { user: loggedUser.user, error: {} };
+    } catch (e) {
+      console.log(e);
+      return { user: null, error: { type: "AUTH_ERROR_INVALID_CREDENTIALS", message: "Invalid credentials!" } };
+    }
   },
 
   logout: async (_parent: any, __: any, context: any) => {

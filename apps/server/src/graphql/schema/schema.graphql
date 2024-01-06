@@ -83,11 +83,6 @@ input UpdateTaskInput {
   status: Status
 }
 
-input LoginInput {
-  user: String!
-  password: String!
-}
-
 input ProjectFilter {
   name: String
   status: Status
@@ -125,6 +120,4 @@ type Mutation {
   createTask(input: TaskInput!): Task!
   updateTask(id: ID!, input: UpdateTaskInput!): Task!
   deleteTask(id: ID!): String!
-  login(input: LoginInput!): User
-  logout: Boolean!
 }

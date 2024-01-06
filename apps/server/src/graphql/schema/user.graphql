@@ -28,7 +28,7 @@ input UpdateUserInput {
   name: String
   email: String
   password: String
-  newPassword: String
+  oldPassword: String
   username: String
   role: Role
 }

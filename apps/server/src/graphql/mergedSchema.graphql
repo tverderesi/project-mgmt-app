@@ -1,3 +1,30 @@
+type LoginReturn {
+  user: User
+  error: Error
+}
+
+input LoginInput {
+  user: String!
+  password: String!
+}
+
+type Mutation {
+  login(input: LoginInput!): LoginReturn!
+  logout: Boolean!
+  createClient(input: ClientInput!): Client!
+  updateClient(id: ID!, input: ClientInput!): Client!
+  deleteClient(id: ID!): String!
+  createProject(input: ProjectInput!): Project!
+  updateProject(id: ID!, input: UpdateProjectInput!): Project!
+  deleteProject(id: ID!): String!
+  createTask(input: TaskInput!): Task!
+  updateTask(id: ID!, input: UpdateTaskInput!): Task!
+  deleteTask(id: ID!): String!
+  createUser(input: UserInput!): CreateUserReturn!
+  updateUser(input: UpdateUserInput!): UpdateUserReturn!
+  deleteUser(id: ID!): DeleteUserReturn!
+}
+
 enum Status {
   NOT_STARTED
   IN_PROGRESS
@@ -83,11 +110,6 @@ input UpdateTaskInput {
   status: Status
 }
 
-input LoginInput {
-  user: String!
-  password: String!
-}
-
 input ProjectFilter {
   name: String
   status: Status
@@ -116,23 +138,6 @@ type Query {
   users(filter: UserFilter): UsersQueryReturn!
   user(id: ID!): UserQueryReturn!
   me: UserQueryReturn!
-}
-
-type Mutation {
-  createClient(input: ClientInput!): Client!
-  updateClient(id: ID!, input: ClientInput!): Client!
-  deleteClient(id: ID!): String!
-  createProject(input: ProjectInput!): Project!
-  updateProject(id: ID!, input: UpdateProjectInput!): Project!
-  deleteProject(id: ID!): String!
-  createTask(input: TaskInput!): Task!
-  updateTask(id: ID!, input: UpdateTaskInput!): Task!
-  deleteTask(id: ID!): String!
-  login(input: LoginInput!): User
-  logout: Boolean!
-  createUser(input: UserInput!): CreateUserReturn!
-  updateUser(input: UpdateUserInput!): UpdateUserReturn!
-  deleteUser(id: ID!): DeleteUserReturn!
 }
 
 type User {
@@ -165,7 +170,7 @@ input UpdateUserInput {
   name: String
   email: String
   password: String
-  newPassword: String
+  oldPassword: String
   username: String
   role: Role
 }
