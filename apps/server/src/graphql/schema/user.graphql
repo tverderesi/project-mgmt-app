@@ -1,13 +1,3 @@
-enum Role {
-  ADMIN
-  USER
-}
-
-type Error {
-  message: String!
-  type: String!
-}
-
 type User {
   id: ID!
   name: String!
@@ -15,6 +5,12 @@ type User {
   email: String!
   password: String!
   role: Role!
+  projects: [Project]
+  clients: [Client]!
+  clientCount: Int
+  projectCount: Int
+  totalTaskCount: Int
+  taskCountByStatus: [TaskCountByStatus]
 }
 
 input UserInput {
@@ -75,15 +71,8 @@ type Query {
   me: UserQueryReturn!
 }
 
-input LoginInput {
-  user: String
-  password: String
-}
-
 type Mutation {
   createUser(input: UserInput!): CreateUserReturn!
   updateUser(input: UpdateUserInput!): UpdateUserReturn!
   deleteUser(id: ID!): DeleteUserReturn!
-  login(input: LoginInput!): User
-  logout: Boolean!
 }

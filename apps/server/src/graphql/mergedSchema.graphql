@@ -29,37 +29,9 @@ input ClientInput {
   user: ID!
 }
 
-type User {
-  id: ID!
-  name: String!
-  username: String!
-  email: String!
-  password: String!
-  projects: [Project]
-  clients: [Client]!
-  role: Role!
-  clientCount: Int
-  projectCount: Int
-  totalTaskCount: Int
-  taskCountByStatus: [TaskCountByStatus]
-}
-
-input UserInput {
-  name: String!
-  username: String!
-  email: String!
-  confirmEmail: String!
-  password: String!
-  confirmPassword: String!
-}
-
-input UpdateUserInput {
-  id: ID!
-  name: String
-  email: String
-  password: String
-  oldPassword: String
-  username: String
+type Error {
+  type: String
+  message: String
 }
 
 type Project {
@@ -70,13 +42,6 @@ type Project {
   user: User!
   tasks: [Task]!
   status: Status!
-}
-
-input UserFilter {
-  name: String
-  username: String
-  email: String
-  role: String
 }
 
 input ProjectInput {
@@ -144,22 +109,19 @@ input TaskFilter {
 type Query {
   clients(filter: ClientFilter): [Client]!
   client(id: ID!): Client
-  users(filter: UserFilter): [User]
-  user(id: ID!): User!
   projects(filter: ProjectFilter): [Project]!
   project(id: ID!): Project!
   tasks(filter: TaskFilter): [Task]!
   task(id: ID!): Task!
-  me: User
+  users(filter: UserFilter): UsersQueryReturn!
+  user(id: ID!): UserQueryReturn!
+  me: UserQueryReturn!
 }
 
 type Mutation {
   createClient(input: ClientInput!): Client!
   updateClient(id: ID!, input: ClientInput!): Client!
   deleteClient(id: ID!): String!
-  createUser(input: UserInput!): User!
-  updateUser(input: UpdateUserInput!): User!
-  deleteUser(id: ID!): String!
   createProject(input: ProjectInput!): Project!
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   deleteProject(id: ID!): String!
@@ -168,4 +130,79 @@ type Mutation {
   deleteTask(id: ID!): String!
   login(input: LoginInput!): User
   logout: Boolean!
+  createUser(input: UserInput!): CreateUserReturn!
+  updateUser(input: UpdateUserInput!): UpdateUserReturn!
+  deleteUser(id: ID!): DeleteUserReturn!
+}
+
+type User {
+  id: ID!
+  name: String!
+  username: String!
+  email: String!
+  password: String!
+  role: Role!
+  projects: [Project]
+  clients: [Client]!
+  clientCount: Int
+  projectCount: Int
+  totalTaskCount: Int
+  taskCountByStatus: [TaskCountByStatus]
+}
+
+input UserInput {
+  name: String!
+  username: String!
+  email: String!
+  confirmEmail: String!
+  password: String!
+  confirmPassword: String!
+  role: Role!
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  email: String
+  password: String
+  newPassword: String
+  username: String
+  role: Role
+}
+
+input UserFilter {
+  name: String
+  username: String
+  email: String
+  role: String
+}
+
+type UsersQueryReturn {
+  users: [User]
+  error: Error
+}
+
+type UserQueryReturn {
+  user: User
+  error: Error
+}
+
+type CreateUserReturn {
+  user: User
+  error: Error
+}
+
+type UpdateUserReturn {
+  user: User
+  error: Error
+}
+
+type DeleteUserReturn {
+  status: String
+  error: Error
+}
+
+schema {
+  query: Query
+  mutation: Mutation
 }

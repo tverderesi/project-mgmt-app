@@ -4,22 +4,50 @@ import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
-    checkRequiredFields(input, userV.create);
+    const error = checkRequiredFields(input, userV.create);
+    if (error) return { user: null, error };
     const user = await UserModel.create(input);
-    return user;
+    return { user, error: {} };
   },
 
-  updateUser: async (_parent: any, args: z.infer<typeof userV.update>, context: any) => {
-    checkRequiredFields(args, userV.update);
-    const user = await UserModel.findByIdAndUpdate(args.id, args, { new: true });
-    if (!user) throw new Error("User not found!");
-    return user;
+  updateUser: async (_parent: any, { input }: { input: z.infer<typeof userV.update> }, context: any) => {
+    const me = await context.getUser();
+    if (!me) return { user: null, error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
+    if (me.id !== input.id && me.role !== "ADMIN")
+      return {
+        user: null,
+        error: { type: "AUTH_ERROR_UNAUTHORIZED", message: "You are not authorized to perform this action!" },
+      };
+
+    const error = checkRequiredFields(input, userV.update);
+    if (error) return { user: null, error };
+    const { id, ...rest } = input;
+    try {
+      const user = await UserModel.findByIdAndUpdate(id, rest, { new: true });
+      if (!user) return { user: null, error: { type: "USER_ERROR_NOT_FOUND", message: "User not found!" } };
+    } catch (e) {
+      if (e.code === 11000) {
+        const duplicatedFields = Object.keys(e.keyPattern);
+        const message = duplicatedFields.map((field) => `${field} is already on the database!`).join(", ");
+        const errorMessageJson = JSON.stringify({ [duplicatedFields[0]]: message });
+        return { user: null, error: { type: "ERROR_DUPLICATED_KEY", message: errorMessageJson } };
+      }
+      return { user: null, error: { type: "UNKNOWN_ERROR", message: "An unknown error occurred. Please try again." } };
+    }
   },
 
-  deleteUser: async (_parent: any, { _id }: { _id: string }, context: any) => {
-    const user = await UserModel.findByIdAndDelete(_id);
-    if (!user) throw new Error("User not found!");
-    return "User deleted successfully!";
+  deleteUser: async (_parent: any, { id }: { id: string }, context: any) => {
+    const me = await context.getUser();
+    if (!me) return { status: "ERROR", error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
+    if (me.id !== id && me.role !== "ADMIN")
+      return {
+        status: "ERROR",
+        error: { type: "AUTH_ERROR_UNAUTHORIZED", message: "You are not authorized to perform this action!" },
+      };
+    const user = await UserModel.findByIdAndDelete(id);
+    if (!user) return { status: "ERROR", error: { type: "USER_ERROR_NOT_FOUND", message: "User not found!" } };
+    if (me.id == id) await context.logout();
+    return { status: "OK", error: {} };
   },
 
   login: async (_parent: any, { input: { user: username, password } }, context) => {
@@ -27,6 +55,7 @@ const mutation = {
       username,
       password,
     });
+
     await context.login(loggedUser);
     return loggedUser.user;
   },
@@ -38,33 +67,45 @@ const mutation = {
 };
 
 const query = {
-  users: async (_parent: any, args: z.infer<typeof userV.query>, context: any) => {
-    const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT), sort, ...rest } = args;
-    const users = await UserModel.find({ deletedAt: null, ...rest })
-      .limit(limit)
-      .skip(skip)
-      .sort(sort);
-    return users;
+  users: async (_parent: any, { filter }: { filter: z.infer<typeof userV.base> }, context: any) => {
+    const errors: { type: string; message: string }[] = [];
+    const me = await context.getUser();
+
+    if (!me) {
+      errors.push({ type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" });
+      return { users: [], errors };
+    }
+
+    if (me.role !== "ADMIN") {
+      errors.push({ type: "AUTH_ERROR_UNAUTHORIZED", message: "You are not authorized to perform this action!" });
+      return { users: [], errors };
+    }
+    //TODO: enhance the filter algorithm to account for partial matches
+    const users = await UserModel.find(filter);
+    return { users, errors };
   },
 
   user: async (_parent: any, { id }, context: any) => {
-    const user = await UserModel.findById(id)
-      .populate("clients")
-      .populate("projectCount")
-      .populate("clientCount")
-      .populate("taskCount")
-      .populate({
-        path: "projects",
-        populate: {
-          path: "client",
-          model: "Client",
-        },
-      });
-    return user;
-  },
-  me: async (_parent: any, _args: any, context: any) => {
     const me = await context.getUser();
-    return me;
+
+    if (!me) {
+      return { user: null, error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
+    }
+
+    if (me.id !== id && me.role !== "ADMIN") {
+      return {
+        user: null,
+        error: { type: "AUTH_ERROR_UNAUTHORIZED", message: "You are not authorized to perform this action!" },
+      };
+    }
+
+    const user = await UserModel.findById(id).populate("projectCount").populate("clientCount").populate("taskCount");
+    return { user, error: {} };
+  },
+  me: async (_parent: any, __: any, context: any) => {
+    const me = await context.getUser();
+    if (!me) return { user: null, error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
+    return { user: me, error: {} };
   },
 };
 

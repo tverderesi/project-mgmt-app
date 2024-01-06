@@ -5,70 +5,28 @@ import { UserPlus, RotateCcw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { FormDescription, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
-import { createClientValidator } from "@/validators/client";
+import clientV from "@/validators/client";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
-import { ME, USER } from "@/graphql/queries/user";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandInput, CommandItem, CommandGroup } from "@/components/ui/command";
-import countryCodes from "@/assets/countryCodes.json";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { CREATE_CLIENT } from "@/graphql/mutations/client";
-import { useMutation, usePreloadedQuery, loadQuery } from "react-relay";
-import { RelayEnvironment } from "@/RelayEnvironment";
-import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
 export const NewClient = ({ asSideItem = false }) => {
-  type NewClient = z.infer<typeof createClientValidator>;
   const { toast } = useToast();
 
-  const form = useForm<NewClient>({
-    resolver: zodResolver(createClientValidator),
+  const form = useForm<z.infer<typeof clientV.create>>({
+    resolver: zodResolver(clientV.create),
+    defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+    },
   });
 
-  const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
-  const { me } = usePreloadedQuery(ME, queryRef);
-
-  const [createClient] = useMutation(CREATE_CLIENT);
-
-  useEffect(() => {
-    if (me?.id) {
-      form.setValue("user", me?.id);
-    }
-  }, [me?.id]);
-
-  const onSubmit = (data: NewClient) => {
-    data.phone = `${data.countryCode}${data.phone}`;
-    const { countryCode, ...rest } = data;
-    createClient({
-      variables: { input: rest },
-      onCompleted: () => {
-        toast({
-          title: "Client created successfully",
-          description: "The client was created successfully.",
-        });
-        form.reset();
-      },
-      onError: (error) => {
-        toast({
-          title: "Client creation failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      },
-      updater: (store) => {
-        const newClient = store.getRootField("createClient");
-        const clients = store?.getRoot()?.getLinkedRecords("clients", { user: me?.id });
-        if (clients) {
-          const updatedClients = [...clients, newClient];
-          store.getRoot().setLinkedRecords(updatedClients, "clients", { user: me?.id });
-        } else {
-          store.getRoot().setLinkedRecords([newClient], "clients", { user: me?.id });
-        }
-      },
+  const onSubmit = (data: z.infer<typeof clientV.create>) => {
+    console.log(data);
+    toast({
+      title: "Client created",
+      description: "The client was created successfully.",
     });
   };
 
@@ -108,55 +66,7 @@ export const NewClient = ({ asSideItem = false }) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="countryCode"
-            render={({ field }) => (
-              <FormItem className="w-72">
-                <FormLabel>Country Phone Code</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn("w-72 justify-between", !field.value && "text-muted-foreground")}
-                      >
-                        {field.value ? countryCodes.find((country) => country.dial_code === field.value)?.name : "Select Country"}
-                        <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-72 p-0">
-                    <Command className="h-72">
-                      <CommandInput placeholder="Search Phone Code" className="h-9" />
-                      <CommandEmpty>No country found.</CommandEmpty>
-                      <ScrollArea className="h-72 overflow-auto">
-                        <CommandGroup>
-                          {countryCodes.map((country) => (
-                            <CommandItem
-                              value={country.name}
-                              key={country.code}
-                              onSelect={() => {
-                                form.setValue("countryCode", country.dial_code);
-                              }}
-                            >
-                              {country.name}
-                              <CheckIcon
-                                className={cn("ml-auto h-4 w-4", country.dial_code === field.value ? "opacity-100" : "opacity-0")}
-                              />
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </ScrollArea>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <FormDescription>Select the country phone code.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
           <FormField
             control={form.control}
             name="phone"

@@ -1,20 +1,11 @@
-import { graphql } from "relay-runtime";
+import { graphql } from "react-relay";
 
-export const authLoginMutation = graphql`
+export const LOGIN = graphql`
   mutation authLoginMutation($input: LoginInput!) {
     login(input: $input) {
       id
-      name
-      username
-      email
-      photo
       role
+      name
     }
-  }
-`;
-
-export const authLogoutMutation = graphql`
-  mutation authLogoutMutation {
-    logout
   }
 `;

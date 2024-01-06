@@ -5,16 +5,10 @@ import { CardStackIcon, EyeOpenIcon, PersonIcon, PlusIcon } from "@radix-ui/reac
 import { AlertOctagon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { USER } from "@/graphql/queries/user";
-import { USER_STATS } from "@/graphql/queries/user";
 import { PlusCircle } from "lucide-react";
 import { statusDTO } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
-import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
-import { useCurrentUser } from "../../hooks/suspense-hooks";
-import { loadQuery, useLazyLoadQuery, usePreloadedQuery } from "react-relay";
-import { RelayEnvironment } from "@/RelayEnvironment";
-import { QueryById } from "@/graphql/shared/interfaces";
+import { Suspense } from "react";
 
 export function NoProjectsCard() {
   return (
@@ -40,23 +34,24 @@ export function NoProjectsCard() {
 NoProjectsCard.displayName = "NoProjectsCard";
 
 export function ProjectsSection() {
-  const SuspenseProjectCount = withSuspense(ProjectCount, <span className="h-6 w-28 animate-pulse rounded-md bg-primary/10" />);
-  const SuspenseProjectCarouselItems = withSuspense(ProjectCarouselItems, <ProjectCardFallback />);
-
   return (
     <Card className="shadow-none dark:bg-accent/20 bg-stone-100/70 border-none  h-100 flex flex-col justify-center">
       <CardHeader>
         <CardTitle className="text-xl">
           Projects
           <CardDescription>
-            <SuspenseProjectCount />
+            <Suspense fallback={<span className="h-6 w-28 animate-pulse rounded-md bg-primary/10" />}>
+              <ProjectCount />
+            </Suspense>
           </CardDescription>
         </CardTitle>
       </CardHeader>
 
       <CardContent className="px-6 h-auto">
         <div className="flex w-full gap-3 overflow-x-scroll  snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
-          <SuspenseProjectCarouselItems />
+          <Suspense fallback={<ProjectCardFallback />}>
+            <ProjectCarouselItems />
+          </Suspense>
         </div>
       </CardContent>
       <CardFooter className="gap-2 justify-end">
@@ -80,17 +75,7 @@ export function ProjectsSection() {
 ProjectsSection.displayName = "ProjectsSection";
 
 function ProjectCount() {
-  const { id } = useCurrentUser();
-  const {
-    userStats: { projectCount },
-  } = useLazyLoadQuery<{
-    variables: QueryById;
-    response: {
-      userStats: {
-        projectCount: number;
-      };
-    };
-  }>(USER_STATS, { id });
+  const projectCount = Math.random() > 0.5 ? 0 : Math.floor(Math.random() * 100);
 
   return <>{projectCount} Projects</>;
 }
@@ -107,35 +92,18 @@ const ProjectCardFallback = () => {
 };
 
 const ProjectCarouselItems = () => {
-  const { id } = useCurrentUser();
-  const {
-    userStats: { projectCount },
-  } = useLazyLoadQuery<{
-    variables: QueryById;
-    response: {
-      userStats: {
-        projectCount: number;
-      };
-    };
-  }>(USER_STATS, { id });
+  const projectCount = Math.random() > 0.5 ? 0 : Math.floor(Math.random() * 100);
 
-  const {
-    user: { projects },
-  } = useLazyLoadQuery<{
-    variables: QueryById;
-    response: {
-      user: {
-        projects: {
-          id: string;
-          name: string;
-          status: string;
-          client: {
-            name: string;
-          };
-        }[];
-      };
-    };
-  }>(USER, { id });
+  const projects = Array(projectCount).fill({
+    id: "1",
+    name: "Project 1",
+    description: "This is a description",
+    status: "NOT_STARTED",
+    progress: 20,
+    client: {
+      name: "Client 1",
+    },
+  });
 
   if (projectCount === 0) {
     return <NoProjectsCard />;

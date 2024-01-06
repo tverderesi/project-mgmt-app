@@ -1,47 +1,17 @@
-import { statuses } from "@/components/navigation/Enum";
 import { z } from "zod";
+import { statuses } from "./shared";
 
-export const projectValidator = z.object({
-  _id: z.string().optional(),
-  name: z.string().optional(),
-  description: z.string().optional(),
-  deletedAt: z.string().optional(),
-  user: z.string().optional(),
-  client: z.string().optional(),
-  autoProgress: z.boolean().optional(),
-  progress: z
-    .number()
-    .refine(
-      (arg) => {
-        return arg > 0 || arg < 100;
-      },
-      {
-        message: "Progress must be between 0 and 100",
-        path: ["progress"],
-      }
-    )
-    .optional(),
-  status: z.enum(statuses).optional(),
-  limit: z.number().optional(),
-  skip: z.number().optional(),
-  sort: z.string().optional(),
+const base = z.object({
+  id: z.string(),
+  name: z.string().min(2).max(100),
+  description: z.string().max(500).optional(),
+  user: z.string(),
+  client: z.string(),
+  status: z.enum(statuses),
 });
 
-export const createProjectValidator = projectValidator
-  .omit({
-    _id: true,
-    deletedAt: true,
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({ name: true, description: true, user: true, status: true, progress: true, client: true, autoProgress: true });
+const create = base.omit({ id: true });
 
-export const updateProjectValidator = projectValidator
-  .omit({
-    deletedAt: true,
-    limit: true,
-    skip: true,
-    sort: true,
-  })
-  .required({ _id: true, userId: true });
+const update = base.partial().required({ id: true });
+
+export default { base, create, update };

@@ -20,7 +20,6 @@ export interface User {
   username: string;
   email: string;
   password: string;
-  photo: string;
   role: string;
   clients: Client[];
   projects: Omit<Project, "tasks">[];

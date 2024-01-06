@@ -1,7 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PROJECT } from "@/graphql/queries/project";
-import { useParams } from "react-router-dom";
 import { statusDTO } from "@/lib/utils";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,10 +7,6 @@ import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Mail, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { loadQuery, usePreloadedQuery } from "react-relay";
-import { RelayEnvironment } from "@/RelayEnvironment";
-import { QueryById } from "@/graphql/shared/interfaces";
-
 export const Project = () => {
   return (
     <div className="pt-16 flex flex-col gap-4">
@@ -24,31 +18,24 @@ export const Project = () => {
 };
 
 const ProjectDashboard = () => {
-  const id = useParams<{ id: string }>().id;
-  const loadedQuery = loadQuery<{
-    variables: QueryById;
-    response: {
-      project: {
-        name: string;
-        status: string;
-        progress: number;
-        description: string;
-        autoProgress: boolean;
-        client: {
-          name: string;
-          email: string;
-          phone: string;
-        };
-      };
-    };
-  }>(RelayEnvironment, PROJECT, { id });
-  const { project } = usePreloadedQuery(PROJECT, loadedQuery);
+  const project = {
+    id: "1",
+    name: "Project 1",
+    description: "This is a description",
+    status: "NOT_STARTED",
+    progress: 20,
+    client: {
+      name: "Client 1",
+      email: "client1@email.com",
+      phone: "123456789",
+    },
+  };
+
   return (
     <Card className="shadow-none h-96 border-none">
       <CardHeader className="flex flex-row gap-4 items-center flex-wrap">
         <CardTitle className="text-4xl mr-4">{project.name}</CardTitle>
         <Badge>{statusDTO(project?.status)}</Badge>
-        {project.autoProgress && <Badge> Auto Progress </Badge>}
       </CardHeader>
       <CardContent className="space-y-16">
         <p className="text-3xl font-semibold px-3 -mb-8">Info</p>
@@ -62,6 +49,7 @@ const ProjectDashboard = () => {
     </Card>
   );
 };
+
 function ClientInfo({
   project: {
     client: { name, email, phone },

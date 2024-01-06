@@ -13,9 +13,12 @@ export const AppLayout: React.FC = () => {
   const location = useLocation();
   const data = usePreloadedQuery<userMeQuery>(ME, queryReference);
   useEffect(() => {
+    console.log(data);
+
     if (!data?.me?.role) {
       navigate("/login");
     }
+
     if (data?.me?.role) {
       const role = data?.me?.role;
       const href = `/app/${role.toLowerCase()}`;

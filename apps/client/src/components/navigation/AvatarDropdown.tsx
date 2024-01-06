@@ -14,11 +14,10 @@ import { loadQuery, usePreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "@/RelayEnvironment";
 import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
 
-const loadedQuery = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
+export const loadedQuery = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
 
 export const AvatarDropdown = () => {
   const data = usePreloadedQuery(ME, loadedQuery);
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>

@@ -7,7 +7,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import session from "express-session";
-import { readFileSync } from "fs";
 import { buildContext } from "graphql-passport";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
@@ -21,8 +20,13 @@ import { UserModel } from "./models/User";
 import { logger } from "./utils/logger";
 import { fileURLToPath } from "url";
 import { rateLimit } from "express-rate-limit";
+import { loadFilesSync } from "@graphql-tools/load-files";
+import { mergeTypeDefs } from "@graphql-tools/merge";
+import { writeFileSync } from "fs";
+import { print } from "graphql";
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
 
 //Configuring environment variables
@@ -35,12 +39,25 @@ const limiter = rateLimit({
 });
 
 //Creating Apollo Server
-const typeDefs = readFileSync(path.join(__dirname, "graphql", "schema.graphql"), "utf-8");
+const loadedSchemaFiles = loadFilesSync(`${__dirname}/graphql/schema/**/*.graphql`);
+const typeDefs = mergeTypeDefs(loadedSchemaFiles);
+const printedTypeDefs = print(typeDefs);
+writeFileSync(`${__dirname}/graphql/mergedSchema.graphql`, printedTypeDefs);
 const server = new ApolloServer({
   typeDefs: [typeDefs],
   resolvers: {
-    Query: { ...userResolvers.query, ...clientResolvers.query, ...projectResolvers.query, ...taskResolvers.query },
-    Mutation: { ...userResolvers.mutation, ...clientResolvers.mutation, ...projectResolvers.mutation, ...taskResolvers.mutation },
+    Query: {
+      ...userResolvers.query,
+      ...projectResolvers.query,
+      ...clientResolvers.query,
+      ...taskResolvers.query,
+    },
+    Mutation: {
+      ...userResolvers.mutation,
+      ...projectResolvers.mutation,
+      ...clientResolvers.mutation,
+      ...taskResolvers.mutation,
+    },
   },
   introspection: process.env.NODE_ENV === "development",
 });

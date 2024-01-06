@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<58bed45c1272e34f651bba60519a8845>>
+ * @generated SignedSource<<f1ac85f792f63070d03cffeddee34bcb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,20 +11,17 @@
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type Role = "ADMIN" | "USER" | "%future added value";
 export type LoginInput = {
-  password: string;
-  user: string;
+  password?: string | null | undefined;
+  user?: string | null | undefined;
 };
 export type authLoginMutation$variables = {
   input: LoginInput;
 };
 export type authLoginMutation$data = {
   readonly login: {
-    readonly email: string;
     readonly id: string;
     readonly name: string;
-    readonly photo: string | null | undefined;
     readonly role: Role;
-    readonly username: string;
   } | null | undefined;
 };
 export type authLoginMutation = {
@@ -66,35 +63,14 @@ v1 = [
         "alias": null,
         "args": null,
         "kind": "ScalarField",
-        "name": "name",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "username",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "email",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "photo",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
         "name": "role",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "name",
         "storageKey": null
       }
     ],
@@ -119,16 +95,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "204f094593e51f4e6eda1c6288a7f362",
+    "cacheID": "4c5b9db0c7f64c7aaad849bfee633716",
     "id": null,
     "metadata": {},
     "name": "authLoginMutation",
     "operationKind": "mutation",
-    "text": "mutation authLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    id\n    name\n    username\n    email\n    photo\n    role\n  }\n}\n"
+    "text": "mutation authLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    id\n    role\n    name\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e10a0654bcf3f424500e5cb20bcb3b6c";
+(node as any).hash = "d1f04890c752a07c66f591b0551a886d";
 
 export default node;

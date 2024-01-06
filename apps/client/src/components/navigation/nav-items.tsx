@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, ElementRef, Suspense, forwardRef } from "react";
 import { NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ProjectCountWidget, TaskCountWidget, ClientCountWidget } from "./widgets";
+import { ProjectCountWidget, TaskCountWidget } from "./widgets";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
@@ -32,15 +32,12 @@ export function TaskNavigationItem() {
 TaskNavigationItem.displayName = "TaskNavigationItem";
 
 export function ClientNavigationItem() {
-  const SuspenseUserCountWidget = withSuspense(ClientCountWidget, <Skeleton className=" w-full h-full" />);
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="font-semibold">Clients</NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="grid gap-3 p-4 w-72 md:w-[400px] lg:w-[500px] lg:grid-cols-[.5fr_1fr]">
-          <li className="row-span-3 rounded-md flex flex-col items-center justify-center">
-            <SuspenseUserCountWidget />
-          </li>
+          <li className="row-span-3 rounded-md flex flex-col items-center justify-center">{/* <SuspenseUserCountWidget /> */}</li>
           <ListItem to={`/app/user/clients/new`} title="New Client">
             Register a new client.
           </ListItem>

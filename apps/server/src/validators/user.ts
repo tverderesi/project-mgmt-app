@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { queryPaginationParams } from "./shared";
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[a-zA-Z\d!@#$%^&*]{8,}$/;
 
@@ -12,8 +11,6 @@ const base = z.object({
   clients: z.array(z.string()).optional(),
   role: z.enum(["USER", "ADMIN"], { required_error: "Role is required!" }),
 });
-
-const query = base.partial().extend(queryPaginationParams);
 
 const create = base
   .omit({
@@ -46,15 +43,21 @@ const create = base
 
 const update = base
   .required({ id: true })
+  .partial()
   .extend({
-    oldPassword: z.string({ required_error: "Password is required!" }),
-    password: z.string({ required_error: "Password is required!" }).regex(passwordRegex, {
-      message: "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character.",
-    }),
+    email: z.string({ required_error: "E-mail is required!" }).email({ message: "Invalid e-mail!" }),
+    password: z.string({ required_error: "Password is required!" }),
+    newPassword: z
+      .string()
+      .regex(passwordRegex, {
+        message:
+          "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character.",
+      })
+      .optional(),
   })
-  .refine((data) => data.password !== data.oldPassword, {
+  .refine((data) => data.password !== data.newPassword, {
     message: "New password must be different from old password!",
     path: ["password"],
   });
 
-export default { base, create, update, query };
+export default { base, create, update };
