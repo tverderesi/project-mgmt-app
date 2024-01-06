@@ -2,6 +2,7 @@ import { UserModel } from "@/models/User";
 import userV from "@/validators/user";
 import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
     const error = checkRequiredFields(input, userV.create);
@@ -28,6 +29,9 @@ const mutation = {
       const user = await UserModel.findById(id);
 
       if (!user) return { user: null, error: { type: "USER_ERROR_NOT_FOUND", message: "User not found!" } };
+      const decryptedPassword = await bcrypt.compare(input.oldPassword, user.password as string);
+      if (!decryptedPassword)
+        return { user: null, error: { type: "AUTH_ERROR_INVALID_CREDENTIALS", message: "Invalid credentials!" } };
       user.set(rest);
       await user.save();
       return { user, error: {} };

@@ -20,11 +20,8 @@ import { UserModel } from "./models/User";
 import { logger } from "./utils/logger";
 import { fileURLToPath } from "url";
 import { rateLimit } from "express-rate-limit";
-import { loadFilesSync } from "@graphql-tools/load-files";
-import { mergeTypeDefs } from "@graphql-tools/merge";
-import { writeFileSync } from "fs";
-import { print } from "graphql";
-
+import mergeSchemas from "./graphql/schema";
+import bcrypt from "bcrypt";
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
@@ -39,10 +36,8 @@ const limiter = rateLimit({
 });
 
 //Creating Apollo Server
-const loadedSchemaFiles = loadFilesSync(`${__dirname}/graphql/schema/**/*.graphql`);
-const typeDefs = mergeTypeDefs(loadedSchemaFiles);
-const printedTypeDefs = print(typeDefs);
-writeFileSync(`${__dirname}/graphql/mergedSchema.graphql`, printedTypeDefs);
+
+const typeDefs = mergeSchemas();
 const server = new ApolloServer({
   typeDefs: [typeDefs],
   resolvers: {
@@ -64,7 +59,10 @@ const server = new ApolloServer({
 
 //Starting Express server
 await server.start();
-
+bcrypt
+  .genSalt(10)
+  .then((salt) => bcrypt.hash("Passw0rd!", salt))
+  .then((pw) => console.log(pw));
 //Initializing the express server
 const app = express();
 app.use(cookieParser());
