@@ -68,7 +68,7 @@ app.use(
     credentials: true,
     origin: isDevelopment
       ? ["http://localhost:5173", "https://sandbox.embed.apollographql.com"]
-      : "https://project-mgmt-app-drab.vercel.app/",
+      : ["https://project-mgmt-app-drab.vercel.app/", "https://project-mgmt-server-vnup.onrender.com"],
   })
 );
 
