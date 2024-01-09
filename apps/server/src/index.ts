@@ -21,7 +21,7 @@ import { logger } from "./utils/logger";
 import { fileURLToPath } from "url";
 import { rateLimit } from "express-rate-limit";
 import mergeSchemas from "./graphql/schema";
-import helmet from "helmet";
+
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
@@ -62,15 +62,7 @@ const server = new ApolloServer({
 await server.start();
 //Initializing the express server
 const app = express();
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'"], // Allow inline scripts
-      styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles
-    },
-  })
-);
+
 app.use(cookieParser());
 app.use(
   cors({
