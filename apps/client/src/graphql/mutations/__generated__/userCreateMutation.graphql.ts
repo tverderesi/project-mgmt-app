@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<be7c161f53d15aaac6bac4af39a7a653>>
+ * @generated SignedSource<<a4f7409838257f2c7e4f3dcc9339572d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,15 +10,20 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type Role = "ADMIN" | "USER" | "%future added value";
-export type LoginInput = {
-  password?: string | null | undefined;
-  user?: string | null | undefined;
+export type UserInput = {
+  confirmEmail: string;
+  confirmPassword: string;
+  email: string;
+  name: string;
+  password: string;
+  role: Role;
+  username: string;
 };
-export type authLoginMutation$variables = {
-  input: LoginInput;
+export type userCreateMutation$variables = {
+  input: UserInput;
 };
-export type authLoginMutation$data = {
-  readonly login: {
+export type userCreateMutation$data = {
+  readonly createUser: {
     readonly error: {
       readonly message: string;
       readonly type: string;
@@ -30,9 +35,9 @@ export type authLoginMutation$data = {
     } | null | undefined;
   };
 };
-export type authLoginMutation = {
-  response: authLoginMutation$data;
-  variables: authLoginMutation$variables;
+export type userCreateMutation = {
+  response: userCreateMutation$data;
+  variables: userCreateMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -53,9 +58,9 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "LoginReturn",
+    "concreteType": "CreateUserReturn",
     "kind": "LinkedField",
-    "name": "login",
+    "name": "createUser",
     "plural": false,
     "selections": [
       {
@@ -124,7 +129,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "authLoginMutation",
+    "name": "userCreateMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -133,20 +138,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "authLoginMutation",
+    "name": "userCreateMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "352ac3e5c2716fb6cec4eda7f0b39012",
+    "cacheID": "291f6ab1f378c31bef1d0f0c46d881f7",
     "id": null,
     "metadata": {},
-    "name": "authLoginMutation",
+    "name": "userCreateMutation",
     "operationKind": "mutation",
-    "text": "mutation authLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    user {\n      id\n      role\n      name\n    }\n    error {\n      message\n      type\n    }\n  }\n}\n"
+    "text": "mutation userCreateMutation(\n  $input: UserInput!\n) {\n  createUser(input: $input) {\n    user {\n      id\n      role\n      name\n    }\n    error {\n      message\n      type\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b8ded23763ed86f82439570e2a6f5b39";
+(node as any).hash = "f9f25e21bb87152d59dd7d2f0c926a7e";
 
 export default node;

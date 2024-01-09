@@ -21,7 +21,7 @@ import { logger } from "./utils/logger";
 import { fileURLToPath } from "url";
 import { rateLimit } from "express-rate-limit";
 import mergeSchemas from "./graphql/schema";
-import bcrypt from "bcrypt";
+
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
@@ -35,8 +35,9 @@ const limiter = rateLimit({
   max: 100,
 });
 
-//Creating Apollo Server
+const isDevelopment = process.env.NODE_ENV === "development";
 
+//Creating Apollo Server
 const typeDefs = mergeSchemas();
 const server = new ApolloServer({
   typeDefs: [typeDefs],
@@ -54,25 +55,20 @@ const server = new ApolloServer({
       ...taskResolvers.mutation,
     },
   },
-  introspection: process.env.NODE_ENV === "development",
+  introspection: isDevelopment,
 });
 
 //Starting Express server
 await server.start();
-bcrypt
-  .genSalt(10)
-  .then((salt) => bcrypt.hash("Passw0rd!", salt))
-  .then((pw) => console.log(pw));
 //Initializing the express server
 const app = express();
 app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin:
-      process.env.NODE_ENV === "development"
-        ? ["http://localhost:5173", "https://sandbox.embed.apollographql.com"]
-        : "https://project-mgmt-app-drab.vercel.app/",
+    origin: isDevelopment
+      ? ["http://localhost:5173", "https://sandbox.embed.apollographql.com"]
+      : "https://project-mgmt-app-drab.vercel.app/",
   })
 );
 
@@ -87,8 +83,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60,
-      secure: false,
-      sameSite: process.env.NODE_ENV === "development" ? "none" : true,
+      secure: !isDevelopment,
+      sameSite: isDevelopment ? "none" : true,
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,

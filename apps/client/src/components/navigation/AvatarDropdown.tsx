@@ -13,6 +13,7 @@ import { LogoutButton } from "../auth/LogoutButton";
 import { loadQuery, usePreloadedQuery } from "react-relay";
 import { RelayEnvironment } from "@/RelayEnvironment";
 import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
+import { Link } from "react-router-dom";
 
 export const loadedQuery = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
 
@@ -22,12 +23,16 @@ export const AvatarDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar className="float-right">
-          <AvatarFallback>{data?.me?.name?.split("")[0]}</AvatarFallback>
+          <AvatarFallback>{data?.me?.user?.name?.split("")[0]}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" alignOffset={5} className="mt-1">
-        <DropdownMenuLabel>Hi, {formatName(data?.me?.name as string)}!</DropdownMenuLabel>
+        <DropdownMenuLabel>Hi, {data?.me?.user?.name ? formatName(data?.me?.user?.name as string) : ""}!</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem className="font-medium">
+          <Link to="settings">Settings</Link>
+        </DropdownMenuItem>
+
         <DropdownMenuItem className="font-medium">
           <LogoutButton />
         </DropdownMenuItem>

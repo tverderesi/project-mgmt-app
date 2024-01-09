@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { queryPaginationParams, statuses } from "./shared";
 
 export const base = z.object({
   id: z.string(),
@@ -7,12 +6,10 @@ export const base = z.object({
   description: z.string().optional(),
   project: z.string(),
   user: z.string(),
-  status: z.enum(statuses),
+  status: z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"]),
 });
-
-export const query = base.extend(queryPaginationParams);
 
 export const update = base.partial().required({ id: true });
 export const create = base.omit({ id: true });
 
-export default { base, query, update, create };
+export default { base, update, create };

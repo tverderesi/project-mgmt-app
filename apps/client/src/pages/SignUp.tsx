@@ -8,32 +8,71 @@ import { cn } from "@/lib/utils";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { useMutation } from "react-relay";
+import { userCreateMutation } from "@/graphql/mutations/__generated__/userCreateMutation.graphql";
+import { CREATE_USER } from "@/graphql/mutations/user";
+import { h4 } from "@/components/ui/typography";
 
 export const SignUp = () => {
+  const defaultValues = {
+    name: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    confirmEmail: "",
+    role: "USER",
+  };
+
   const form = useForm({
     resolver: zodResolver(userV.create),
+    defaultValues,
   });
+
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [createUser, loading] = useMutation<userCreateMutation>(CREATE_USER);
+
+  const handleSubmit = {
+    onValid: (input: any) => {
+      createUser({
+        variables: { input },
+        onCompleted: (response, errors) => {
+          toast({
+            title: "Account Created",
+            description: "Your account has been created successfully.",
+          });
+          navigate("/login");
+        },
+        onError: (err) => {
+          toast({
+            title: "Account Creation Failed",
+            description: err.message,
+          });
+        },
+      });
+
+      navigate("/login");
+    },
+    onInvalid: () => {
+      toast({
+        title: "Account Creation Failed",
+        description: "Please check your inputs and try again.",
+      });
+    },
+  };
 
   return (
-    <div className="h-full w-full p-2 flex flex-col justify-center items-center relative">
+    <div className="h-full w-full p-2 flex flex-col justify-start lg:justify-center items-center relative">
       <div className="absolute top-4 right-4">
         <ModeToggle />
       </div>
-      <h4 className="scroll-m-20 text-3xl font-semibold tracking-tight text-center mb-6">Sign Up Form</h4>
-      <div className="relative">
+      <h4 className={h4}>Sign Up Form</h4>
+      <div>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((data) => {
-              console.log(data);
-              toast({
-                title: "Account Created",
-                description: "Your account has been created successfully.",
-              });
-              navigate("/login");
-            })}
-            className={cn("gap-4 grid grid-cols-2 p-4", "pointer-events-none select-none")}
+            onSubmit={form.handleSubmit(handleSubmit.onValid, handleSubmit.onInvalid)}
+            className={cn("gap-4 grid grid-cols-2 p-4", false && "pointer-events-none select-none")}
           >
             <FormField
               control={form.control}

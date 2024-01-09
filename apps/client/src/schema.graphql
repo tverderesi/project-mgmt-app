@@ -80,10 +80,15 @@ input LoginInput {
   password: String
 }
 
+type LoginReturn {
+  user: User
+  error: Error
+}
+
 type Mutation {
   createUser(input: UserInput!): CreateUserReturn!
   updateUser(input: UpdateUserInput!): UpdateUserReturn!
   deleteUser(id: ID!): DeleteUserReturn!
-  login(input: LoginInput!): User
+  login(input: LoginInput!): LoginReturn!
   logout: Boolean!
 }

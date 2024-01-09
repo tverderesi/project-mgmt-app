@@ -3,6 +3,10 @@ import userV from "@/validators/user";
 import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import e from "express";
+const createErrorMessage = (e: any) => {
+  return "STR_ERR&&" + JSON.stringify({ type: "INPUT_ERROR", message: e.message }) + "&&END_ERR";
+};
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
     const error = checkRequiredFields(input, userV.create);
@@ -14,24 +18,22 @@ const mutation = {
   updateUser: async (_parent: any, { input }: { input: z.infer<typeof userV.update> }, context: any) => {
     const me = await context.getUser();
 
-    if (!me) return { user: null, error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
-    if (me.id !== input.id && me.role !== "ADMIN")
-      return {
-        user: null,
-        error: { type: "AUTH_ERROR_UNAUTHORIZED", message: "You are not authorized to perform this action!" },
-      };
-
+    if (!me) throw new Error(createErrorMessage({ type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" }));
+    if (me.id !== input.id && me.role !== "ADMIN") {
+      throw new Error(
+        createErrorMessage({ type: "AUTH_ERROR_UNAUTHORIZED", message: "You are not authorized to perform this action!" })
+      );
+    }
     const error = checkRequiredFields(input, userV.update);
 
-    if (error) return { user: null, error };
+    if (error) throw new Error(createErrorMessage(error));
     const { id, ...rest } = input;
     try {
       const user = await UserModel.findById(id);
-
-      if (!user) return { user: null, error: { type: "USER_ERROR_NOT_FOUND", message: "User not found!" } };
+      if (!user) throw new Error(createErrorMessage({ type: "USER_ERROR_NOT_FOUND", message: "User not found!" }));
       const decryptedPassword = await bcrypt.compare(input.oldPassword, user.password as string);
       if (!decryptedPassword)
-        return { user: null, error: { type: "AUTH_ERROR_INVALID_CREDENTIALS", message: "Invalid credentials!" } };
+        throw new Error(createErrorMessage({ type: "USER_ERROR_INVALID_CREDENTIALS", message: "Invalid Credentials!" }));
       user.set(rest);
       await user.save();
       return { user, error: {} };
@@ -39,10 +41,9 @@ const mutation = {
       if (e.code === 11000) {
         const duplicatedFields = Object.keys(e.keyPattern);
         const message = duplicatedFields.map((field) => `${field} is already on the database!`).join(", ");
-        const errorMessageJson = JSON.stringify({ [duplicatedFields[0]]: message });
-        return { user: null, error: { type: "ERROR_DUPLICATED_KEY", message: errorMessageJson } };
+        throw new Error(createErrorMessage({ [duplicatedFields[0]]: message }));
       }
-      return { user: null, error: { type: "UNKNOWN_ERROR", message: "An unknown error occurred. Please try again." } };
+      throw new Error(e);
     }
   },
 
@@ -61,18 +62,13 @@ const mutation = {
   },
 
   login: async (_parent: any, { input: { user: username, password } }, context) => {
-    try {
-      const loggedUser = await context.authenticate("graphql-local", {
-        username,
-        password,
-      });
+    const loggedUser = await context.authenticate("graphql-local", {
+      username,
+      password,
+    });
 
-      await context.login(loggedUser);
-      return { user: loggedUser.user, error: {} };
-    } catch (e) {
-      console.log(e);
-      return { user: null, error: { type: "AUTH_ERROR_INVALID_CREDENTIALS", message: "Invalid credentials!" } };
-    }
+    await context.login(loggedUser);
+    return { user: loggedUser.user, error: {} };
   },
 
   logout: async (_parent: any, __: any, context: any) => {
@@ -119,6 +115,7 @@ const query = {
   },
   me: async (_parent: any, __: any, context: any) => {
     const me = await context.getUser();
+
     if (!me) return { user: null, error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
     return { user: me, error: {} };
   },

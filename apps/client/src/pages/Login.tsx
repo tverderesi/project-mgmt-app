@@ -11,6 +11,7 @@ import { ModeToggle } from "@/components/ui/mode-toggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { LOGIN } from "@/graphql/mutations/auth";
+import { authLoginMutation$data } from "@/graphql/mutations/__generated__/authLoginMutation.graphql";
 
 const Logo = () => (
   <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
@@ -43,9 +44,11 @@ export const Login = () => {
             onSubmit={form.handleSubmit((data) =>
               login({
                 variables: { input: data },
-
-                onCompleted() {
-                  navigate("../app");
+                onCompleted(data) {
+                  const { login } = data as authLoginMutation$data;
+                  if (login?.user?.role) {
+                    navigate(`../app`);
+                  }
                 },
                 onError: (error) => {
                   toast({

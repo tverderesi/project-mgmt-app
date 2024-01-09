@@ -1,6 +1,6 @@
 import { ProjectsSection } from "@/components/user-dashboard/project-components";
 
-export const UserDashboard = () => {
+export const Dashboard = () => {
   return (
     <div className="pt-16">
       <ProjectsSection />

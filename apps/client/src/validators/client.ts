@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { queryPaginationParams } from "./shared";
 
 const base = z.object({
   id: z.string(),
@@ -9,10 +8,8 @@ const base = z.object({
   phone: z.string().max(15),
 });
 
-const query = base.partial().extend(queryPaginationParams);
-
 const create = base.omit({ id: true }).required();
 
 const update = base.required({ id: true });
 
-export default { base, query, create, update };
+export default { base, create, update };

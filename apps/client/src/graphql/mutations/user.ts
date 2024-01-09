@@ -1,8 +1,8 @@
 import { graphql } from "react-relay";
 
-export const ME = graphql`
-  query userMeQuery {
-    me {
+export const CREATE_USER = graphql`
+  mutation userCreateMutation($input: UserInput!) {
+    createUser(input: $input) {
       user {
         id
         role
@@ -16,12 +16,13 @@ export const ME = graphql`
   }
 `;
 
-export const USER_QUERY = graphql`
-  query userUserQuery($id: ID!) {
-    user(id: $id) {
+export const UPDATE_USER = graphql`
+  mutation userUpdateMutation($input: UpdateUserInput!) {
+    updateUser(input: $input) {
       user {
+        id
+        role
         name
-        username
         email
       }
       error {

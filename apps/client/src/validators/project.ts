@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { statuses } from "./shared";
 
 const base = z.object({
   id: z.string(),
@@ -7,7 +6,7 @@ const base = z.object({
   description: z.string().max(500).optional(),
   user: z.string(),
   client: z.string(),
-  status: z.enum(statuses),
+  status: z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"]),
 });
 
 const create = base.omit({ id: true });

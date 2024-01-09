@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<be7c161f53d15aaac6bac4af39a7a653>>
+ * @generated SignedSource<<28717abc7927c100c0f24048ba2b5c50>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,29 +10,35 @@
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
 export type Role = "ADMIN" | "USER" | "%future added value";
-export type LoginInput = {
+export type UpdateUserInput = {
+  email?: string | null | undefined;
+  id: string;
+  name?: string | null | undefined;
+  newPassword?: string | null | undefined;
   password?: string | null | undefined;
-  user?: string | null | undefined;
+  role?: Role | null | undefined;
+  username?: string | null | undefined;
 };
-export type authLoginMutation$variables = {
-  input: LoginInput;
+export type userUpdateMutation$variables = {
+  input: UpdateUserInput;
 };
-export type authLoginMutation$data = {
-  readonly login: {
+export type userUpdateMutation$data = {
+  readonly updateUser: {
     readonly error: {
       readonly message: string;
       readonly type: string;
     } | null | undefined;
     readonly user: {
+      readonly email: string;
       readonly id: string;
       readonly name: string;
       readonly role: Role;
     } | null | undefined;
   };
 };
-export type authLoginMutation = {
-  response: authLoginMutation$data;
-  variables: authLoginMutation$variables;
+export type userUpdateMutation = {
+  response: userUpdateMutation$data;
+  variables: userUpdateMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -53,9 +59,9 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "LoginReturn",
+    "concreteType": "UpdateUserReturn",
     "kind": "LinkedField",
-    "name": "login",
+    "name": "updateUser",
     "plural": false,
     "selections": [
       {
@@ -85,6 +91,13 @@ v1 = [
             "args": null,
             "kind": "ScalarField",
             "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "email",
             "storageKey": null
           }
         ],
@@ -124,7 +137,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "authLoginMutation",
+    "name": "userUpdateMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -133,20 +146,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "authLoginMutation",
+    "name": "userUpdateMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "352ac3e5c2716fb6cec4eda7f0b39012",
+    "cacheID": "8b1a54fc0c56515cfa335692dc8a182b",
     "id": null,
     "metadata": {},
-    "name": "authLoginMutation",
+    "name": "userUpdateMutation",
     "operationKind": "mutation",
-    "text": "mutation authLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    user {\n      id\n      role\n      name\n    }\n    error {\n      message\n      type\n    }\n  }\n}\n"
+    "text": "mutation userUpdateMutation(\n  $input: UpdateUserInput!\n) {\n  updateUser(input: $input) {\n    user {\n      id\n      role\n      name\n      email\n    }\n    error {\n      message\n      type\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "b8ded23763ed86f82439570e2a6f5b39";
+(node as any).hash = "6a84d4de381a776f89b952dc0eed7d1d";
 
 export default node;

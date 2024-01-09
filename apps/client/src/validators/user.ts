@@ -9,7 +9,7 @@ const base = z.object({
   username: z.string({ required_error: "Username is required!" }),
   projects: z.array(z.string()).optional(),
   clients: z.array(z.string()).optional(),
-  role: z.enum(["USER", "ADMIN"], { required_error: "Role is required!" }),
+  role: z.enum(["USER", "ADMIN"], { required_error: "Role is required!" }).default("USER"),
 });
 
 const create = base
@@ -45,9 +45,9 @@ const update = base
   .required({ id: true })
   .partial()
   .extend({
-    email: z.string({ required_error: "E-mail is required!" }).email({ message: "Invalid e-mail!" }),
-    password: z.string({ required_error: "Password is required!" }),
-    newPassword: z
+    email: z.string().email({ message: "Invalid e-mail!" }).optional(),
+    oldPassword: z.string({ required_error: "Password is required!" }),
+    password: z
       .string()
       .regex(passwordRegex, {
         message:
@@ -55,7 +55,7 @@ const update = base
       })
       .optional(),
   })
-  .refine((data) => data.password !== data.newPassword, {
+  .refine((data) => data.password !== data.oldPassword, {
     message: "New password must be different from old password!",
     path: ["password"],
   });

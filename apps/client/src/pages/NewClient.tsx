@@ -1,5 +1,4 @@
 import { Form } from "@/components/ui/form";
-import { TypographyH3 } from "@/components/ui/typography";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserPlus, RotateCcw } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -10,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
+import { h3 } from "@/components/ui/typography";
 export const NewClient = ({ asSideItem = false }) => {
   const { toast } = useToast();
 
@@ -37,7 +37,7 @@ export const NewClient = ({ asSideItem = false }) => {
           className={cn("grid grid-cols-1  gap-y-4 gap-x-8 p-4 relative", !asSideItem && "lg:grid-cols-2")}
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <TypographyH3 className="inline-flex gap-2 items-center mb-8">New Client</TypographyH3>
+          <h3 className={cn(h3, "inline-flex gap-2 items-center mb-8")}>New Client</h3>
           <FormField
             control={form.control}
             name="name"
