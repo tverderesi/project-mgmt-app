@@ -30,10 +30,10 @@ export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "d
 dotenv.config({ path: envPath });
 
 //Initializing rate limiter
-const limiter = rateLimit({
-  windowMs: 1000,
-  max: 100,
-});
+// const limiter = rateLimit({
+//   windowMs: 1000,
+//   max: 100,
+// });
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -73,7 +73,7 @@ app.use(
   })
 );
 
-app.use(limiter);
+// app.use(limiter);
 
 //Initializing the express server-side session storage
 app.use(
