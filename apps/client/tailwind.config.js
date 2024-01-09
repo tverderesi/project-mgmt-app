@@ -14,6 +14,7 @@ module.exports = {
     extend: {
       spacing: {
         100: "25rem",
+        18: "4.5rem",
       },
       colors: {
         border: "hsl(var(--border))",

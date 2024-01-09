@@ -4,7 +4,6 @@ const presets = [
     plugins: [
       "@babel/plugin-transform-runtime",
       "babel-plugin-add-import-extension",
-      "relay",
       [
         "module-resolver",
         {

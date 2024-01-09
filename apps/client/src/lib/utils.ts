@@ -30,3 +30,11 @@ export const formatName = (name: string) => {
   const lastNameInitial = nameArray[nameArray.length - 1]?.split("")[0];
   return `${firstName}${isFullName ? ` ${lastNameInitial}. ` : ""}`;
 };
+export const isJSON = (str: string) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+};

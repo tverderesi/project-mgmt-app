@@ -34,6 +34,9 @@ const mutation = {
       const decryptedPassword = await bcrypt.compare(input.oldPassword, user.password as string);
       if (!decryptedPassword)
         throw new Error(createErrorMessage({ type: "USER_ERROR_INVALID_CREDENTIALS", message: "Invalid Credentials!" }));
+
+      Object.keys(rest).forEach((key) => rest[key] === undefined || rest[key] === null || (rest[key] === "" && delete rest[key]));
+
       user.set(rest);
       await user.save();
       return { user, error: {} };
@@ -41,8 +44,10 @@ const mutation = {
       if (e.code === 11000) {
         const duplicatedFields = Object.keys(e.keyPattern);
         const message = duplicatedFields.map((field) => `${field} is already on the database!`).join(", ");
-        throw new Error(createErrorMessage({ [duplicatedFields[0]]: message }));
+        const stringifiedErrorMessage = JSON.stringify({ [duplicatedFields[0]]: message });
+        throw new Error(createErrorMessage({ type: "INPUT_ERROR", message: stringifiedErrorMessage }));
       }
+      console.log(e);
       throw new Error(e);
     }
   },

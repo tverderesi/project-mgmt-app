@@ -54,10 +54,15 @@ const update = base
           "Password must contain at least 8 characters, one uppercase, one lowercase, one number and one special character.",
       })
       .optional(),
+    confirmPassword: z.string().optional(),
   })
   .refine((data) => data.password !== data.oldPassword, {
     message: "New password must be different from old password!",
     path: ["password"],
+  })
+  .refine((data) => data?.password === data?.confirmPassword, {
+    message: "Passwords don't match!",
+    path: ["confirmPassword"],
   });
 
 export default { base, create, update };

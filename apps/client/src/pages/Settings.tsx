@@ -16,7 +16,8 @@ import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql
 import { useEffect } from "react";
 import { UPDATE_USER } from "@/graphql/mutations/user";
 import { useToast } from "@/components/ui/use-toast";
-
+import { Loader2 } from "lucide-react";
+import { isJSON } from "@/lib/utils";
 export const loadedQuery = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
 
 export function Settings() {
@@ -51,7 +52,22 @@ export function Settings() {
       onError(error) {
         const parts = error.message.split("&&");
         const jsonString = parts[1];
+
         const errorObject = JSON.parse(jsonString);
+        const isJson = isJSON(errorObject.message);
+
+        if (isJson) {
+          const errors = JSON.parse(errorObject.message);
+          Object.keys(errors).forEach((key) => {
+            type Keys = z.infer<typeof userV.update>;
+            updateForm.setError(key as keyof Keys, {
+              type: "validate",
+              message: errors[key],
+            });
+          });
+          return;
+        }
+
         toast({
           title: "Error",
           description: errorObject.message,
@@ -62,7 +78,7 @@ export function Settings() {
   };
 
   return (
-    <div className="pt-24 pb-8">
+    <div className="pt-18 pb-4">
       <Dialog>
         <Card>
           <CardHeader>
@@ -87,7 +103,7 @@ export function Settings() {
                     <FormItem className="w-72 col-span-2 md:col-span-1">
                       <FormLabel>Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="name" {...field} />
+                        <Input placeholder="name" {...field} autoComplete="off" />
                       </FormControl>
 
                       <FormMessage />
@@ -101,7 +117,7 @@ export function Settings() {
                     <FormItem className="w-72 col-span-2 md:col-span-1">
                       <FormLabel>Username</FormLabel>
                       <FormControl>
-                        <Input placeholder="username" {...field} />
+                        <Input placeholder="username" {...field} autoComplete="off" />
                       </FormControl>
 
                       <FormMessage />
@@ -115,11 +131,27 @@ export function Settings() {
                     <FormItem className="w-72 col-span-2 md:col-span-1">
                       <FormLabel>New Password</FormLabel>
                       <FormControl>
-                        <Input placeholder="password" {...field} type="password" />
+                        <Input placeholder="password" {...field} type="password" autoComplete="off" />
                       </FormControl>
-                      <FormDescription>
+                      <FormDescription className="text-justify">
                         Make sure to use a strong password. It must contain at least 8 characters and at least one uppercase
                         letter, one lowercase letter, one number and one symbol.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={updateForm.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem className="w-72 col-span-2 md:col-span-1">
+                      <FormLabel>Confirm New Password</FormLabel>
+                      <FormControl>
+                        <Input placeholder="password" {...field} type="password" autoComplete="off" />
+                      </FormControl>
+                      <FormDescription className="text-justify">
+                        You must confirm your new password, so we can make sure you typed it correctly.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -133,7 +165,7 @@ export function Settings() {
                     <FormItem className="w-72 col-span-2 md:col-span-1">
                       <FormLabel>E-mail</FormLabel>
                       <FormControl>
-                        <Input placeholder="email" {...field} />
+                        <Input placeholder="email" {...field} autoComplete="off" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -155,8 +187,8 @@ export function Settings() {
                 />
 
                 <div className="flex flex-row justify-start mt-4 col-span-2">
-                  <Button type="submit" className="font-semibold">
-                    Update Profile
+                  <Button type="submit" className="font-semibold" disabled={loading}>
+                    {loading && <Loader2 className="animate-spin me-2" />} Update Profile
                   </Button>
                 </div>
               </form>
