@@ -108,6 +108,8 @@ const query = {
       return { user: null, error: { type: "AUTH_ERROR_UNAUTHENTICATED", message: "You are not authenticated!" } };
     }
 
+    console.log(me, id);
+
     if (me.id !== id && me.role !== "ADMIN") {
       return {
         user: null,

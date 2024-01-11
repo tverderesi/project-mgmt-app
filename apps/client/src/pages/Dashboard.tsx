@@ -10,9 +10,9 @@ export const Dashboard = () => {
   const { me } = useClientQuery<userMeQuery>(ME, {});
   const {
     user: { user, error },
-  } = useLazyLoadQuery<userUserQuery>(USER_QUERY, { id: me?.user?.id || "" });
-
-  if (error?.type === "AUTH_ERROR_UNAUTHENTICATED") {
+  } = useLazyLoadQuery<userUserQuery>(USER_QUERY, { id: me?.user?.id || "" }, { fetchPolicy: "store-and-network" });
+  console.log(error);
+  if (error?.type === "AUTH_ERROR_UNAUTHORIZED") {
     throw new AuthError(error.type, error.message);
   }
 

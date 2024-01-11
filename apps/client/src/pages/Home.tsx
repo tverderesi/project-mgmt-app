@@ -16,7 +16,7 @@ export const Home = () => {
 
       <div className="row-start-4 row-span-1 mx-auto flex items-center justify-center">
         <Button className="font-semibold">
-          <Link to="app">Go to App</Link>
+          <Link to="login">Go to App</Link>
         </Button>
       </div>
     </div>

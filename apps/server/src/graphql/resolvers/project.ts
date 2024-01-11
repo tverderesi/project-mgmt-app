@@ -7,8 +7,8 @@ import { z } from "zod";
 
 const query = {
   projects: async (_parent, args: z.infer<typeof projectV.query>, context) => {
-    const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT), sort, ...rest } = args;
-    const projects = await ProjectModel.find(rest).limit(limit).skip(skip).sort(sort);
+    console.log(args);
+    const projects = await ProjectModel.find(args);
     return projects;
   },
 

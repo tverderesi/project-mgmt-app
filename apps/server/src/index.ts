@@ -29,12 +29,6 @@ export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "d
 //Configuring environment variables
 dotenv.config({ path: envPath });
 
-//Initializing rate limiter
-// const limiter = rateLimit({
-//   windowMs: 1000,
-//   max: 100,
-// });
-
 const isDevelopment = process.env.NODE_ENV === "development";
 
 //Creating Apollo Server
