@@ -1,7 +1,7 @@
 import { Environment, Network, RecordSource, Store, FetchFunction } from "relay-runtime";
 
 const HTTP_ENDPOINT = import.meta.env.VITE_GRAPHQL_SERVER;
-
+console.log(HTTP_ENDPOINT);
 const fetchFn: FetchFunction = async (request, variables) => {
   const resp = await fetch(HTTP_ENDPOINT, {
     method: "POST",
