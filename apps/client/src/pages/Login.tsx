@@ -12,13 +12,21 @@ import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { LOGIN } from "@/graphql/mutations/auth";
 import { authLoginMutation$data } from "@/graphql/mutations/__generated__/authLoginMutation.graphql";
-
+import { RelayEnvironment } from "@/RelayEnvironment";
+import { ME } from "@/graphql/queries/user";
+import { loadQuery, usePreloadedQuery } from "react-relay";
+import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
+import { useEffect } from "react";
+const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
 const Logo = () => (
   <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
     <h1 className="text-6xl font-bold text-right h-full flex flex-col justify-center mr-5 text-white">mgmt.app</h1>
   </div>
 );
 export const Login = () => {
+  const {
+    me: { user },
+  } = usePreloadedQuery<userMeQuery>(ME, queryRef);
   const { toast } = useToast();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -26,6 +34,11 @@ export const Login = () => {
     mode: "onSubmit",
   });
 
+  useEffect(() => {
+    if (user?.id) {
+      navigate("../app");
+    }
+  }, [user]);
   const [login, isInFlight] = useMutation(LOGIN);
 
   return (

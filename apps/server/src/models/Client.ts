@@ -14,7 +14,7 @@ const clientSchema = new Schema<Client>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
-    phone: { type: String, required: true, match: /^\+\d{1,15}$/ },
+    phone: { type: String, required: true },
     projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
     user: { type: Schema.Types.ObjectId, ref: "User" },
   },

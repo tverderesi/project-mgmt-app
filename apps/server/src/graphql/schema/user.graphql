@@ -5,7 +5,7 @@ type User {
   email: String!
   password: String!
   role: Role!
-  projects: [Project]
+  projects: [Project]!
   clients: [Client]!
   clientCount: Int
   projectCount: Int

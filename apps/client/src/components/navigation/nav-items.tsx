@@ -1,11 +1,12 @@
 import { ComponentPropsWithoutRef, ElementRef, Suspense, forwardRef } from "react";
 import { NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ProjectCountWidget, TaskCountWidget } from "./widgets";
+import { ClientCountWidget, ProjectCountWidget, TaskCountWidget } from "./widgets";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { userProject_project$data } from "@/graphql/queries/__generated__/userProject_project.graphql";
 
 export function TaskNavigationItem() {
   return (
@@ -31,13 +32,17 @@ export function TaskNavigationItem() {
 }
 TaskNavigationItem.displayName = "TaskNavigationItem";
 
-export function ClientNavigationItem() {
+export function ClientNavigationItem({ clients }) {
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="font-semibold">Clients</NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="grid gap-3 p-4 w-72 md:w-[400px] lg:w-[500px] lg:grid-cols-[.5fr_1fr]">
-          <li className="row-span-3 rounded-md flex flex-col items-center justify-center">{/* <SuspenseUserCountWidget /> */}</li>
+          <li className="row-span-3 rounded-md flex flex-col items-center justify-center">
+            <Suspense fallback={<Skeleton className=" w-full h-full" />}>
+              <ClientCountWidget fragmentRef={clients} />
+            </Suspense>
+          </li>
           <ListItem to={`/app/user/clients/new`} title="New Client">
             Register a new client.
           </ListItem>
@@ -51,15 +56,16 @@ export function ClientNavigationItem() {
 }
 ClientNavigationItem.displayName = "ClientNavigationItem";
 
-export function ProjectNavigationItem() {
-  const SuspenseProjectCountWidget = withSuspense(ProjectCountWidget, <Skeleton className=" w-full h-full" />);
+export function ProjectNavigationItem({ projects }) {
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="font-semibold">Projects</NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="grid gap-3 p-4 w-72 md:w-[400px] lg:w-[500px] lg:grid-cols-[.5fr_1fr]">
           <li className="row-span-3 rounded-md flex flex-col items-center justify-center">
-            <SuspenseProjectCountWidget />
+            <Suspense fallback={<Skeleton className=" w-full h-full" />}>
+              <ProjectCountWidget fragmentRef={projects} />
+            </Suspense>
           </li>
           <ListItem to={`/app/user/projects/new`} title="New Project">
             Create a new project.
@@ -95,4 +101,5 @@ export const ListItem = forwardRef<ElementRef<typeof Link>, ComponentPropsWithou
     );
   }
 );
+
 ListItem.displayName = "ListItem";

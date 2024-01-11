@@ -23,6 +23,7 @@ const mutation = {
   createClient: async (_parent, { input }: { input: z.infer<typeof clientV.create> }, context) => {
     checkRequiredFields(input, clientV.create);
     const client = await ClientModel.create(input);
+    console.log(client);
     await UserModel.findByIdAndUpdate(input.user, { $push: { clients: client._id } });
     return client;
   },

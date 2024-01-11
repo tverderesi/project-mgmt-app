@@ -1,12 +1,14 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { Toaster } from "../components/ui/toaster";
+import { PreloadedQuery, usePreloadedQuery } from "react-relay";
+import { ME } from "@/graphql/queries/user";
+import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
+import { useEffect } from "react";
 
-export const MainLayout: React.FC = () => {
+export const MainLayout = () => {
   return (
-    <div className="h-screen w-screen">
-      <main className="h-full w-full">
-        <Outlet />
-      </main>
+    <div className="h-screen w-screen bg-background">
+      <Outlet />
       <Toaster />
     </div>
   );

@@ -38,3 +38,12 @@ export const isJSON = (str: string) => {
   }
   return true;
 };
+
+export class AuthError extends Error {
+  type: string;
+  constructor(type: string, message?: string) {
+    super(message);
+    this.name = "AuthError";
+    this.type = type;
+  }
+}

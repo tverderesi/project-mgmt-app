@@ -115,7 +115,11 @@ const query = {
       };
     }
 
-    const user = await UserModel.findById(id).populate("projectCount").populate("clientCount").populate("taskCount");
+    const user = await UserModel.findById(id)
+      .populate("projectCount")
+      .populate("clientCount")
+      .populate("taskCount")
+      .populate("clients");
     return { user, error: {} };
   },
   me: async (_parent: any, __: any, context: any) => {

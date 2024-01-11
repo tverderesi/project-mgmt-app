@@ -6,7 +6,7 @@ const base = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email().min(2).max(70),
   user: z.string(),
-  phone: z.string().max(15),
+  phone: z.string(),
 });
 
 const query = base.partial().extend(queryPaginationParams);

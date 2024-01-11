@@ -1,6 +1,6 @@
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { UserPlus, RotateCcw } from "lucide-react";
+import { UserPlus, RotateCcw, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { FormDescription, FormField, FormItem, FormLabel, FormMessage, FormControl } from "@/components/ui/form";
@@ -10,8 +10,21 @@ import * as z from "zod";
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { h3 } from "@/components/ui/typography";
+import { CREATE_CLIENT } from "@/graphql/mutations/client";
+import { loadQuery, useMutation, usePreloadedQuery } from "react-relay";
+import { clientCreateMutation } from "@/graphql/mutations/__generated__/clientCreateMutation.graphql";
+import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
+import { RelayEnvironment } from "@/RelayEnvironment";
+import { ME } from "@/graphql/queries/user";
+import { useEffect } from "react";
+
+const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
 export const NewClient = ({ asSideItem = false }) => {
   const { toast } = useToast();
+  const [mutate, loading] = useMutation<clientCreateMutation>(CREATE_CLIENT);
+  const {
+    me: { user },
+  } = usePreloadedQuery<userMeQuery>(ME, queryRef);
 
   const form = useForm<z.infer<typeof clientV.create>>({
     resolver: zodResolver(clientV.create),
@@ -19,30 +32,48 @@ export const NewClient = ({ asSideItem = false }) => {
       name: "",
       email: "",
       phone: "",
+      user: "",
     },
   });
 
+  useEffect(() => {
+    if (user?.id) {
+      form.setValue("user", user.id);
+    }
+  }, [user]);
+
   const onSubmit = (data: z.infer<typeof clientV.create>) => {
-    console.log(data);
-    toast({
-      title: "Client created",
-      description: "The client was created successfully.",
+    mutate({
+      variables: {
+        input: data,
+      },
+      onCompleted: () => {
+        toast({
+          title: "Client created",
+          description: "The client was created successfully.",
+        });
+        form.reset();
+      },
+      onError: (err) => {
+        console.log(err);
+        toast({
+          title: "Error",
+          description: "There was an error creating the client.",
+        });
+      },
     });
   };
 
   return (
-    <section className={cn("h-full w-full relative flex flex-col items-center justify-start lg:justify-center p-2")}>
+    <section className={cn("h-full w-full relative flex flex-col  items-center justify-start lg:justify-center p-2 pt-16")}>
       <Form {...form}>
-        <form
-          className={cn("grid grid-cols-1  gap-y-4 gap-x-8 p-4 relative", !asSideItem && "lg:grid-cols-2")}
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <h3 className={cn(h3, "inline-flex gap-2 items-center mb-8")}>New Client</h3>
+        <form className={cn("grid gap-y-4 gap-x-8 p-4 relative grid-cols-2")} onSubmit={form.handleSubmit(onSubmit)}>
+          <h3 className={cn(h3, "inline-flex gap-2 items-center mb-8 col-span-2")}>New Client</h3>
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={cn("col-span-2 lg:col-span-1", asSideItem && "lg:col-span-2")}>
                 <FormLabel>Name</FormLabel>
                 <FormControl className="w-72">
                   <Input placeholder="Client's Name" {...field} autoComplete="off" />
@@ -56,7 +87,7 @@ export const NewClient = ({ asSideItem = false }) => {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className={cn("col-span-2 lg:col-span-1", asSideItem && "lg:col-span-2")}>
                 <FormLabel>Email</FormLabel>
                 <FormControl className="w-72">
                   <Input placeholder="client@email.com" {...field} autoComplete="off" />
@@ -72,7 +103,7 @@ export const NewClient = ({ asSideItem = false }) => {
             name="phone"
             render={({ field }) => {
               return (
-                <FormItem>
+                <FormItem className="col-span-2">
                   <FormLabel>Phone</FormLabel>
                   <FormControl className="w-72">
                     <Input {...field} autoComplete="off" />
@@ -83,12 +114,25 @@ export const NewClient = ({ asSideItem = false }) => {
               );
             }}
           />
-          <Button type="reset" className="gap-2 mt-8 w-72 font-semibold" variant="destructive" onClick={() => form.reset()}>
+          <Button
+            type="reset"
+            className={cn("gap-2 mt-8 w-72 font-semibold col-span-2 lg:col-span-1", asSideItem && "lg:col-span-2")}
+            variant="destructive"
+            onClick={() => form.reset()}
+          >
             <RotateCcw className="h-4 w-4" />
             Reset Form
           </Button>
-          <Button type="submit" className={cn("gap-2 w-72 font-semibold", !asSideItem && "lg:mt-8")}>
-            <UserPlus className="h-4 w-4" /> Add Client
+          <Button
+            type="submit"
+            className={cn(
+              "gap-2 w-72 font-semibold col-span-2 lg:col-span-1",
+              !asSideItem && "lg:mt-8",
+              asSideItem && "col-span-2 mt-8"
+            )}
+            disabled={loading}
+          >
+            {loading ? <Loader2 className="animate-spin h-4 w-4" /> : <UserPlus className="h-4 w-4" />} Add Client
           </Button>
         </form>
       </Form>

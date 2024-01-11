@@ -1,17 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useMutation, graphql } from "react-relay";
-import { LogoutButtonLogoutMutation } from "./__generated__/LogoutButtonLogoutMutation.graphql";
+import { useMutation } from "react-relay";
+import { authLogoutMutation } from "@/graphql/mutations/__generated__/authLogoutMutation.graphql";
+import { LOGOUT } from "@/graphql/mutations/auth";
 export const LogoutButton = () => {
   const navigate = useNavigate();
-  const [logout] = useMutation<LogoutButtonLogoutMutation>(graphql`
-    mutation LogoutButtonLogoutMutation {
-      logout
-    }
-  `);
+  const [logout] = useMutation<authLogoutMutation>(LOGOUT);
 
   const handleLogout = async () => {
     logout({
-      variables: {}, // Add the required variables property here
+      variables: {},
       onCompleted: () => {
         navigate("/login");
       },

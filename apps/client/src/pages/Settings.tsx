@@ -14,15 +14,19 @@ import { RelayEnvironment } from "@/RelayEnvironment";
 import { ME } from "@/graphql/queries/user";
 import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
 import { useEffect } from "react";
-import { UPDATE_USER } from "@/graphql/mutations/user";
+import { DELETE_USER, UPDATE_USER } from "@/graphql/mutations/user";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { isJSON } from "@/lib/utils";
-export const loadedQuery = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
+import { LOGOUT } from "@/graphql/mutations/auth";
+import { userDeleteMutation } from "@/graphql/mutations/__generated__/userDeleteMutation.graphql";
+import { authLogoutMutation } from "@/graphql/mutations/__generated__/authLogoutMutation.graphql";
+
+export const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
 
 export function Settings() {
   const { toast } = useToast();
-  const data = usePreloadedQuery(ME, loadedQuery);
+  const data = usePreloadedQuery(ME, queryRef);
 
   const updateForm = useForm<z.infer<typeof userV.update>>({
     resolver: zodResolver(userV.update),
@@ -220,6 +224,34 @@ function DeleteDialog() {
     resolver: zodResolver(schema),
     mode: "all",
   });
+  const { me } = usePreloadedQuery(ME, queryRef);
+  const [deleteUser, loading] = useMutation<userDeleteMutation>(DELETE_USER);
+  const [logout] = useMutation<authLogoutMutation>(LOGOUT);
+
+  const handleSubmit = () => {
+    if (me.user?.id) {
+      deleteUser({
+        onCompleted: ({ deleteUser }) => {
+          if (deleteUser.status === "OK") {
+            logout({
+              onCompleted: () => {
+                queryRef.dispose();
+                window.location.href = "/login";
+              },
+              variables: {},
+            });
+          }
+          console.log(deleteUser.error);
+        },
+        variables: {
+          id: me?.user?.id,
+        },
+      });
+    }
+    if (!me.user || me.error?.message || me.error?.type) {
+      console.log(`An error occured: ${me.error?.message || "Unknown Error"}`);
+    }
+  };
   return (
     <>
       <DialogHeader>
@@ -231,7 +263,7 @@ function DeleteDialog() {
           continue, please type <span className={cn(code, "font-sans")}>delete my account</span> below.
         </p>
         <Form {...form}>
-          <form className="space-y-4 flex flex-col items-center">
+          <form className="space-y-4 flex flex-col items-center" onSubmit={form.handleSubmit(handleSubmit)}>
             <FormField
               control={form.control}
               name="delete"
@@ -245,10 +277,10 @@ function DeleteDialog() {
             <Button
               type="submit"
               variant="destructive"
-              disabled={!!form.formState.errors.delete || !form.getFieldState("delete").isDirty}
+              disabled={!!form.formState.errors.delete || !form.getFieldState("delete").isDirty || loading}
               className="font-semibold"
             >
-              Delete Account
+              {loading && <Loader2 className="animate-spin me-2" />} Delete Account
             </Button>
           </form>
         </Form>

@@ -8,7 +8,7 @@ const base = z.object({
   phone: z.string().max(15),
 });
 
-const create = base.omit({ id: true }).required();
+const create = base.omit({ id: true });
 
 const update = base.required({ id: true });
 

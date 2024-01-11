@@ -3,6 +3,35 @@ enum Role {
   USER
 }
 
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+type Client {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  projects: [Project]!
+}
+
+input ClientInput {
+  name: String!
+  email: String!
+  phone: String!
+  user: ID!
+}
+
+type Project {
+  id: ID!
+  name: String!
+  description: String!
+  user: User!
+  status: Status!
+}
+
 type Error {
   message: String!
   type: String!
@@ -13,6 +42,9 @@ type User {
   name: String!
   username: String!
   email: String!
+  projectCount: Int!
+  projects: [Project]!
+  clients: [Client]!
   password: String!
   role: Role!
 }
@@ -86,6 +118,7 @@ type LoginReturn {
 }
 
 type Mutation {
+  createClient(input: ClientInput!): Client!
   createUser(input: UserInput!): CreateUserReturn!
   updateUser(input: UpdateUserInput!): UpdateUserReturn!
   deleteUser(id: ID!): DeleteUserReturn!
