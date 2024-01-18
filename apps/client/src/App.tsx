@@ -1,7 +1,7 @@
 import { AppRouter } from "./AppRouter";
 import { RelayEnvironmentProvider } from "react-relay";
-import { RelayEnvironment } from "./RelayEnvironment";
-import { ThemeProvider } from "./components/ui/ThemeProvider";
+import { RelayEnvironment } from "@/RelayEnvironment";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { ToastProvider } from "@/components/ui/toast";
 function App() {
   return (
