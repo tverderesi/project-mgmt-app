@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<242258fa3fdfa7b18cae25c0a0e892e7>>
+ * @generated SignedSource<<d55b9719f3d5b1834eef167de7a7afd1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,13 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type authLogoutMutation$variables = Record<PropertyKey, never>;
-export type authLogoutMutation$data = {
+export type logoutMutation$variables = Record<PropertyKey, never>;
+export type logoutMutation$data = {
   readonly logout: boolean;
 };
-export type authLogoutMutation = {
-  response: authLogoutMutation$data;
-  variables: authLogoutMutation$variables;
+export type logoutMutation = {
+  response: logoutMutation$data;
+  variables: logoutMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -33,7 +33,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "authLogoutMutation",
+    "name": "logoutMutation",
     "selections": (v0/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -42,20 +42,20 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "authLogoutMutation",
+    "name": "logoutMutation",
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "f7246dd7ad83a4ca117cb85cb1bd79cf",
+    "cacheID": "55ae640de6141494e2566463909fb569",
     "id": null,
     "metadata": {},
-    "name": "authLogoutMutation",
+    "name": "logoutMutation",
     "operationKind": "mutation",
-    "text": "mutation authLogoutMutation {\n  logout\n}\n"
+    "text": "mutation logoutMutation {\n  logout\n}\n"
   }
 };
 })();
 
-(node as any).hash = "310e140564f7cabdc2bd488c526c6eea";
+(node as any).hash = "0b7b108a608e638ba4159d6195c03afe";
 
 export default node;

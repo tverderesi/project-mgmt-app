@@ -9,9 +9,3 @@ export const LOGIN = graphql`
     }
   }
 `;
-
-export const LOGOUT = graphql`
-  mutation authLogoutMutation {
-    logout
-  }
-`;

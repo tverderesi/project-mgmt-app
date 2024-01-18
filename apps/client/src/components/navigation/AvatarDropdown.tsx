@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatName } from "@/lib/utils";
-import { LogoutButton } from "../auth/LogoutButton";
+import { LogoutButton } from "../../features/auth/LogoutButton";
 import { Link } from "react-router-dom";
 import { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
 import { useLazyLoadQuery } from "react-relay";
