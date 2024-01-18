@@ -42,7 +42,6 @@ input ClientInput {
 }
 
 type Query {
-  isLoggedIn: Boolean!
   clients(filter: ClientFilter): [Client]!
   client(id: ID!): Client
   projects(filter: ProjectFilter): [Project]!
@@ -51,6 +50,7 @@ type Query {
   task(id: ID!): Task!
   users(filter: UserFilter): [User]!
   user(id: ID): User!
+  isLoggedIn: Boolean!
 }
 
 enum Status {

@@ -1,0 +1,43 @@
+type Project {
+  id: ID!
+  name: String!
+  description: String!
+  client: Client!
+  user: User!
+  tasks: [Task]!
+  status: Status!
+}
+
+input ProjectInput {
+  name: String!
+  description: String
+  client: ID!
+  user: ID!
+  status: Status!
+}
+
+input UpdateProjectInput {
+  name: String
+  description: String
+  status: Status
+  client: ID
+  user: ID
+}
+
+input ProjectFilter {
+  name: String
+  status: Status
+  client: ID
+  user: ID
+}
+
+type Query {
+  projects(filter: ProjectFilter): [Project]!
+  project(id: ID!): Project!
+}
+
+type Mutation {
+  createProject(input: ProjectInput!): Project!
+  updateProject(id: ID!, input: UpdateProjectInput!): Project!
+  deleteProject(id: ID!): String!
+}

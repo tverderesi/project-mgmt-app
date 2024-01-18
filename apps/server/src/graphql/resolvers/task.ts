@@ -4,9 +4,8 @@ import { TaskModel } from "@/models/Task";
 import { checkRequiredFields } from "@/utils/field";
 
 export const query = {
-  tasks: async (_parent, args: z.infer<typeof taskV.query>, context) => {
-    const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT), sort, ...rest } = args;
-    const tasks = await TaskModel.find(rest).limit(limit).skip(skip).sort(sort);
+  tasks: async (_parent, args: z.infer<typeof taskV.base>, context) => {
+    const tasks = await TaskModel.find(args);
     return tasks;
   },
 

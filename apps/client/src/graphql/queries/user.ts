@@ -53,7 +53,7 @@ export const USER = graphql`
         ...userProject_project
       }
       clients {
-        id
+        ...userClient_client
       }
       ...userProjectCount_projectCount
       ...userClientCount_clientCount

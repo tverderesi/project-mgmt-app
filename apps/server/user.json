@@ -1,0 +1,45 @@
+{
+  "_id": "659ac369d15020df50d1fa5e",
+  "name": "Jackson",
+  "username": "tverderesi",
+  "email": "tverderesi@gmail.com",
+  "password": "$2b$10$BubN5QvM1ESnRM4qXHwR3epA.U7zPECXdazNsMLRAXlStmJY.E7kO",
+  "clients": [
+    {
+      "id": "659f33c907491b409778e7c7",
+      "name": "Client",
+      "email": "client@email.com",
+      "phone": "2103902193",
+      "projects": [],
+      "user": "659ac369d15020df50d1fa5e",
+      "createdAt": "2024-01-11T00:18:17.316Z",
+      "updatedAt": "2024-01-11T00:18:17.316Z",
+      "__v": 0
+    },
+    {
+      "id": "65a95565db8e8cb02679a519",
+      "name": "Client 2",
+      "email": "client@email2.com",
+      "phone": "130293",
+      "projects": [],
+      "user": "659ac369d15020df50d1fa5e",
+      "createdAt": "2024-01-18T16:44:21.391Z",
+      "updatedAt": "2024-01-18T16:44:21.391Z",
+      "__v": 0
+    }
+  ],
+  "projects": [],
+  "role": "USER",
+  "createdAt": "2024-01-07T15:29:45.518Z",
+  "updatedAt": "2024-01-18T16:44:21.408Z",
+  "__v": 0,
+  "projectCount": 0,
+  "clientCount": 2,
+  "totalTaskCount": 0,
+  "id": "659ac369d15020df50d1fa5e",
+  "taskCountByStatus": [
+    { "status": "NOT_STARTED", "count": 0 },
+    { "status": "IN_PROGRESS", "count": 0 },
+    { "status": "COMPLETED", "count": 0 }
+  ]
+}

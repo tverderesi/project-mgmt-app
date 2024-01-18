@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import { CardFallback, Count } from "./shared";
 import { useFragment } from "react-relay";
 import { CLIENT_FRAGMENT } from "@/graphql/queries/user";
+import { userClient_client$data, userClient_client$key } from "@/graphql/queries/__generated__/userClient_client.graphql";
 
 export function NoClientsCard() {
   return (
@@ -33,8 +34,8 @@ export function NoClientsCard() {
 }
 NoClientsCard.displayName = "NoProjectsCard";
 
-export function ClientsSection() {
-  const count = 3;
+export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client$key }) {
+  const data = useFragment(CLIENT_FRAGMENT, fragmentRef);
   return (
     <Card className="shadow-none dark:bg-accent/20 bg-stone-100/70 border-none  h-100 flex flex-col justify-center">
       <CardHeader>
@@ -42,7 +43,7 @@ export function ClientsSection() {
           Clients
           <CardDescription>
             <Suspense fallback={<span className="h-6 w-28 animate-pulse rounded-md bg-primary/10" />}>
-              <Count thing={{ singular: "Client", plural: "Clients" }} count={count} />
+              <Count thing={{ singular: "Client", plural: "Clients" }} count={data.length} />
             </Suspense>
           </CardDescription>
         </CardTitle>
@@ -50,7 +51,9 @@ export function ClientsSection() {
 
       <CardContent className="px-6 h-auto">
         <div className="flex w-full gap-3 overflow-x-scroll  snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
-          <Suspense fallback={<CardFallback />}>{/* <ClientCarouselItems clients={clients} count={count} /> */}</Suspense>
+          <Suspense fallback={<CardFallback />}>
+            <ClientCarouselItems clients={data} />
+          </Suspense>
         </div>
       </CardContent>
       <CardFooter className="gap-2 justify-end">
@@ -73,8 +76,9 @@ export function ClientsSection() {
 
 ClientsSection.displayName = "ClientsSection";
 
-const ClientCarouselItems = ({ clients, count }) => {
-  if (count === 0) {
+const ClientCarouselItems = ({ clients }: { clients: userClient_client$data }) => {
+  const clientCount = clients.length;
+  if (clientCount === 0) {
     return <NoClientsCard />;
   }
 

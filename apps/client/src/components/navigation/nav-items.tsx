@@ -67,10 +67,10 @@ export function ProjectNavigationItem({ projectCount }: { projectCount: userProj
               <ProjectCountWidget fragmentRef={projectCount} />
             </Suspense>
           </li>
-          <ListItem to={`/app/user/projects/new`} title="New Project">
+          <ListItem to={`projects/new`} title="New Project">
             Create a new project.
           </ListItem>
-          <ListItem to={`$/app/user/projects`} title="Projects">
+          <ListItem to={`projects`} title="Projects">
             Browse and manage all projects.
           </ListItem>
         </ul>

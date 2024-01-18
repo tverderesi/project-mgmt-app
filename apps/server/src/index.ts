@@ -21,7 +21,7 @@ import { logger } from "./utils/logger";
 import { fileURLToPath } from "url";
 import { rateLimit } from "express-rate-limit";
 import mergeSchemas from "./graphql/schema";
-
+import bcrypt from "bcrypt";
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");

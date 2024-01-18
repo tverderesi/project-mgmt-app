@@ -18,7 +18,11 @@ import { z } from "zod";
 import { NewClient } from "./NewClient";
 import projectV from "@/validators/project";
 import { h3 } from "@/components/ui/typography";
-
+import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
+import { USER } from "@/graphql/queries/user";
+import { useEffect } from "react";
+import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
+import user from "../../../server/user.json";
 export const NewProject = () => {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof projectV.create>>({
@@ -30,18 +34,30 @@ export const NewProject = () => {
     },
   });
 
+  const { user: user2 } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
+
+  useEffect(() => {
+    if (user2.id) {
+      form.setValue("user", user2.id);
+    }
+  }, [user2.id]);
+
   const status = projectV.create.shape.status.Values;
   const statusEnum = Object.values(status).map((status) => ({ value: status, label: toTitleCase(status) }));
-
-  const user = {
-    clients: [
-      { id: "1", name: "Client 1" },
-      { id: "2", name: "Client 2" },
-      { id: "3", name: "Client 3" },
-      { id: "4", name: "Client 4" },
-    ],
-  };
-
+  const [mutate, isInFlight] = useMutation(graphql`
+    mutation NewProjectMutation($input: ProjectInput!) {
+      createProject(input: $input) {
+        id
+        name
+        description
+        status
+        client {
+          id
+          name
+        }
+      }
+    }
+  `);
   return (
     <section className="flex flex-col justify-start md:justify-center items-center h-full w-full pt-8">
       <Sheet>
@@ -49,6 +65,11 @@ export const NewProject = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((data) => {
+              mutate({
+                variables: {
+                  input: data,
+                },
+              });
               toast({
                 title: "Success",
                 description: "Project created successfully!",

@@ -29,7 +29,7 @@ const projectSchema = new Schema<Project>(
     user: { type: Schema.Types.ObjectId, ref: "User" },
     tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
   },
-  { timestamps: true, autoIndex: true }
+  { timestamps: true, autoIndex: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 projectSchema.post("findOneAndDelete", async function (next) {

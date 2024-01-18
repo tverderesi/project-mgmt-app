@@ -3,9 +3,14 @@ import { z } from "zod";
 import clientV from "@/validators/client";
 import { checkRequiredFields } from "@/utils/field";
 import { UserModel } from "@/models/User";
+import { checkAuthetication } from "@/utils/checkAuthetication";
+import { viewerCanView } from "@/utils/viewerCanView";
 
 const query = {
   clients: async (_parent, args: Partial<z.infer<typeof clientV.base>>, context) => {
+    const me = await context.getUser();
+
+    checkAuthetication(me);
     const clients = await ClientModel.find(args);
     return clients;
   },

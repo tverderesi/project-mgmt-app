@@ -3,10 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { statusDTO } from "@/lib/utils";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Progress } from "@/components/ui/progress";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Mail, PhoneCall } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Mail, PhoneCall, PlusCircle } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { useFragment, useLazyLoadQuery } from "react-relay";
+import { PROJECT, PROJECT_CLIENT_FRAGMENT, PROJECT_TASKS_FRAGMENT } from "@/graphql/queries/project";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { projectProjectQuery } from "@/graphql/queries/__generated__/projectProjectQuery.graphql";
+import {
+  projectClient_client$data,
+  projectClient_client$key,
+} from "@/graphql/queries/__generated__/projectClient_client.graphql";
+import { projectTasks_tasks$key } from "@/graphql/queries/__generated__/projectTasks_tasks.graphql";
 export const Project = () => {
   return (
     <div className="pt-16 flex flex-col gap-4">
@@ -18,18 +26,19 @@ export const Project = () => {
 };
 
 const ProjectDashboard = () => {
-  const project = {
-    id: "1",
-    name: "Project 1",
-    description: "This is a description",
-    status: "NOT_STARTED",
-    progress: 20,
-    client: {
-      name: "Client 1",
-      email: "client1@email.com",
-      phone: "123456789",
-    },
-  };
+  const id = useParams<{ id: string }>()?.id;
+  const navigate = useNavigate();
+
+  if (!id) {
+    navigate("/404");
+    return null;
+  }
+
+  const { project } = useLazyLoadQuery<projectProjectQuery>(PROJECT, { id });
+
+  const client = project?.client;
+  const tasks = project.tasks;
+  const description = project.description;
 
   return (
     <Card className="shadow-none h-96 border-none">
@@ -39,24 +48,41 @@ const ProjectDashboard = () => {
       </CardHeader>
       <CardContent className="space-y-16">
         <p className="text-3xl font-semibold px-3 -mb-8">Info</p>
-        <ClientInfo project={project} />
-        <ProgressInfo project={project} />
-        <DescriptionInfo project={project} />
-        <div className="pb-16">
-          <p className="text-3xl font-semibold px-3 -mb-8">Tasks</p>
-        </div>
+        <ClientInfo fragmentRef={client} />
+
+        <DescriptionInfo description={description} />
+        {/*@ts-ignore */}
+        <Tasks fragmentRef={tasks} />
       </CardContent>
     </Card>
   );
 };
 
-function ClientInfo({
-  project: {
-    client: { name, email, phone },
-  },
-}: {
-  project: { client: { name: string; email: string; phone: string } };
-}) {
+function Tasks({ fragmentRef }: { fragmentRef: projectTasks_tasks$key }) {
+  const tasks = useFragment(PROJECT_TASKS_FRAGMENT, fragmentRef);
+
+  return (
+    <div className="pb-16 space-y-2">
+      <p className="text-3xl font-semibold px-3">Tasks</p>
+      {tasks.length === 0 && (
+        <>
+          <p className="text-justify text-lg font-light px-3">
+            No tasks provided.{" "}
+            <Link to="../tasks/new" className="text-primary underline-offset-4 hover:underline">
+              Create a new task now.
+            </Link>
+          </p>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ClientInfo({ fragmentRef }: { fragmentRef: any }) {
+  const client = useFragment(PROJECT_CLIENT_FRAGMENT, fragmentRef);
+
+  const { name, email, phone } = client;
+
   return (
     <div className="px-3 space-y-2">
       <div className="inline-flex items-center gap-2">
@@ -100,16 +126,7 @@ function ClientInfo({
   );
 }
 
-export const ProgressInfo = ({ project: { progress } }: { project: { progress: number } }) => (
-  <div className="px-3 space-y-4">
-    <p className="text-2xl font-semibold">
-      Progress <span className="text-lg font-light">{progress}% Completed</span>
-    </p>
-    <Progress value={progress} />
-  </div>
-);
-
-const DescriptionInfo = ({ project: { description } }: { project: { description: string } }) => {
+const DescriptionInfo = ({ description }: { description: string }) => {
   if (description)
     return (
       <Accordion type="single" collapsible defaultValue="description">

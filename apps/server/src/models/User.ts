@@ -2,8 +2,7 @@ import { Document, Schema, model } from "mongoose";
 import { Project } from "./Project";
 import { Client } from "./Client";
 import bcrypt from "bcrypt";
-import { roles } from "@/validators/shared";
-import { Enum, statuses } from "@/validators/shared";
+import { Status, statuses, Role, roles } from "@/validators/shared";
 
 export interface User extends Document {
   name: string;
@@ -12,8 +11,8 @@ export interface User extends Document {
   password: string;
   projects: Project[];
   clients: Client[];
-  role: (typeof roles)[number];
-  countTasksByType: () => Promise<{ status: Enum<typeof statuses>; count: number }[]>;
+  role: Role;
+  countTasksByType: () => Promise<{ status: Status; count: number }[]>;
 }
 
 const userSchema = new Schema<User>(
@@ -22,8 +21,6 @@ const userSchema = new Schema<User>(
     username: { type: String, required: true, unique: true, maxlength: 32 },
     email: { type: String, required: true, unique: true, maxlength: 64 },
     password: { type: String, required: true, maxlength: 64 },
-    clients: [{ type: Schema.Types.ObjectId, ref: "Client" }],
-    projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
     role: { type: String, enum: roles, default: "USER" },
   },
   {
@@ -33,7 +30,7 @@ const userSchema = new Schema<User>(
     autoIndex: true,
     methods: {
       countTasksByType() {
-        type TaskCount = { status: Enum<typeof statuses>; count: number }[];
+        type TaskCount = { status: Status; count: number }[];
         const initialTaskCount: TaskCount = [
           { status: "NOT_STARTED", count: 0 },
           { status: "IN_PROGRESS", count: 0 },

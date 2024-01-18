@@ -6,11 +6,15 @@ import { useLazyLoadQuery } from "react-relay";
 
 export const Dashboard = () => {
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
+  const projects = user.projects;
+  const clients = user.clients;
 
   return (
     <div className="pt-18 space-y-4 pb-4">
-      <ProjectsSection fragmentRef={user?.projects} />
-      <ClientsSection fragmentRef={user?.clients} />
+      {/* @ts-ignore */}
+      <ProjectsSection fragmentRef={projects} />
+      {/* @ts-ignore */}
+      <ClientsSection fragmentRef={clients} />
     </div>
   );
 };

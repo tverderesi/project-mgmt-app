@@ -11,7 +11,7 @@ import { Suspense } from "react";
 import { CardFallback, Count } from "./shared";
 import { useFragment } from "react-relay";
 import { PROJECT_FRAGMENT } from "@/graphql/queries/user";
-import { userProject_project$data } from "@/graphql/queries/__generated__/userProject_project.graphql";
+import { userProject_project$data, userProject_project$key } from "@/graphql/queries/__generated__/userProject_project.graphql";
 
 export function NoProjectsCard() {
   return (
@@ -36,8 +36,7 @@ export function NoProjectsCard() {
 }
 NoProjectsCard.displayName = "NoProjectsCard";
 
-//@ts-expect-error: Ignoring this error until I can figure out how to properly type this. TODO: Properly type fragmentRef
-export function ProjectsSection({ fragmentRef }) {
+export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_project$key }) {
   const data = useFragment(PROJECT_FRAGMENT, fragmentRef);
   return (
     <Card className="shadow-none dark:bg-accent/20 bg-stone-100/70 border-none  h-100 flex flex-col justify-center">

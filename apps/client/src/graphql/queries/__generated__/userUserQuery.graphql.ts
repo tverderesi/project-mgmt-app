@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3c711709019a7beb3abd72044d28403a>>
+ * @generated SignedSource<<7b89dfc212bb295938eea9e764d24b69>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -16,7 +16,7 @@ export type userUserQuery$variables = {
 export type userUserQuery$data = {
   readonly user: {
     readonly clients: ReadonlyArray<{
-      readonly id: string;
+      readonly " $fragmentSpreads": FragmentRefs<"userClient_client">;
     } | null | undefined>;
     readonly email: string;
     readonly id: string;
@@ -82,18 +82,6 @@ v5 = {
 v6 = {
   "alias": null,
   "args": null,
-  "concreteType": "Client",
-  "kind": "LinkedField",
-  "name": "clients",
-  "plural": true,
-  "selections": [
-    (v2/*: any*/)
-  ],
-  "storageKey": null
-},
-v7 = {
-  "alias": null,
-  "args": null,
   "kind": "ScalarField",
   "name": "status",
   "storageKey": null
@@ -133,7 +121,22 @@ return {
             ],
             "storageKey": null
           },
-          (v6/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "Client",
+            "kind": "LinkedField",
+            "name": "clients",
+            "plural": true,
+            "selections": [
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "userClient_client"
+              }
+            ],
+            "storageKey": null
+          },
           {
             "args": null,
             "kind": "FragmentSpread",
@@ -207,11 +210,31 @@ return {
                 "name": "description",
                 "storageKey": null
               },
-              (v7/*: any*/)
+              (v6/*: any*/)
             ],
             "storageKey": null
           },
-          (v6/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "Client",
+            "kind": "LinkedField",
+            "name": "clients",
+            "plural": true,
+            "selections": [
+              (v2/*: any*/),
+              (v3/*: any*/),
+              (v5/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "phone",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
           {
             "alias": null,
             "args": null,
@@ -241,7 +264,7 @@ return {
             "name": "taskCountByStatus",
             "plural": true,
             "selections": [
-              (v7/*: any*/),
+              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
@@ -258,16 +281,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "18c1ee5bf517b2d6c883e8baf32dd1c9",
+    "cacheID": "758e8e193917f79482320bd0d56bc545",
     "id": null,
     "metadata": {},
     "name": "userUserQuery",
     "operationKind": "query",
-    "text": "query userUserQuery(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    projects {\n      ...userProject_project\n      id\n    }\n    clients {\n      id\n    }\n    ...userProjectCount_projectCount\n    ...userClientCount_clientCount\n    ...userTaskCount_taskCount\n    taskCountByStatus {\n      ...userTaskCountByStatus_TaskCount\n    }\n  }\n}\n\nfragment userClientCount_clientCount on User {\n  clientCount\n}\n\nfragment userProjectCount_projectCount on User {\n  projectCount\n}\n\nfragment userProject_project on Project {\n  id\n  name\n  description\n  status\n}\n\nfragment userTaskCountByStatus_TaskCount on TaskCountByStatus {\n  status\n  count\n}\n\nfragment userTaskCount_taskCount on User {\n  totalTaskCount\n}\n"
+    "text": "query userUserQuery(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    projects {\n      ...userProject_project\n      id\n    }\n    clients {\n      ...userClient_client\n      id\n    }\n    ...userProjectCount_projectCount\n    ...userClientCount_clientCount\n    ...userTaskCount_taskCount\n    taskCountByStatus {\n      ...userTaskCountByStatus_TaskCount\n    }\n  }\n}\n\nfragment userClientCount_clientCount on User {\n  clientCount\n}\n\nfragment userClient_client on Client {\n  id\n  name\n  email\n  phone\n}\n\nfragment userProjectCount_projectCount on User {\n  projectCount\n}\n\nfragment userProject_project on Project {\n  id\n  name\n  description\n  status\n}\n\nfragment userTaskCountByStatus_TaskCount on TaskCountByStatus {\n  status\n  count\n}\n\nfragment userTaskCount_taskCount on User {\n  totalTaskCount\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f1199889bd249d35e2e42387d545f061";
+(node as any).hash = "2f2a7272b626302d08f7c7bf973536f3";
 
 export default node;

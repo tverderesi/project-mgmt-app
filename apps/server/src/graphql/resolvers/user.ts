@@ -8,8 +8,10 @@ import { TreatMongoUniqueFieldsError } from "@/utils/field";
 import { doerCanDo } from "../../utils/doerCanDo";
 import { checkAuthetication } from "../../utils/checkAuthetication";
 import { pruneEmptyValues } from "@/utils/field";
-import { authError, invalidCredentials, permissionError, userNotFound } from "@/utils/errors";
+import { authError, invalidCredentials, userNotFound } from "@/utils/errors";
 import { viewerCanView } from "@/utils/viewerCanView";
+import { ProjectModel } from "@/models/Project";
+import { ClientModel } from "@/models/Client";
 
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
@@ -30,7 +32,7 @@ const mutation = {
     const me = await context.getUser();
 
     checkAuthetication(me);
-    doerCanDo(me, input);
+    doerCanDo(me, input.id);
     checkRequiredFields(input, userV.update);
 
     const { id, oldPassword, ...rest } = input;
@@ -70,7 +72,7 @@ const mutation = {
       throw new Error(error);
     }
 
-    doerCanDo(me, { id });
+    doerCanDo(me, id);
 
     const user = await UserModel.findByIdAndDelete(id);
 
@@ -120,11 +122,13 @@ const query = {
     const user = await UserModel.findById(id || me.id)
       .populate("projectCount")
       .populate("clientCount")
-      .populate("totalTaskCount")
-      .populate("clients");
+      .populate("totalTaskCount");
+
+    const projects = await ProjectModel.find({ user: id || me.id });
+    const clients = await ClientModel.find({ user: id || me.id });
 
     const taskCountByStatus = await user?.countTasksByType();
-    const userWithTasks = { ...user?.toObject(), taskCountByStatus };
+    const userWithTasks = { ...user?.toObject(), taskCountByStatus, projects, clients };
     return userWithTasks;
   },
 
