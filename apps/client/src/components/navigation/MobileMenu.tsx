@@ -10,8 +10,14 @@ import { cn } from "@/lib/utils";
 import { ClassValue } from "clsx";
 import { h2, h3 } from "../ui/typography";
 import { Suspense, useState } from "react";
+import { useLazyLoadQuery } from "react-relay";
+import { USER } from "@/graphql/queries/user";
+import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
+import { userTaskCountByStatus_TaskCount$key } from "@/graphql/queries/__generated__/userTaskCountByStatus_TaskCount.graphql";
 
 export function MobileMenu() {
+  const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
+  const taskCountByStatus = user?.taskCountByStatus as userTaskCountByStatus_TaskCount$key;
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -29,7 +35,7 @@ export function MobileMenu() {
             <AccordionTrigger>
               <div className="flex flex-col items-start gap-y-2">
                 <h3 className={cn(h3, "text-rose-500")}>Projects</h3>
-                <ProjectCountWidget />
+                <ProjectCountWidget fragmentRef={user} />
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -45,7 +51,7 @@ export function MobileMenu() {
             <AccordionTrigger>
               <div className="flex flex-col items-start gap-y-2 ">
                 <h3 className={cn(h3, "text-rose-500")}>Clients</h3>
-                <ClientCountWidget />
+                <ClientCountWidget fragmentRef={user} />
               </div>
             </AccordionTrigger>
             <AccordionContent>
@@ -61,12 +67,12 @@ export function MobileMenu() {
             <AccordionTrigger>
               <div className="flex flex-col items-start gap-y-2 ">
                 <h3 className={cn(h3, "text-rose-500")}>Tasks</h3>
-                <TotalTaskCountWidget />
+                <TotalTaskCountWidget fragmentRef={user} />
               </div>
             </AccordionTrigger>
             <AccordionContent>
               <div className="mb-2">
-                <TaskCountWidget />
+                <TaskCountWidget fragmentRef={taskCountByStatus} />
               </div>
               <ListItem to={`/app/user/projects/new`} title="New Client">
                 Register a new Client.

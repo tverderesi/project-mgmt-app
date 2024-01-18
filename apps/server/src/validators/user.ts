@@ -42,8 +42,8 @@ const create = base
   });
 
 const update = base
-  .required({ id: true })
   .partial()
+  .required({ id: true })
   .extend({
     email: z.string().email({ message: "Invalid e-mail!" }).optional(),
     oldPassword: z.string({ required_error: "Password is required!" }),

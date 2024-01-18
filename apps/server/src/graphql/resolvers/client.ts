@@ -5,10 +5,8 @@ import { checkRequiredFields } from "@/utils/field";
 import { UserModel } from "@/models/User";
 
 const query = {
-  clients: async (_parent, args: Partial<z.infer<typeof clientV.query>>, context) => {
-    const { skip = Number(process.env.DEFAULT_SKIP), limit = Number(process.env.DEFAULT_LIMIT), sort, ...rest } = args;
-    if (skip === undefined || !limit) throw new Error("Skip and limit are required on the environment variables!");
-    const clients = await ClientModel.find(rest).limit(limit).skip(skip).sort(sort);
+  clients: async (_parent, args: Partial<z.infer<typeof clientV.base>>, context) => {
+    const clients = await ClientModel.find(args);
     return clients;
   },
 
@@ -23,7 +21,6 @@ const mutation = {
   createClient: async (_parent, { input }: { input: z.infer<typeof clientV.create> }, context) => {
     checkRequiredFields(input, clientV.create);
     const client = await ClientModel.create(input);
-    console.log(client);
     await UserModel.findByIdAndUpdate(input.user, { $push: { clients: client._id } });
     return client;
   },

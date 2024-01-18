@@ -11,7 +11,6 @@ passport.use(
       return done("Wrong Credentials!", false);
     }
     const arePasswordsEqual = await bcrypt.compare(password, foundUser?.password as string);
-    console.log(arePasswordsEqual);
     if (!arePasswordsEqual) {
       return done("Wrong Credentials!", false);
     }

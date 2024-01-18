@@ -11,20 +11,16 @@ import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { h3 } from "@/components/ui/typography";
 import { CREATE_CLIENT } from "@/graphql/mutations/client";
-import { loadQuery, useMutation, usePreloadedQuery } from "react-relay";
+import { useLazyLoadQuery, useMutation } from "react-relay";
 import { clientCreateMutation } from "@/graphql/mutations/__generated__/clientCreateMutation.graphql";
-import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
-import { RelayEnvironment } from "@/RelayEnvironment";
-import { ME } from "@/graphql/queries/user";
+import { USER } from "@/graphql/queries/user";
 import { useEffect } from "react";
+import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 
-const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
 export const NewClient = ({ asSideItem = false }) => {
   const { toast } = useToast();
   const [mutate, loading] = useMutation<clientCreateMutation>(CREATE_CLIENT);
-  const {
-    me: { user },
-  } = usePreloadedQuery<userMeQuery>(ME, queryRef);
+  const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
 
   const form = useForm<z.infer<typeof clientV.create>>({
     resolver: zodResolver(clientV.create),
@@ -37,7 +33,7 @@ export const NewClient = ({ asSideItem = false }) => {
   });
 
   useEffect(() => {
-    if (user?.id) {
+    if (user.id) {
       form.setValue("user", user.id);
     }
   }, [user]);

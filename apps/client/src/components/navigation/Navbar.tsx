@@ -10,18 +10,16 @@ import { cn } from "@/lib/utils";
 import { h2, h4 } from "../ui/typography";
 import { Suspense } from "react";
 import { MobileMenu } from "./MobileMenu";
-import { useClientQuery, useLazyLoadQuery } from "react-relay";
-import { ME, USER_QUERY } from "@/graphql/queries/user";
-import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
+import { useLazyLoadQuery } from "react-relay";
 import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
+import { USER } from "@/graphql/queries/user";
+import { userTaskCountByStatus_TaskCount$key } from "@/graphql/queries/__generated__/userTaskCountByStatus_TaskCount.graphql";
 
 export function Navbar() {
-  const { me } = useClientQuery<userMeQuery>(ME, {});
-  const {
-    user: { user },
-  } = useLazyLoadQuery<userUserQuery>(USER_QUERY, { id: me?.user?.id || "" });
-  const projects = user?.projects;
-  const clients = user?.clients;
+  const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
+
+  const taskCountByStatus = user?.taskCountByStatus as userTaskCountByStatus_TaskCount$key;
+
   return (
     <div className="fixed z-30 top-0 bg-background/80 -mx-4 border-b border-bottom border-border shadow-sm backdrop-blur w-screen h-16 flex flex-row items-center justify-between px-8">
       <ModeToggle align="start" className="hidden md:inline-flex" />
@@ -33,9 +31,9 @@ export function Navbar() {
       <div className="hidden flex-grow max-w-full justify-center items-center md:flex flex-row">
         <NavigationMenu>
           <NavigationMenuList>
-            <ProjectNavigationItem projects={projects} />
-            <ClientNavigationItem clients={clients} />
-            <TaskNavigationItem />
+            <ProjectNavigationItem projectCount={user} />
+            <ClientNavigationItem clientCount={user} />
+            <TaskNavigationItem taskCount={taskCountByStatus} />
           </NavigationMenuList>
         </NavigationMenu>
       </div>
@@ -48,4 +46,5 @@ export function Navbar() {
     </div>
   );
 }
+
 Navbar.displayName = "Navbar";

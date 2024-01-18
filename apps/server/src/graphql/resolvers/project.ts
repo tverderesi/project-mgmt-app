@@ -7,7 +7,6 @@ import { z } from "zod";
 
 const query = {
   projects: async (_parent, args: z.infer<typeof projectV.query>, context) => {
-    console.log(args);
     const projects = await ProjectModel.find(args);
     return projects;
   },

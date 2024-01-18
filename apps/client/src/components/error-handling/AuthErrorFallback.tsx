@@ -1,12 +1,14 @@
 import { Dialog, DialogHeader, DialogContent, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { p } from "@/components/ui/typography";
-import { AuthError } from "@/lib/utils";
 import { AlertOctagon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { isolateErrorObject } from "./isolateErrorObject";
 
-export function AuthErrorFallback({ error, resetErrorBoundary }: { error: AuthError; resetErrorBoundary: () => void }) {
+export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
   const navigate = useNavigate();
+
+  const errorObject = isolateErrorObject(error);
 
   return (
     <Dialog open={true}>
@@ -15,7 +17,7 @@ export function AuthErrorFallback({ error, resetErrorBoundary }: { error: AuthEr
           <AlertOctagon className="me-2 w-6 h-6" /> Error
         </DialogHeader>
         <DialogDescription className="flex flex-col justify-center mt-2">
-          <p className={p}> {error.message} Please login again.</p>
+          <p className={p}> {errorObject.message} </p>
         </DialogDescription>
         <DialogFooter className="flex justify-start">
           <Button

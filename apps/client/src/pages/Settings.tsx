@@ -9,10 +9,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField, FormControl, FormItem, FormDescription, FormLabel, FormMessage } from "@/components/ui/form";
 import userV from "@/validators/user";
-import { loadQuery, useMutation, usePreloadedQuery } from "react-relay";
-import { RelayEnvironment } from "@/RelayEnvironment";
-import { ME } from "@/graphql/queries/user";
-import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
+import { useLazyLoadQuery, useMutation } from "react-relay";
+import { userUserQuery, userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
+import { USER } from "@/graphql/queries/user";
 import { useEffect } from "react";
 import { DELETE_USER, UPDATE_USER } from "@/graphql/mutations/user";
 import { useToast } from "@/components/ui/use-toast";
@@ -22,11 +21,9 @@ import { LOGOUT } from "@/graphql/mutations/auth";
 import { userDeleteMutation } from "@/graphql/mutations/__generated__/userDeleteMutation.graphql";
 import { authLogoutMutation } from "@/graphql/mutations/__generated__/authLogoutMutation.graphql";
 
-export const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
-
 export function Settings() {
   const { toast } = useToast();
-  const data = usePreloadedQuery(ME, queryRef);
+  const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
 
   const updateForm = useForm<z.infer<typeof userV.update>>({
     resolver: zodResolver(userV.update),
@@ -34,10 +31,10 @@ export function Settings() {
   });
 
   useEffect(() => {
-    if (data.me?.user?.id) {
-      updateForm.setValue("id", data.me.user.id);
+    if (user?.id) {
+      updateForm.setValue("id", user.id);
     }
-  }, [data]);
+  }, [user]);
 
   const [updateUser, loading] = useMutation(UPDATE_USER);
 
@@ -209,14 +206,14 @@ export function Settings() {
           </CardFooter>
         </Card>
         <DialogContent>
-          <DeleteDialog />
+          <DeleteDialog user={user} />
         </DialogContent>
       </Dialog>
     </div>
   );
 }
 
-function DeleteDialog() {
+function DeleteDialog({ user }: { user: userUserQuery$data["user"] }) {
   const schema = z.object({
     delete: z.string().refine((v) => v === "delete my account"),
   });
@@ -224,32 +221,30 @@ function DeleteDialog() {
     resolver: zodResolver(schema),
     mode: "all",
   });
-  const { me } = usePreloadedQuery(ME, queryRef);
+
   const [deleteUser, loading] = useMutation<userDeleteMutation>(DELETE_USER);
   const [logout] = useMutation<authLogoutMutation>(LOGOUT);
 
   const handleSubmit = () => {
-    if (me.user?.id) {
+    if (user?.id) {
       deleteUser({
         onCompleted: ({ deleteUser }) => {
-          if (deleteUser.status === "OK") {
+          if (deleteUser) {
             logout({
+              updater: (store) => {
+                store.invalidateStore();
+              },
               onCompleted: () => {
-                queryRef.dispose();
                 window.location.href = "/login";
               },
               variables: {},
             });
           }
-          console.log(deleteUser.error);
         },
         variables: {
-          id: me?.user?.id,
+          id: user?.id,
         },
       });
-    }
-    if (!me.user || me.error?.message || me.error?.type) {
-      console.log(`An error occured: ${me.error?.message || "Unknown Error"}`);
     }
   };
   return (

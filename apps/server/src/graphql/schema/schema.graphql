@@ -9,29 +9,9 @@ enum Role {
   ADMIN
 }
 
-type Client {
-  id: ID!
-  name: String!
-  email: String!
-  phone: String!
-  projects: [Project]!
-}
-
 type TaskCountByStatus {
   status: Status!
   count: Int!
-}
-
-input ClientInput {
-  name: String!
-  email: String!
-  phone: String!
-  user: ID!
-}
-
-type Error {
-  type: String
-  message: String
 }
 
 type Project {
@@ -90,20 +70,12 @@ input ProjectFilter {
   user: ID
 }
 
-input ClientFilter {
-  name: String
-  email: String
-  phone: String
-}
-
 input TaskFilter {
   name: String
   status: Status
 }
 
 type Query {
-  clients(filter: ClientFilter): [Client]!
-  client(id: ID!): Client
   projects(filter: ProjectFilter): [Project]!
   project(id: ID!): Project!
   tasks(filter: TaskFilter): [Task]!
@@ -111,9 +83,6 @@ type Query {
 }
 
 type Mutation {
-  createClient(input: ClientInput!): Client!
-  updateClient(id: ID!, input: ClientInput!): Client!
-  deleteClient(id: ID!): String!
   createProject(input: ProjectInput!): Project!
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   deleteProject(id: ID!): String!

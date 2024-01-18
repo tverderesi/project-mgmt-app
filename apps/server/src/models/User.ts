@@ -2,8 +2,8 @@ import { Document, Schema, model } from "mongoose";
 import { Project } from "./Project";
 import { Client } from "./Client";
 import bcrypt from "bcrypt";
-import { countTasksByType } from "../utils/countTasksByType";
 import { roles } from "@/validators/shared";
+import { Enum, statuses } from "@/validators/shared";
 
 export interface User extends Document {
   name: string;
@@ -13,6 +13,7 @@ export interface User extends Document {
   projects: Project[];
   clients: Client[];
   role: (typeof roles)[number];
+  countTasksByType: () => Promise<{ status: Enum<typeof statuses>; count: number }[]>;
 }
 
 const userSchema = new Schema<User>(
@@ -30,6 +31,34 @@ const userSchema = new Schema<User>(
     toObject: { virtuals: true },
     timestamps: true,
     autoIndex: true,
+    methods: {
+      countTasksByType() {
+        type TaskCount = { status: Enum<typeof statuses>; count: number }[];
+        const initialTaskCount: TaskCount = [
+          { status: "NOT_STARTED", count: 0 },
+          { status: "IN_PROGRESS", count: 0 },
+          { status: "COMPLETED", count: 0 },
+        ];
+
+        const taskCount = model("Task")
+          .aggregate([{ $match: { user: this._id } }, { $group: { _id: "$status", count: { $sum: 1 } } }])
+          .then((foundTaskCount) => {
+            if (foundTaskCount.length === 0) {
+              return initialTaskCount;
+            }
+            const taskCount = initialTaskCount.map((status) => {
+              const foundStatus = foundTaskCount.find((found) => found._id === status.status);
+              if (foundStatus) {
+                return { status: foundStatus._id, count: foundStatus.count };
+              }
+              return status;
+            });
+
+            return taskCount;
+          });
+        return taskCount;
+      },
+    },
   }
 );
 
@@ -37,10 +66,7 @@ userSchema.virtual("projectCount", {
   ref: "Project",
   localField: "_id",
   foreignField: "user",
-  get: async function () {
-    const count = await this.model("Project").countDocuments({ user: this._id });
-    return count || 0;
-  },
+  count: true,
 });
 
 userSchema.virtual("clientCount", {
@@ -54,18 +80,7 @@ userSchema.virtual("totalTaskCount", {
   ref: "Task",
   localField: "_id",
   foreignField: "user",
-  get: async function () {
-    const count = await this.model("Task").countDocuments({ user: this._id });
-    return count || 0;
-  },
-});
-
-userSchema.virtual("taskCount", {
-  ref: "Task",
-  localField: "_id",
-  foreignField: "user",
-  justOne: false,
-  get: countTasksByType,
+  count: true,
 });
 
 userSchema.pre<User>("save", async function (next) {

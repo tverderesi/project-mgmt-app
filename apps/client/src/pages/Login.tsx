@@ -1,4 +1,4 @@
-import { useMutation } from "react-relay";
+import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,23 +10,37 @@ import { useToast } from "@/components/ui/use-toast";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { LOGIN } from "@/graphql/mutations/auth";
-import { authLoginMutation$data } from "@/graphql/mutations/__generated__/authLoginMutation.graphql";
-import { RelayEnvironment } from "@/RelayEnvironment";
-import { ME } from "@/graphql/queries/user";
-import { loadQuery, usePreloadedQuery } from "react-relay";
-import { userMeQuery } from "@/graphql/queries/__generated__/userMeQuery.graphql";
-import { useEffect } from "react";
-const queryRef = loadQuery<userMeQuery>(RelayEnvironment, ME, {});
-const Logo = () => (
-  <div className="flex-grow bg-gradient-to-br from-blue-500 to-pink-600 hidden lg:block">
-    <h1 className="text-6xl font-bold text-right h-full flex flex-col justify-center mr-5 text-white">mgmt.app</h1>
+import { Suspense, useEffect } from "react";
+import { LoginQuery } from "./__generated__/LoginQuery.graphql";
+import { Logo } from "@/components/Logo";
+import { h1 } from "@/components/ui/typography";
+import { FullscreenLoader } from "@/components/ui/FullscreenLoader";
+import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
+import { cn } from "@/lib/utils";
+const LogoSection = () => (
+  <div
+    className="flex-grow hidden lg:h-full lg:flex items-center justify-end px-4 gap-2 text-background dark:text-foreground
+    bg-"
+    style={{
+      backgroundImage: `url(/pattern.svg)`,
+      backgroundPosition: "bottom right",
+      backgroundRepeat: "repeat",
+    }}
+  >
+    <Logo className="h-32 w-32" />
+    <h1 className={cn("font-bold leading-none text-9xl")}>mgmt.app</h1>
   </div>
 );
-export const Login = () => {
-  const {
-    me: { user },
-  } = usePreloadedQuery<userMeQuery>(ME, queryRef);
+export const Login = withSuspense(() => {
+  const { isLoggedIn } = useLazyLoadQuery<LoginQuery>(
+    graphql`
+      query LoginQuery {
+        isLoggedIn
+      }
+    `,
+    {}
+  );
+
   const { toast } = useToast();
   const navigate = useNavigate();
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -35,45 +49,52 @@ export const Login = () => {
   });
 
   useEffect(() => {
-    if (user?.id) {
+    if (isLoggedIn) {
       navigate("../app");
     }
-  }, [user]);
-  const [login, isInFlight] = useMutation(LOGIN);
+  }, [isLoggedIn]);
 
+  const [login, isInFlight] = useMutation(graphql`
+    mutation LoginLoginMutation($input: LoginInput!) {
+      login(input: $input) {
+        id
+        name
+        role
+      }
+    }
+  `);
+
+  const onSubmit = (data: z.infer<typeof loginSchema>) => {
+    login({
+      variables: { input: data },
+      onCompleted() {
+        navigate(`../app`);
+      },
+      onError: (error) => {
+        toast({
+          title: "Login failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+    });
+  };
   return (
     <div className="h-screen w-screen flex flex-row">
-      <Logo />
+      <LogoSection />
+
       <div className="bg-background dark:bg-background/90 w-full lg:max-w-lg h-screen flex flex-col justify-center relative">
         <div className="bg-gradient-to-br from-blue-500 to-pink-600  h-full w-full -z-10 absolute " />
         <div className="absolute top-4 right-4">
           <ModeToggle />
         </div>
-        <h1 className="text-xl font-bold text-right flex flex-col justify-center mr-5 text-foreground absolute top-[12.5%] left-1/4 w-1/2 lg:hidden">
-          mgmt.app
-        </h1>
+        <div className="flex items-center justify-center gap-1 text-foreground absolute top-[10%] w-full lg:hidden ">
+          <Logo className="h-8 w-8 mt-3" />
+          <span className="sr-only">mgmt.app</span>
+          <h1 className={cn(h1, "font-bold leading-none")}>mgmt.app</h1>
+        </div>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((data) =>
-              login({
-                variables: { input: data },
-                onCompleted(data) {
-                  const { login } = data as authLoginMutation$data;
-                  if (login?.user?.role) {
-                    navigate(`../app`);
-                  }
-                },
-                onError: (error) => {
-                  toast({
-                    title: "Login failed",
-                    description: error.message,
-                    variant: "destructive",
-                  });
-                },
-              })
-            )}
-            className="space-y-4 mx-auto"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mx-auto">
             <FormField
               control={form.control}
               name="user"
@@ -106,16 +127,21 @@ export const Login = () => {
             </Button>
           </form>
         </Form>
-        <div className="w-full absolute bottom-1/4">
+        <div className="w-full absolute bottom-[10%]">
           <p className="text-center">
             Don't have an account?{" "}
             <Link to="../sign-up" className="underline  underline-offset-2 border-foreground hover:text-pink-500">
               Sign up now!
             </Link>
           </p>
-          {/* TODO: Add Password Recovery Functionality */}
+          <p className="w-full text-center">
+            <Link to="../forgot-password" className="underline  underline-offset-2 border-foreground hover:text-pink-500">
+              Forgot password?
+            </Link>{" "}
+            <span className="text-foreground/50">(Comming soon)</span>
+          </p>
         </div>
       </div>
     </div>
   );
-};
+}, <FullscreenLoader />);

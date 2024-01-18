@@ -1,14 +1,9 @@
-type LoginReturn {
-  user: User
-  error: Error
-}
-
 input LoginInput {
   user: String!
   password: String!
 }
 
 type Mutation {
-  login(input: LoginInput!): LoginReturn!
+  login(input: LoginInput!): User
   logout: Boolean!
 }

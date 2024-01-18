@@ -49,7 +49,6 @@ export const NewProject = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit((data) => {
-              console.log(data);
               toast({
                 title: "Success",
                 description: "Project created successfully!",

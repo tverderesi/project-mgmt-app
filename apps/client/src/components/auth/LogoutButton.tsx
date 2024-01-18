@@ -12,6 +12,9 @@ export const LogoutButton = () => {
       onCompleted: () => {
         navigate("/login");
       },
+      updater: (store) => {
+        store.invalidateStore();
+      },
     });
   };
 

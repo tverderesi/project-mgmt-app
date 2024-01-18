@@ -1,15 +1,10 @@
-type LoginReturn {
-  user: User
-  error: Error
-}
-
 input LoginInput {
   user: String!
   password: String!
 }
 
 type Mutation {
-  login(input: LoginInput!): LoginReturn!
+  login(input: LoginInput!): User
   logout: Boolean!
   createClient(input: ClientInput!): Client!
   updateClient(id: ID!, input: ClientInput!): Client!
@@ -20,9 +15,42 @@ type Mutation {
   createTask(input: TaskInput!): Task!
   updateTask(id: ID!, input: UpdateTaskInput!): Task!
   deleteTask(id: ID!): String!
-  createUser(input: UserInput!): CreateUserReturn!
-  updateUser(input: UpdateUserInput!): UpdateUserReturn!
-  deleteUser(id: ID!): DeleteUserReturn!
+  createUser(input: UserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
+}
+
+type Client {
+  id: ID!
+  name: String!
+  email: String!
+  phone: String!
+  projects: [Project]!
+}
+
+input ClientFilter {
+  name: String
+  email: String
+  phone: String
+}
+
+input ClientInput {
+  name: String!
+  email: String!
+  phone: String!
+  user: ID!
+}
+
+type Query {
+  clients(filter: ClientFilter): [Client]!
+  client(id: ID!): Client
+  projects(filter: ProjectFilter): [Project]!
+  project(id: ID!): Project!
+  tasks(filter: TaskFilter): [Task]!
+  task(id: ID!): Task!
+  users(filter: UserFilter): [User]!
+  user(id: ID): User!
+  isLoggedIn: Boolean!
 }
 
 enum Status {
@@ -36,29 +64,9 @@ enum Role {
   ADMIN
 }
 
-type Client {
-  id: ID!
-  name: String!
-  email: String!
-  phone: String!
-  projects: [Project]!
-}
-
 type TaskCountByStatus {
   status: Status!
   count: Int!
-}
-
-input ClientInput {
-  name: String!
-  email: String!
-  phone: String!
-  user: ID!
-}
-
-type Error {
-  type: String
-  message: String
 }
 
 type Project {
@@ -117,27 +125,9 @@ input ProjectFilter {
   user: ID
 }
 
-input ClientFilter {
-  name: String
-  email: String
-  phone: String
-}
-
 input TaskFilter {
   name: String
   status: Status
-}
-
-type Query {
-  clients(filter: ClientFilter): [Client]!
-  client(id: ID!): Client
-  projects(filter: ProjectFilter): [Project]!
-  project(id: ID!): Project!
-  tasks(filter: TaskFilter): [Task]!
-  task(id: ID!): Task!
-  users(filter: UserFilter): UsersQueryReturn!
-  user(id: ID!): UserQueryReturn!
-  me: UserQueryReturn!
 }
 
 type User {
@@ -180,31 +170,6 @@ input UserFilter {
   username: String
   email: String
   role: String
-}
-
-type UsersQueryReturn {
-  users: [User]
-  error: Error
-}
-
-type UserQueryReturn {
-  user: User
-  error: Error
-}
-
-type CreateUserReturn {
-  user: User
-  error: Error
-}
-
-type UpdateUserReturn {
-  user: User
-  error: Error
-}
-
-type DeleteUserReturn {
-  status: String
-  error: Error
 }
 
 schema {

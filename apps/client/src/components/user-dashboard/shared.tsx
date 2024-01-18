@@ -13,7 +13,6 @@ export const CardFallback = () => {
 CardFallback.displayName = "CardFallback";
 
 export function Count({ count, thing: { singular, plural } }: { count: number; thing: { singular: string; plural: string } }) {
-  console.log(count);
   return (
     <>
       {count} {count !== 1 ? plural : singular}

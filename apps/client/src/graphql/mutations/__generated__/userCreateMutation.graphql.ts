@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<a4f7409838257f2c7e4f3dcc9339572d>>
+ * @generated SignedSource<<c83b30298cebfd90f8fa68c722bd0376>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,15 +24,9 @@ export type userCreateMutation$variables = {
 };
 export type userCreateMutation$data = {
   readonly createUser: {
-    readonly error: {
-      readonly message: string;
-      readonly type: string;
-    } | null | undefined;
-    readonly user: {
-      readonly id: string;
-      readonly name: string;
-      readonly role: Role;
-    } | null | undefined;
+    readonly id: string;
+    readonly name: string;
+    readonly role: Role;
   };
 };
 export type userCreateMutation = {
@@ -58,7 +52,7 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "CreateUserReturn",
+    "concreteType": "User",
     "kind": "LinkedField",
     "name": "createUser",
     "plural": false,
@@ -66,58 +60,22 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "concreteType": "User",
-        "kind": "LinkedField",
-        "name": "user",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "role",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "name",
-            "storageKey": null
-          }
-        ],
+        "kind": "ScalarField",
+        "name": "id",
         "storageKey": null
       },
       {
         "alias": null,
         "args": null,
-        "concreteType": "Error",
-        "kind": "LinkedField",
-        "name": "error",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "message",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "type",
-            "storageKey": null
-          }
-        ],
+        "kind": "ScalarField",
+        "name": "role",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "name",
         "storageKey": null
       }
     ],
@@ -142,16 +100,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "291f6ab1f378c31bef1d0f0c46d881f7",
+    "cacheID": "d274058c9dc6b50cfe5fb595f46e65dd",
     "id": null,
     "metadata": {},
     "name": "userCreateMutation",
     "operationKind": "mutation",
-    "text": "mutation userCreateMutation(\n  $input: UserInput!\n) {\n  createUser(input: $input) {\n    user {\n      id\n      role\n      name\n    }\n    error {\n      message\n      type\n    }\n  }\n}\n"
+    "text": "mutation userCreateMutation(\n  $input: UserInput!\n) {\n  createUser(input: $input) {\n    id\n    role\n    name\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f9f25e21bb87152d59dd7d2f0c926a7e";
+(node as any).hash = "2d4aa5febb4f35a808a91fd640bc0740";
 
 export default node;

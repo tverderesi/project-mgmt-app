@@ -32,10 +32,9 @@ export function NoClientsCard() {
   );
 }
 NoClientsCard.displayName = "NoProjectsCard";
-//@ts-expect-error: Ignoring this error until I can figure out how to properly type this. TODO: Properly type fragmentRef
-export function ClientsSection({ fragmentRef }) {
-  const clients = useFragment(CLIENT_FRAGMENT, fragmentRef);
-  const count = clients?.length || 0;
+
+export function ClientsSection() {
+  const count = 3;
   return (
     <Card className="shadow-none dark:bg-accent/20 bg-stone-100/70 border-none  h-100 flex flex-col justify-center">
       <CardHeader>
@@ -51,9 +50,7 @@ export function ClientsSection({ fragmentRef }) {
 
       <CardContent className="px-6 h-auto">
         <div className="flex w-full gap-3 overflow-x-scroll  snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
-          <Suspense fallback={<CardFallback />}>
-            <ClientCarouselItems clients={clients} count={count} />
-          </Suspense>
+          <Suspense fallback={<CardFallback />}>{/* <ClientCarouselItems clients={clients} count={count} /> */}</Suspense>
         </div>
       </CardContent>
       <CardFooter className="gap-2 justify-end">

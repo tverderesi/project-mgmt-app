@@ -2,13 +2,13 @@ import { ComponentPropsWithoutRef, ElementRef, Suspense, forwardRef } from "reac
 import { NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ClientCountWidget, ProjectCountWidget, TaskCountWidget } from "./widgets";
-import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { NavigationMenuLink } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { userProject_project$data } from "@/graphql/queries/__generated__/userProject_project.graphql";
-
-export function TaskNavigationItem() {
+import { userProjectCount_projectCount$key } from "@/graphql/queries/__generated__/userProjectCount_projectCount.graphql";
+import { userClientCount_clientCount$key } from "@/graphql/queries/__generated__/userClientCount_clientCount.graphql";
+import { userTaskCountByStatus_TaskCount$key } from "@/graphql/queries/__generated__/userTaskCountByStatus_TaskCount.graphql";
+export function TaskNavigationItem({ taskCount }: { taskCount: userTaskCountByStatus_TaskCount$key }) {
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="font-semibold">Tasks</NavigationMenuTrigger>
@@ -16,7 +16,7 @@ export function TaskNavigationItem() {
         <ul className="grid gap-3 p-4 w-72 md:w-[400px] lg:w-[500px] lg:grid-cols-[.5fr_1fr]">
           <li className="row-span-3 rounded-md flex flex-col items-center justify-center">
             <Suspense fallback={<Skeleton className=" w-full h-full" />}>
-              <TaskCountWidget />
+              <TaskCountWidget fragmentRef={taskCount} />
             </Suspense>
           </li>
           <ListItem to={`/app/user/tasks/new`} title="New Task">
@@ -32,7 +32,7 @@ export function TaskNavigationItem() {
 }
 TaskNavigationItem.displayName = "TaskNavigationItem";
 
-export function ClientNavigationItem({ clients }) {
+export function ClientNavigationItem({ clientCount }: { clientCount: userClientCount_clientCount$key }) {
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="font-semibold">Clients</NavigationMenuTrigger>
@@ -40,7 +40,7 @@ export function ClientNavigationItem({ clients }) {
         <ul className="grid gap-3 p-4 w-72 md:w-[400px] lg:w-[500px] lg:grid-cols-[.5fr_1fr]">
           <li className="row-span-3 rounded-md flex flex-col items-center justify-center">
             <Suspense fallback={<Skeleton className=" w-full h-full" />}>
-              <ClientCountWidget fragmentRef={clients} />
+              <ClientCountWidget fragmentRef={clientCount} />
             </Suspense>
           </li>
           <ListItem to={`/app/user/clients/new`} title="New Client">
@@ -56,7 +56,7 @@ export function ClientNavigationItem({ clients }) {
 }
 ClientNavigationItem.displayName = "ClientNavigationItem";
 
-export function ProjectNavigationItem({ projects }) {
+export function ProjectNavigationItem({ projectCount }: { projectCount: userProjectCount_projectCount$key }) {
   return (
     <NavigationMenuItem>
       <NavigationMenuTrigger className="font-semibold">Projects</NavigationMenuTrigger>
@@ -64,7 +64,7 @@ export function ProjectNavigationItem({ projects }) {
         <ul className="grid gap-3 p-4 w-72 md:w-[400px] lg:w-[500px] lg:grid-cols-[.5fr_1fr]">
           <li className="row-span-3 rounded-md flex flex-col items-center justify-center">
             <Suspense fallback={<Skeleton className=" w-full h-full" />}>
-              <ProjectCountWidget fragmentRef={projects} />
+              <ProjectCountWidget fragmentRef={projectCount} />
             </Suspense>
           </li>
           <ListItem to={`/app/user/projects/new`} title="New Project">

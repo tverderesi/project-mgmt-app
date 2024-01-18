@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b5c16aa70cdb916c7ef0f15f4e742e75>>
+ * @generated SignedSource<<57deae9b55e5b48603d8eb4a5e09e82d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -13,13 +13,7 @@ export type userDeleteMutation$variables = {
   id: string;
 };
 export type userDeleteMutation$data = {
-  readonly deleteUser: {
-    readonly error: {
-      readonly message: string;
-      readonly type: string;
-    } | null | undefined;
-    readonly status: string | null | undefined;
-  };
+  readonly deleteUser: boolean;
 };
 export type userDeleteMutation = {
   response: userDeleteMutation$data;
@@ -44,44 +38,8 @@ v1 = [
         "variableName": "id"
       }
     ],
-    "concreteType": "DeleteUserReturn",
-    "kind": "LinkedField",
+    "kind": "ScalarField",
     "name": "deleteUser",
-    "plural": false,
-    "selections": [
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "Error",
-        "kind": "LinkedField",
-        "name": "error",
-        "plural": false,
-        "selections": [
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "message",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "type",
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "status",
-        "storageKey": null
-      }
-    ],
     "storageKey": null
   }
 ];
@@ -103,16 +61,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "b1ca030b915c58872701eec9d9f0d8a2",
+    "cacheID": "c9b12df0ff2f5da05d05d6175f9c0eef",
     "id": null,
     "metadata": {},
     "name": "userDeleteMutation",
     "operationKind": "mutation",
-    "text": "mutation userDeleteMutation(\n  $id: ID!\n) {\n  deleteUser(id: $id) {\n    error {\n      message\n      type\n    }\n    status\n  }\n}\n"
+    "text": "mutation userDeleteMutation(\n  $id: ID!\n) {\n  deleteUser(id: $id)\n}\n"
   }
 };
 })();
 
-(node as any).hash = "7c73ff1f6949edd41de35bf792d6e9c3";
+(node as any).hash = "589b76123f35c045bc012bf10db62579";
 
 export default node;

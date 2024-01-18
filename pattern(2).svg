@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.1"
+   class="pattern"
+   viewBox="0 0 400 400"
+   id="svg16"
+   sodipodi:docname="pattern(2).svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs16" />
+  <sodipodi:namedview
+     id="namedview16"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.0025"
+     inkscape:cx="175.06234"
+     inkscape:cy="91.770574"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg16" />
+  <g
+     class="shape-0"
+     id="g1">
+    <path
+       id="path46"
+       style="display:inline;fill:#252323;fill-opacity:1"
+       d="M 0 100 A 100 100 0 0 0 100 0 A 100 100 0 0 0 0 -100 L 0 0 L 0 100 z "
+       transform="rotate(90,100,100)" />
+  </g>
+  <path
+     id="rect1"
+     style="display:inline;fill:#70798c;fill-opacity:1.0"
+     d="M 0 0 A 100 100 0 0 1 100 100 A 100 100 0 0 0 200 200 A 100 100 0 0 0 300 100 A 100 100 0 0 1 400 0 L 300 0 A 100 100 0 0 1 200 100 A 100 100 0 0 1 100 0 L 0 0 z " />
+  <g
+     class="shape-0"
+     id="g22"
+     transform="translate(0,100)">
+    <path
+       id="path21"
+       style="display:inline;fill:#ff6f5c;fill-opacity:1"
+       d="M 0 -100 L 0 0 A 100 100 0 0 1 100 100 A 100 100 0 0 0 200 200 A 100 100 0 0 0 300 100 A 100 100 0 0 1 400 0 L 400 -100 A 100 100 0 0 0 300 0 A 100 100 0 0 1 200 100 A 100 100 0 0 1 100 0 A 100 100 0 0 0 0 -100 z " />
+    <path
+       id="path22"
+       style="display:inline;fill:#dad2bc;fill-opacity:1"
+       d="M 0 100 L 0 0 A 100 100 0 0 0 100 -100 A 100 100 0 0 1 200 -200 A 100 100 0 0 1 300 -100 A 100 100 0 0 0 400 0 L 400 100 A 100 100 0 0 1 300 0 A 100 100 0 0 0 200 -100 A 100 100 0 0 0 100 0 A 100 100 0 0 1 0 100 z "
+       transform="matrix(1,0,0,-1,0,100)" />
+  </g>
+  <g
+     class="shape-0"
+     id="g24"
+     transform="translate(0,200)">
+    <path
+       id="path24"
+       style="display:inline;fill:#f5f1ed;fill-opacity:1"
+       d="M 0 100 L 0 0 A 100 100 0 0 0 100 -100 L 200 -100 A 100 100 0 0 0 100 0 A 100 100 0 0 1 0 100 z M 200 -100 L 300 -100 A 100 100 0 0 0 400 0 L 400 100 A 100 100 0 0 1 300 0 A 100 100 0 0 0 200 -100 z "
+       transform="matrix(1,0,0,-1,0,100)" />
+  </g>
+  <g
+     class="shape-0"
+     id="g26"
+     transform="translate(0,300)">
+    <path
+       d="M 0,0 H 100 A 100,100 0 0 1 0,100 Z"
+       transform="matrix(1,0,0,-1,0,100)"
+       fill="#e1f5c4"
+       id="path26"
+       style="display:inline;fill:#252323;fill-opacity:1" />
+  </g>
+  <g
+     class="shape-0"
+     id="g28"
+     transform="rotate(-90,300,0)" />
+  <g
+     class="shape-0"
+     id="g30"
+     transform="rotate(-90,350,50)">
+    <path
+       d="M 0,0 H 100 A 100,100 0 0 1 0,100 Z"
+       transform="matrix(1,0,0,-1,0,100)"
+       fill="#e1f5c4"
+       id="path30"
+       style="display:inline;fill:#252323;fill-opacity:1" />
+  </g>
+  <g
+     class="shape-0"
+     id="g32"
+     transform="rotate(-90,200,-100)" />
+  <g
+     class="shape-0"
+     id="g34"
+     transform="rotate(-90,250,-50)" />
+  <g
+     class="shape-0"
+     id="g36"
+     transform="rotate(90,100,200)" />
+  <g
+     class="shape-0"
+     id="g38"
+     transform="rotate(90,150,150)" />
+  <g
+     class="shape-0"
+     id="g40"
+     transform="rotate(90,0,300)" />
+  <g
+     class="shape-0"
+     id="g42"
+     transform="rotate(90,50,250)" />
+  <g
+     class="shape-0"
+     id="g44"
+     transform="matrix(0,1,1,0,100,100)" />
+  <g
+     class="shape-0"
+     id="g46"
+     transform="matrix(0,1,1,0,100,0)" />
+  <g
+     class="shape-0"
+     id="g48"
+     transform="matrix(0,1,1,0,100,300)" />
+  <g
+     class="shape-0"
+     id="g50"
+     transform="matrix(0,1,1,0,100,200)" />
+</svg>

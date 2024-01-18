@@ -40,39 +40,14 @@ input UserFilter {
   role: String
 }
 
-type UsersQueryReturn {
-  users: [User]
-  error: Error
-}
-
-type UserQueryReturn {
-  user: User
-  error: Error
-}
-
-type CreateUserReturn {
-  user: User
-  error: Error
-}
-
-type UpdateUserReturn {
-  user: User
-  error: Error
-}
-
-type DeleteUserReturn {
-  status: String
-  error: Error
-}
-
 type Query {
-  users(filter: UserFilter): UsersQueryReturn!
-  user(id: ID!): UserQueryReturn!
-  me: UserQueryReturn!
+  users(filter: UserFilter): [User]!
+  user(id: ID): User!
+  isLoggedIn: Boolean!
 }
 
 type Mutation {
-  createUser(input: UserInput!): CreateUserReturn!
-  updateUser(input: UpdateUserInput!): UpdateUserReturn!
-  deleteUser(id: ID!): DeleteUserReturn!
+  createUser(input: UserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  deleteUser(id: ID!): Boolean!
 }
