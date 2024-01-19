@@ -1,9 +1,9 @@
 import { UseFormReturn } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, FormDescription } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { Textarea } from "@/components/ui/textarea";
 
-interface FormInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "form"> {
+interface FormTextareaProps extends Omit<React.InputHTMLAttributes<HTMLTextAreaElement>, "form"> {
   form: UseFormReturn<any, any, any>;
   label: string;
   placeholder: string;
@@ -11,7 +11,7 @@ interface FormInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement
   className?: string;
   description?: string;
 }
-export function FormInput({ form, label, placeholder, name, className, description, ...props }: FormInputProps) {
+export function FormTextarea({ form, label, placeholder, name, className, description, ...props }: FormTextareaProps) {
   return (
     <FormField
       control={form.control}
@@ -20,7 +20,7 @@ export function FormInput({ form, label, placeholder, name, className, descripti
         <FormItem className={cn("w-72", className)}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} {...props} />
+            <Textarea placeholder={placeholder} {...field} {...props} />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

@@ -3,7 +3,7 @@ import { Navbar } from "../features/navigation/Navbar";
 import { withErrorBoundary } from "react-error-boundary";
 import { AuthErrorFallback } from "../components/error-handling/AuthErrorFallback";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
-import { FullscreenLoader } from "@/ui/FullscreenLoader";
+import { FullscreenLoader } from "@/components/ui/FullscreenLoader";
 export const AppLayout: React.FC = withErrorBoundary(
   withSuspense(() => {
     return (

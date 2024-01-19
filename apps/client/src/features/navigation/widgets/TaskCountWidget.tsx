@@ -1,4 +1,4 @@
-import { Progress } from "@/ui/progress";
+import { Progress } from "@/components/ui/progress";
 import { statusDTO } from "@/lib/utils";
 import { useFragment } from "react-relay";
 import { TASK_COUNT_BY_STATUS_FRAGMENT } from "@/graphql/queries/user";

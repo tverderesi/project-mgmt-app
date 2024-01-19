@@ -1,5 +1,5 @@
 import { Logo } from "@/assets/Logo";
-import { h1 } from "@/ui/typography";
+import { h1 } from "@/components/ui/typography";
 
 export const LogoSection = () => (
   <div className="flex-grow hidden lg:h-full lg:flex items-center justify-end px-4 gap-2 text-background dark:text-foreground">

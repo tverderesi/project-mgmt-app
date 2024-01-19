@@ -1,12 +1,12 @@
-import { code, h4, p } from "@/ui/typography";
-import { DialogHeader, DialogDescription } from "@/ui/dialog";
-import { Button } from "@/ui/button";
+import { code, h4, p } from "@/components/ui/typography";
+import { DialogHeader, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Input } from "@/ui/input";
+import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormControl } from "@/ui/form";
+import { Form, FormField, FormControl } from "@/components/ui/form";
 import { useMutation } from "react-relay";
 import { userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 import { DELETE_USER } from "@/features/user/user";

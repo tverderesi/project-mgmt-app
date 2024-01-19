@@ -1,4 +1,4 @@
-import { Skeleton } from "@/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const CardFallback = () => {
   const projectArray = Array(10).fill(0);

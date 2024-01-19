@@ -5,8 +5,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/ui/avatar";
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { formatName } from "@/lib/utils";
 import { LogoutButton } from "../auth/LogoutButton";
 import { Link } from "react-router-dom";

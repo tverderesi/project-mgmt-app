@@ -1,11 +1,11 @@
 import { graphql, useMutation } from "react-relay";
 import { useForm } from "react-hook-form";
-import { Button } from "@/ui/button";
-import { Form } from "@/ui/form";
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { FormInput } from "../../components/FormInput";

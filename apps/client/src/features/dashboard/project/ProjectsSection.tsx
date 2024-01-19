@@ -1,5 +1,5 @@
-import { Button } from "@/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CardStackIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 import { PlusCircle } from "lucide-react";

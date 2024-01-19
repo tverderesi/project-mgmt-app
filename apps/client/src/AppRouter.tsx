@@ -11,7 +11,7 @@ import { Project } from "./pages/Project";
 import { Home } from "./pages/Home";
 import { Settings } from "./pages/Settings";
 
-import { Button } from "./ui/button";
+import { Button } from "./components/ui/button";
 import Astronaut from "./assets/404_error_rafiki.svg?react";
 
 export function AppRouter() {

@@ -1,9 +1,9 @@
-import { Badge } from "@/ui/badge";
-import { Button } from "@/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { EyeOpenIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { statusDTO } from "@/lib/utils";
 import { userProject_project$data } from "@/graphql/queries/__generated__/userProject_project.graphql";
 import { NoProjectsCard } from "./NoProjectsCard";

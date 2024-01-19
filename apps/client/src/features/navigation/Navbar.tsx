@@ -1,13 +1,13 @@
-import { ModeToggle } from "@/ui/mode-toggle";
-import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/ui/navigation-menu";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuList } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
 import { TaskNavigationItem } from "./navItems/TaskNavigationItem";
 import { ClientNavigationItem } from "./navItems/ClientNavigationItem";
 import { ProjectNavigationItem } from "./navItems/ProjectNavigationItem";
-import { Skeleton } from "@/ui/skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AvatarDropdown } from "./AvatarDropdown";
 import { cn } from "@/lib/utils";
-import { h2, h4 } from "../../ui/typography";
+import { h2, h4 } from "../../components/ui/typography";
 import { Suspense } from "react";
 import { MobileMenu } from "./mobileMenu/MobileMenu";
 import { useLazyLoadQuery } from "react-relay";

@@ -1,8 +1,8 @@
 import { AppRouter } from "./AppRouter";
 import { RelayEnvironmentProvider } from "react-relay";
 import { RelayEnvironment } from "@/RelayEnvironment";
-import { ThemeProvider } from "@/ui/ThemeProvider";
-import { ToastProvider } from "@/ui/toast";
+import { ThemeProvider } from "@/components/ui/ThemeProvider";
+import { ToastProvider } from "@/components/ui/toast";
 import { ErrorBoundary } from "react-error-boundary";
 function App() {
   return (

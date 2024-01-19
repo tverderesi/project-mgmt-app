@@ -1,6 +1,6 @@
-import { Button } from "@/ui/button";
-import { ModeToggle } from "@/ui/mode-toggle";
-import { h1, h2 } from "@/ui/typography";
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { h1, h2 } from "@/components/ui/typography";
 import { Link } from "react-router-dom";
 import { Logo } from "../assets/Logo";
 import { cn } from "@/lib/utils";

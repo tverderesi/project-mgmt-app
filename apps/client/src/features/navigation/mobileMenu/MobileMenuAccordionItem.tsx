@@ -1,6 +1,6 @@
-import { AccordionItem, AccordionTrigger, AccordionContent } from "../../../ui/accordion";
+import { AccordionItem, AccordionTrigger, AccordionContent } from "../../../components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { h3 } from "../../../ui/typography";
+import { h3 } from "../../../components/ui/typography";
 import { MobileMenuListItem } from "./MobileMenuListItem";
 
 interface ListItem {

@@ -1,13 +1,13 @@
-import { Form } from "@/ui/form";
+import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserPlus, RotateCcw, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Button } from "@/ui/button";
+import { Button } from "@/components/ui/button";
 import clientV from "@/validators/client";
 import * as z from "zod";
-import { useToast } from "@/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
-import { h3 } from "@/ui/typography";
+import { h3 } from "@/components/ui/typography";
 import { CREATE_CLIENT } from "@/graphql/mutations/client";
 import { useLazyLoadQuery, useMutation } from "react-relay";
 import { clientCreateMutation } from "@/graphql/mutations/__generated__/clientCreateMutation.graphql";

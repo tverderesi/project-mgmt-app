@@ -1,9 +1,9 @@
-import { Button } from "@/ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "@/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { EyeOpenIcon, PersonIcon } from "@radix-ui/react-icons";
 import { Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { userClient_client$data } from "@/graphql/queries/__generated__/userClient_client.graphql";
 import { NoClientsCard } from "./NoClientsCard";
 

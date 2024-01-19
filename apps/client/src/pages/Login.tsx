@@ -1,14 +1,14 @@
-import { ModeToggle } from "@/ui/mode-toggle";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Link } from "react-router-dom";
 import { Logo } from "@/assets/Logo";
-import { h1 } from "@/ui/typography";
-import { FullscreenLoader } from "@/ui/FullscreenLoader";
+import { h1 } from "@/components/ui/typography";
+import { FullscreenLoader } from "@/components/ui/FullscreenLoader";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { cn } from "@/lib/utils";
 import { useSetPageTitle } from "@/lib/useSetPageTitle";
 import { useLoggedInRedirect } from "../lib/useLoggedInRedirect";
-import { LogoSection } from "../features/Login/LogoSection";
-import { LoginForm } from "../features/Login/LoginForm";
+import { LogoSection } from "../features/auth/LogoSection";
+import { LoginForm } from "../features/auth/LoginForm";
 
 export const Login = withSuspense(() => {
   useSetPageTitle("mgmt.app - Login");

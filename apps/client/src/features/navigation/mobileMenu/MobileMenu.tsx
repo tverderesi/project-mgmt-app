@@ -1,11 +1,11 @@
-import { ModeToggle } from "@/ui/mode-toggle";
-import { Skeleton } from "@/ui/skeleton";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AvatarDropdown } from "../AvatarDropdown";
-import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTrigger } from "../../../ui/sheet";
+import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTrigger } from "../../../components/ui/sheet";
 import { Menu } from "lucide-react";
-import { Accordion } from "../../../ui/accordion";
+import { Accordion } from "../../../components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { h2 } from "../../../ui/typography";
+import { h2 } from "../../../components/ui/typography";
 import { Suspense, useState } from "react";
 import { MobileMenuAccordionItem } from "./MobileMenuAccordionItem";
 import { useMobileMenuItems } from "./useMobileMenuItems";

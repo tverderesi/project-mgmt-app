@@ -1,5 +1,5 @@
-import { Button } from "@/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { AlertOctagon } from "lucide-react";
 import { Link } from "react-router-dom";

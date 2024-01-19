@@ -1,63 +1,27 @@
-import { Badge } from "@/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
-import { statusDTO } from "@/lib/utils";
 import { Suspense } from "react";
-import { Skeleton } from "@/ui/skeleton";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/accordion";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Mail, PhoneCall } from "lucide-react";
-import { Button } from "@/ui/button";
-import { useFragment, useLazyLoadQuery } from "react-relay";
-import { PROJECT, PROJECT_CLIENT_FRAGMENT, PROJECT_TASKS_FRAGMENT } from "@/graphql/queries/project";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { projectProjectQuery } from "@/graphql/queries/__generated__/projectProjectQuery.graphql";
-import { projectTasks_tasks$key } from "@/graphql/queries/__generated__/projectTasks_tasks.graphql";
+import { Button } from "@/components/ui/button";
+import { useFragment } from "react-relay";
+import { PROJECT_CLIENT_FRAGMENT, PROJECT_TASKS_FRAGMENT } from "@/features/project/project";
+import { Link } from "react-router-dom";
+import { projectTasks_tasks$key } from "@/features/project/__generated__/projectTasks_tasks.graphql";
 import { useSetPageTitle } from "@/lib/useSetPageTitle";
+import { ProjectInfo } from "../features/project/ProjectInfo";
 
 export const Project = () => {
   useSetPageTitle("mgmt.app - Project");
   return (
     <div className="pt-16 flex flex-col gap-4">
       <Suspense fallback={<Skeleton className="h-96" />}>
-        <ProjectDashboard />
+        <ProjectInfo />
       </Suspense>
     </div>
   );
 };
 
-const ProjectDashboard = () => {
-  const id = useParams<{ id: string }>()?.id;
-  const navigate = useNavigate();
-
-  if (!id) {
-    navigate("/404");
-    return null;
-  }
-
-  const { project } = useLazyLoadQuery<projectProjectQuery>(PROJECT, { id });
-
-  const client = project?.client;
-  const tasks = project.tasks;
-  const description = project.description;
-
-  return (
-    <Card className="shadow-none h-96 border-none">
-      <CardHeader className="flex flex-row gap-4 items-center flex-wrap">
-        <CardTitle className="text-4xl mr-4">{project.name}</CardTitle>
-        <Badge>{statusDTO(project?.status)}</Badge>
-      </CardHeader>
-      <CardContent className="space-y-16">
-        <p className="text-3xl font-semibold px-3 -mb-8">Info</p>
-        <ClientInfo fragmentRef={client} />
-
-        <DescriptionInfo description={description} />
-        {/*@ts-ignore */}
-        <Tasks fragmentRef={tasks} />
-      </CardContent>
-    </Card>
-  );
-};
-
-function Tasks({ fragmentRef }: { fragmentRef: projectTasks_tasks$key }) {
+export function Tasks({ fragmentRef }: { fragmentRef: projectTasks_tasks$key }) {
   const tasks = useFragment(PROJECT_TASKS_FRAGMENT, fragmentRef);
 
   return (
@@ -77,7 +41,7 @@ function Tasks({ fragmentRef }: { fragmentRef: projectTasks_tasks$key }) {
   );
 }
 
-function ClientInfo({ fragmentRef }: { fragmentRef: any }) {
+export function ClientInfo({ fragmentRef }: { fragmentRef: any }) {
   const client = useFragment(PROJECT_CLIENT_FRAGMENT, fragmentRef);
 
   const { name, email, phone } = client;
@@ -125,7 +89,7 @@ function ClientInfo({ fragmentRef }: { fragmentRef: any }) {
   );
 }
 
-const DescriptionInfo = ({ description }: { description: string }) => {
+export const DescriptionInfo = ({ description }: { description: string }) => {
   if (description)
     return (
       <Accordion type="single" collapsible defaultValue="description">

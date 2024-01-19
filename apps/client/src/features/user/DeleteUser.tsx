@@ -1,6 +1,6 @@
-import { h3 } from "@/ui/typography";
-import { Dialog, DialogTrigger, DialogContent } from "@/ui/dialog";
-import { Button } from "@/ui/button";
+import { h3 } from "@/components/ui/typography";
+import { Dialog, DialogTrigger, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 import { DeleteDialogContent } from "./DeleteUserDialogContent";
 

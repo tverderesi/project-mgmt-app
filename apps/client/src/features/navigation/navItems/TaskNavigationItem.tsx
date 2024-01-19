@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger } from "@/ui/navigation-menu";
-import { Skeleton } from "@/ui/skeleton";
+import { NavigationMenuContent, NavigationMenuItem, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TaskCountWidget } from "../widgets/TaskCountWidget";
 import { userTaskCountByStatus_TaskCount$key } from "@/graphql/queries/__generated__/userTaskCountByStatus_TaskCount.graphql";
 import { NavbarListItem } from "./NavbarListItem";
