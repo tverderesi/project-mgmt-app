@@ -4,18 +4,17 @@ import { statusDTO } from "@/lib/utils";
 import { Suspense } from "react";
 import { Skeleton } from "@/ui/skeleton";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/accordion";
-import { Mail, PhoneCall, PlusCircle } from "lucide-react";
-import { Button, buttonVariants } from "@/ui/button";
+import { Mail, PhoneCall } from "lucide-react";
+import { Button } from "@/ui/button";
 import { useFragment, useLazyLoadQuery } from "react-relay";
 import { PROJECT, PROJECT_CLIENT_FRAGMENT, PROJECT_TASKS_FRAGMENT } from "@/graphql/queries/project";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { projectProjectQuery } from "@/graphql/queries/__generated__/projectProjectQuery.graphql";
-import {
-  projectClient_client$data,
-  projectClient_client$key,
-} from "@/graphql/queries/__generated__/projectClient_client.graphql";
 import { projectTasks_tasks$key } from "@/graphql/queries/__generated__/projectTasks_tasks.graphql";
+import { useSetPageTitle } from "@/lib/useSetPageTitle";
+
 export const Project = () => {
+  useSetPageTitle("mgmt.app - Project");
   return (
     <div className="pt-16 flex flex-col gap-4">
       <Suspense fallback={<Skeleton className="h-96" />}>

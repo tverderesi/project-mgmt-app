@@ -3,7 +3,7 @@ import { Toaster } from "../ui/toaster";
 
 export const MainLayout = () => {
   return (
-    <div className="h-screen w-screen bg-background">
+    <div className="min-h-screen w-screen bg-background">
       <Outlet />
       <Toaster />
     </div>

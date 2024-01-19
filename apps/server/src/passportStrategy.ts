@@ -6,6 +6,7 @@ import { UserModel } from "./models/User";
 passport.use(
   new GraphQLLocalStrategy(async (username: string, password: string, done) => {
     const isEmail = username?.includes("@");
+
     const foundUser = await UserModel.findOne({ [isEmail ? "email" : "username"]: username });
     if (!foundUser) {
       return done("Wrong Credentials!", false);
@@ -24,7 +25,7 @@ passport.serializeUser(({ user }: { user }, done) => {
 
 passport.deserializeUser(async (id, done) => {
   const user = await UserModel.findById(id);
-
+  console.log(user);
   if (!user) {
     return done(null, false);
   }

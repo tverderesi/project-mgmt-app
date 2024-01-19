@@ -14,7 +14,7 @@ import { ClientCarouselItems } from "./ClientCarouselItems";
 export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client$key }) {
   const data = useFragment(CLIENT_FRAGMENT, fragmentRef);
   return (
-    <Card className="shadow-none dark:bg-accent/20 bg-stone-100/70 border-none  h-100 flex flex-col justify-center">
+    <Card className="shadow-none h-100 flex flex-col justify-center">
       <CardHeader>
         <CardTitle className="text-xl">
           Clients
@@ -42,7 +42,7 @@ export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client
         <Button variant="outline-rose" className="items-center gap-2 w-40" asChild>
           <Link to="clients/new">
             <PlusCircle className="h-4 w-4" />
-            New Client
+            Create Client
           </Link>
         </Button>
       </CardFooter>

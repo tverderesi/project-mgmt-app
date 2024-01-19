@@ -17,8 +17,11 @@ import { useToast } from "@/ui/use-toast";
 import { Loader2 } from "lucide-react";
 import { isJSON } from "@/lib/utils";
 import { DeleteUser } from "../features/user/DeleteUser";
+import { useSetPageTitle } from "@/lib/useSetPageTitle";
 
 export function Settings() {
+  useSetPageTitle("mgmt.app - Settings");
+
   const { toast } = useToast();
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
 

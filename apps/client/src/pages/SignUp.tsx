@@ -12,8 +12,10 @@ import { useMutation } from "react-relay";
 import { userCreateMutation } from "@/graphql/mutations/__generated__/userCreateMutation.graphql";
 import { CREATE_USER } from "@/graphql/mutations/user";
 import { h4 } from "@/ui/typography";
+import { useSetPageTitle } from "@/lib/useSetPageTitle";
 
 export const SignUp = () => {
+  useSetPageTitle("mgmt.app - Sign Up");
   const defaultValues = {
     name: "",
     username: "",

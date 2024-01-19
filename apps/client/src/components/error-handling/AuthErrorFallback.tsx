@@ -1,13 +1,20 @@
 import { Dialog, DialogHeader, DialogContent, DialogFooter, DialogDescription } from "@/ui/dialog";
 import { Button } from "@/ui/button";
 import { p } from "@/ui/typography";
-import { AlertOctagon } from "lucide-react";
+import { AlertOctagon, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { isolateErrorObject } from "./isolateErrorObject";
-
+import { useMutation, graphql } from "react-relay";
+import { AuthErrorFallbackMutation } from "./__generated__/AuthErrorFallbackMutation.graphql";
 export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
   const navigate = useNavigate();
   const errorObject = isolateErrorObject(error);
+
+  const [mutate, isInFlight] = useMutation<AuthErrorFallbackMutation>(graphql`
+    mutation AuthErrorFallbackMutation {
+      logout
+    }
+  `);
 
   return (
     <Dialog open={true}>
@@ -20,13 +27,24 @@ export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error;
         </DialogDescription>
         <DialogFooter className="flex justify-start">
           <Button
-            className="font-semibold"
+            className="font-semibold gap-2"
             onClick={() => {
-              resetErrorBoundary();
-              navigate("/login");
+              mutate({
+                variables: {},
+                updater: (store) => {
+                  const user = store.getRoot().getLinkedRecord("user");
+                  if (user) {
+                    user.invalidateRecord();
+                  }
+                },
+                onCompleted: () => {
+                  resetErrorBoundary();
+                  navigate("/login");
+                },
+              });
             }}
           >
-            Navigate to Login
+            {isInFlight && <Loader2 className="animate-spin w-4 h-4" />} Navigate to Login
           </Button>
         </DialogFooter>
       </DialogContent>

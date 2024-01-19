@@ -1,8 +1,7 @@
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { useForm } from "react-hook-form";
-import { Input } from "@/ui/input";
 import { Button } from "@/ui/button";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/ui/form";
+import { Form } from "@/ui/form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
@@ -10,13 +9,15 @@ import { useToast } from "@/ui/use-toast";
 import { ModeToggle } from "@/ui/mode-toggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
-import { Suspense, useEffect } from "react";
+import { useEffect } from "react";
 import { LoginQuery } from "./__generated__/LoginQuery.graphql";
 import { Logo } from "@/assets/Logo";
 import { h1 } from "@/ui/typography";
 import { FullscreenLoader } from "@/ui/FullscreenLoader";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { cn } from "@/lib/utils";
+import { FormInput } from "../components/FormInput";
+import { useSetPageTitle } from "@/lib/useSetPageTitle";
 const LogoSection = () => (
   <div className="flex-grow hidden lg:h-full lg:flex items-center justify-end px-4 gap-2 text-background dark:text-foreground">
     <div className="bg-black/50 p-4 pt-1 rounded-xl flex items-center gap-2 backdrop-blur-lg shadow shadow-gray-900/70">
@@ -26,6 +27,7 @@ const LogoSection = () => (
   </div>
 );
 export const Login = withSuspense(() => {
+  useSetPageTitle("mgmt.app - Login");
   const { isLoggedIn } = useLazyLoadQuery<LoginQuery>(
     graphql`
       query LoginQuery {
@@ -64,6 +66,9 @@ export const Login = withSuspense(() => {
       onCompleted() {
         navigate(`../app`);
       },
+      updater: (store) => {
+        store.invalidateStore();
+      },
       onError: (error) => {
         toast({
           title: "Login failed",
@@ -83,7 +88,6 @@ export const Login = withSuspense(() => {
       }}
     >
       <LogoSection />
-
       <div className="w-full lg:max-w-lg h-screen flex flex-col justify-center relative bg-background/85 p-4 pt-1 items-center gap-2 backdrop-blur-3xl shadow shadow-gray-900/70">
         <div className="absolute top-4 right-4">
           <ModeToggle className="hover:bg-background/70" />
@@ -95,32 +99,8 @@ export const Login = withSuspense(() => {
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mx-auto">
-            <FormField
-              control={form.control}
-              name="user"
-              render={({ field }) => (
-                <FormItem className="w-72">
-                  <FormLabel>Username/E-mail</FormLabel>
-                  <FormControl>
-                    <Input placeholder="username/email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem className="w-72">
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input placeholder="password" {...field} type="password" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormInput form={form} label="Username/E-mail" placeholder="username/email" name="user" />
+            <FormInput form={form} label="Password" placeholder="password" name="password" type="password" />
             <Button type="submit" className="mx-[4.5rem] w-36 font-semibold relative" disabled={isInFlight}>
               {isInFlight && <Loader2 className="animate-spin text-foregound h-4 absolute left-2" />}
               Login

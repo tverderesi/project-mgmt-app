@@ -7,7 +7,7 @@ import { FullscreenLoader } from "@/ui/FullscreenLoader";
 export const AppLayout: React.FC = withErrorBoundary(
   withSuspense(() => {
     return (
-      <div className="h-full w-full p-2 lg:px-4 relative">
+      <div className="min-h-full w-full p-2 lg:px-4 relative">
         <Navbar />
         <Outlet />
       </div>

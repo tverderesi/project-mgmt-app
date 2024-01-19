@@ -14,7 +14,7 @@ import { ProjectCarouselItems } from "./ProjectCarouselItems";
 export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_project$key }) {
   const data = useFragment(PROJECT_FRAGMENT, fragmentRef);
   return (
-    <Card className="shadow-none dark:bg-accent/20 bg-stone-100/70 border-none  h-100 flex flex-col justify-center">
+    <Card className="shadow-none  h-100 flex flex-col justify-center">
       <CardHeader>
         <CardTitle className="text-xl">
           Projects
