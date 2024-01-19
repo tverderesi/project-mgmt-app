@@ -25,7 +25,7 @@ export function MobileMenu() {
         <SheetHeader>
           <h2 className={cn(h2, "border-none text-start")}>mgmt.app</h2>
         </SheetHeader>
-        <Accordion type="multiple" className="mt-4">
+        <Accordion type="single" className="mt-4">
           {mobileMenuItems.map(({ children, ...item }) =>
             children ? (
               <MobileMenuAccordionItem {...item}>{children}</MobileMenuAccordionItem>
@@ -34,8 +34,8 @@ export function MobileMenu() {
             )
           )}
         </Accordion>
-        <SheetFooter className="absolute bottom-0 h-12 flex flex-row items-center justify-between w-[calc(100%-3rem)] mb-6">
-          <Suspense fallback={<Skeleton className="w-10 h-10" />}>
+        <SheetFooter className="absolute bottom-0 h-16 flex flex-row items-center justify-between w-[calc(100%-3rem)] mb-6">
+          <Suspense fallback={<Skeleton className="w-10 h-10 rounded-full" />}>
             <AvatarDropdown align="start" />
           </Suspense>
           <ModeToggle align="end" />
