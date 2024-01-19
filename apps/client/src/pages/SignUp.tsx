@@ -1,17 +1,17 @@
 import { useForm } from "react-hook-form";
 import userV from "@/validators/user";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form, FormDescription } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form, FormDescription } from "@/ui/form";
+import { Input } from "@/ui/input";
+import { Button } from "@/ui/button";
 import { cn } from "@/lib/utils";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ModeToggle } from "@/ui/mode-toggle";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/ui/use-toast";
 import { useMutation } from "react-relay";
 import { userCreateMutation } from "@/graphql/mutations/__generated__/userCreateMutation.graphql";
 import { CREATE_USER } from "@/graphql/mutations/user";
-import { h4 } from "@/components/ui/typography";
+import { h4 } from "@/ui/typography";
 
 export const SignUp = () => {
   const defaultValues = {

@@ -1,4 +1,4 @@
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/ui/skeleton";
 
 export const CardFallback = () => {
   const projectArray = Array(10).fill(0);
@@ -11,12 +11,3 @@ export const CardFallback = () => {
   );
 };
 CardFallback.displayName = "CardFallback";
-
-export function Count({ count, thing: { singular, plural } }: { count: number; thing: { singular: string; plural: string } }) {
-  return (
-    <>
-      {count} {count !== 1 ? plural : singular}
-    </>
-  );
-}
-Count.displayName = "Count";

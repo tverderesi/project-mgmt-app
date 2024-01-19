@@ -5,10 +5,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+} from "@/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/ui/avatar";
 import { formatName } from "@/lib/utils";
-import { LogoutButton } from "../../features/auth/LogoutButton";
+import { LogoutButton } from "../auth/LogoutButton";
 import { Link } from "react-router-dom";
 import { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
 import { useLazyLoadQuery } from "react-relay";

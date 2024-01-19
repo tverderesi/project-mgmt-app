@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "react-relay";
 import { logoutMutation } from "./__generated__/logoutMutation.graphql";
-import { LOGOUT } from "./logout";
+import { LOGOUT } from "./auth";
 export function LogoutButton() {
   const navigate = useNavigate();
   const [logout] = useMutation<logoutMutation>(LOGOUT);

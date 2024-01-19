@@ -1,34 +1,28 @@
 import { graphql, useLazyLoadQuery, useMutation } from "react-relay";
 import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form";
+import { Input } from "@/ui/input";
+import { Button } from "@/ui/button";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/ui/form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { useToast } from "@/ui/use-toast";
+import { ModeToggle } from "@/ui/mode-toggle";
 import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import { LoginQuery } from "./__generated__/LoginQuery.graphql";
-import { Logo } from "@/components/Logo";
-import { h1 } from "@/components/ui/typography";
-import { FullscreenLoader } from "@/components/ui/FullscreenLoader";
+import { Logo } from "@/assets/Logo";
+import { h1 } from "@/ui/typography";
+import { FullscreenLoader } from "@/ui/FullscreenLoader";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { cn } from "@/lib/utils";
 const LogoSection = () => (
-  <div
-    className="flex-grow hidden lg:h-full lg:flex items-center justify-end px-4 gap-2 text-background dark:text-foreground
-    bg-"
-    style={{
-      backgroundImage: `url(/pattern.svg)`,
-      backgroundPosition: "bottom right",
-      backgroundRepeat: "repeat",
-    }}
-  >
-    <Logo className="h-32 w-32" />
-    <h1 className={cn("font-bold leading-none text-9xl")}>mgmt.app</h1>
+  <div className="flex-grow hidden lg:h-full lg:flex items-center justify-end px-4 gap-2 text-background dark:text-foreground">
+    <div className="bg-black/50 p-4 pt-1 rounded-xl flex items-center gap-2 backdrop-blur-lg shadow shadow-gray-900/70">
+      <Logo className="h-16 w-16 lg:mt-3" />
+      <h1 className={h1}>mgmt.app</h1>
+    </div>
   </div>
 );
 export const Login = withSuspense(() => {
@@ -80,13 +74,19 @@ export const Login = withSuspense(() => {
     });
   };
   return (
-    <div className="h-screen w-screen flex flex-row">
+    <div
+      className="h-screen w-screen flex flex-row"
+      style={{
+        backgroundImage: `url(/pattern.svg)`,
+        backgroundPosition: "bottom right",
+        backgroundRepeat: "repeat",
+      }}
+    >
       <LogoSection />
 
-      <div className="bg-background dark:bg-background/90 w-full lg:max-w-lg h-screen flex flex-col justify-center relative">
-        <div className="bg-gradient-to-br from-blue-500 to-pink-600  h-full w-full -z-10 absolute " />
+      <div className="w-full lg:max-w-lg h-screen flex flex-col justify-center relative bg-background/85 p-4 pt-1 items-center gap-2 backdrop-blur-3xl shadow shadow-gray-900/70">
         <div className="absolute top-4 right-4">
-          <ModeToggle />
+          <ModeToggle className="hover:bg-background/70" />
         </div>
         <div className="flex items-center justify-center gap-1 text-foreground absolute top-[10%] w-full lg:hidden ">
           <Logo className="h-8 w-8 mt-3" />

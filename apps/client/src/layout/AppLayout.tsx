@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
-import { Navbar } from "../components/navigation/Navbar";
+import { Navbar } from "../features/navigation/Navbar";
 import { withErrorBoundary } from "react-error-boundary";
 import { AuthErrorFallback } from "../components/error-handling/AuthErrorFallback";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
-import { FullscreenLoader } from "@/components/ui/FullscreenLoader";
+import { FullscreenLoader } from "@/ui/FullscreenLoader";
 export const AppLayout: React.FC = withErrorBoundary(
   withSuspense(() => {
     return (

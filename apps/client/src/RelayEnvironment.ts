@@ -24,7 +24,7 @@ const fetchFn: FetchFunction = async (request, variables) => {
 function createRelayEnvironment() {
   return new Environment({
     network: Network.create(fetchFn),
-    store: new Store(new RecordSource()),
+    store: new Store(new RecordSource(), { queryCacheExpirationTime: 1000 * 60 * 60 }),
   });
 }
 

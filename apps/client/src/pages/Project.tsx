@@ -1,11 +1,11 @@
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/ui/card";
 import { statusDTO } from "@/lib/utils";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Skeleton } from "@/ui/skeleton";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/accordion";
 import { Mail, PhoneCall, PlusCircle } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/ui/button";
 import { useFragment, useLazyLoadQuery } from "react-relay";
 import { PROJECT, PROJECT_CLIENT_FRAGMENT, PROJECT_TASKS_FRAGMENT } from "@/graphql/queries/project";
 import { Link, useNavigate, useParams } from "react-router-dom";

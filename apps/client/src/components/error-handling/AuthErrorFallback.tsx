@@ -1,13 +1,12 @@
-import { Dialog, DialogHeader, DialogContent, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { p } from "@/components/ui/typography";
+import { Dialog, DialogHeader, DialogContent, DialogFooter, DialogDescription } from "@/ui/dialog";
+import { Button } from "@/ui/button";
+import { p } from "@/ui/typography";
 import { AlertOctagon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { isolateErrorObject } from "./isolateErrorObject";
 
 export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
   const navigate = useNavigate();
-
   const errorObject = isolateErrorObject(error);
 
   return (

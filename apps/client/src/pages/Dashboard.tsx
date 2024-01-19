@@ -1,11 +1,11 @@
-import { ClientsSection } from "@/components/user-dashboard/client-components";
-import { ProjectsSection } from "@/components/user-dashboard/project-components";
+import { ClientsSection } from "@/features/dashboard/client/ClientsSection";
+import { ProjectsSection } from "@/features/dashboard/project/ProjectsSection";
 import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 import { USER } from "@/graphql/queries/user";
 import { useLazyLoadQuery } from "react-relay";
 
 export const Dashboard = () => {
-  const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
+  const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" }, { fetchPolicy: "network-only" });
   const projects = user.projects;
   const clients = user.clients;
 

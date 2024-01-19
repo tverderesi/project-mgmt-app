@@ -1,7 +1,7 @@
 import { Moon, Sun } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu.tsx";
-import { useTheme, Theme } from "@/components/ui/ThemeProvider.tsx";
+import { Button } from "@/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/ui/dropdown-menu";
+import { useTheme, Theme } from "@/ui/ThemeProvider";
 import { DropdownMenuContentProps } from "@radix-ui/react-dropdown-menu";
 import { ClassValue } from "clsx";
 import { cn } from "@/lib/utils";

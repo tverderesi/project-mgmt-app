@@ -53,22 +53,6 @@ type Query {
   isLoggedIn: Boolean!
 }
 
-enum Status {
-  NOT_STARTED
-  IN_PROGRESS
-  COMPLETED
-}
-
-enum Role {
-  USER
-  ADMIN
-}
-
-type TaskCountByStatus {
-  status: Status!
-  count: Int!
-}
-
 type Project {
   id: ID!
   name: String!
@@ -95,6 +79,19 @@ input UpdateProjectInput {
   user: ID
 }
 
+input ProjectFilter {
+  name: String
+  status: Status
+  client: ID
+  user: ID
+}
+
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
 type Task {
   id: ID!
   name: String!
@@ -118,16 +115,19 @@ input UpdateTaskInput {
   status: Status
 }
 
-input ProjectFilter {
-  name: String
-  status: Status
-  client: ID
-  user: ID
-}
-
 input TaskFilter {
   name: String
   status: Status
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+type TaskCountByStatus {
+  status: Status!
+  count: Int!
 }
 
 type User {
