@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg3"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs3" />
+  <path
+     d="m18 9.5-5 5-4-4-3 3"
+     key="k0"
+     id="path1"
+     style="fill:none;stroke:#ff6f5c;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
+  <path
+     d="m3 3v18h18"
+     key="k1"
+     id="path2"
+     style="fill:none;stroke:#ff6f5c;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
+  <path
+     d="m21 21v-18h-18"
+     key="k2"
+     id="path3"
+     style="fill:none;stroke:#ff6f5c;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
+</svg>

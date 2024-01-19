@@ -19,7 +19,6 @@ const query = {
     checkAuthetication(context.getUser());
     const project = await ProjectModel.findById(id);
     const client = await ClientModel.findById(project?.client);
-    console.log(client);
     const tasks = await TaskModel.find({ project: id });
 
     return { ...project?.toObject(), client, tasks };

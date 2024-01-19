@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<c969a99c7fadcfc3d577578b5b2d2e5c>>
+ * @generated SignedSource<<8c1aa1e81f157ba1716b3cb76cd57144>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -14,19 +14,19 @@ export type LoginInput = {
   password: string;
   user: string;
 };
-export type LoginLoginMutation$variables = {
+export type LoginFormLoginMutation$variables = {
   input: LoginInput;
 };
-export type LoginLoginMutation$data = {
+export type LoginFormLoginMutation$data = {
   readonly login: {
     readonly id: string;
     readonly name: string;
     readonly role: Role;
   } | null | undefined;
 };
-export type LoginLoginMutation = {
-  response: LoginLoginMutation$data;
-  variables: LoginLoginMutation$variables;
+export type LoginFormLoginMutation = {
+  response: LoginFormLoginMutation$data;
+  variables: LoginFormLoginMutation$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -82,7 +82,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "LoginLoginMutation",
+    "name": "LoginFormLoginMutation",
     "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
@@ -91,20 +91,20 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "LoginLoginMutation",
+    "name": "LoginFormLoginMutation",
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "756d1c3a744387c3511c1676b28709d0",
+    "cacheID": "8201fd27b3f3322d892dc0e3a5af7131",
     "id": null,
     "metadata": {},
-    "name": "LoginLoginMutation",
+    "name": "LoginFormLoginMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    id\n    name\n    role\n  }\n}\n"
+    "text": "mutation LoginFormLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    id\n    name\n    role\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "40d020f0f559aa4d5bd8bb6b3ac25760";
+(node as any).hash = "d7e01582067c811997e1237abece9564";
 
 export default node;

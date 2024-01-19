@@ -9,7 +9,6 @@ import { AuthErrorFallbackMutation } from "./__generated__/AuthErrorFallbackMuta
 export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
   const navigate = useNavigate();
   const errorObject = isolateErrorObject(error);
-
   const [mutate, isInFlight] = useMutation<AuthErrorFallbackMutation>(graphql`
     mutation AuthErrorFallbackMutation {
       logout

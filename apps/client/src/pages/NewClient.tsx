@@ -56,10 +56,9 @@ export const NewClient = ({ asSideItem = false }) => {
         }
       },
       onError: (err) => {
-        console.log(err);
         toast({
           title: "Error",
-          description: "There was an error creating the client.",
+          description: `There was an error creating the client. ${err.message}`,
         });
       },
     });

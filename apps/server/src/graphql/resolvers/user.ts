@@ -115,7 +115,6 @@ const query = {
 
   user: async (_parent: any, { id }, context: any) => {
     const me = await context.getUser();
-    console.log(me);
     checkAuthetication(me);
     viewerCanView(id, me);
 
