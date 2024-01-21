@@ -31,10 +31,7 @@ export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error;
               mutate({
                 variables: {},
                 updater: (store) => {
-                  const user = store.getRoot().getLinkedRecord("user");
-                  if (user) {
-                    user.invalidateRecord();
-                  }
+                  store.invalidateStore();
                 },
                 onCompleted: () => {
                   resetErrorBoundary();
