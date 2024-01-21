@@ -4,15 +4,20 @@ import { FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessa
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { SheetTrigger } from "@/components/ui/sheet";
+import { userClient_client$data, userClient_client$key } from "@/graphql/queries/__generated__/userClient_client.graphql";
+import { CLIENT_FRAGMENT } from "@/graphql/queries/user";
 import { cn } from "@/lib/utils";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { useFragment } from "react-relay";
 
 interface CommandClientMapProps {
   id: string;
   name: string;
 }
 export function ProjectFormClientCommand({ form, user }: { form: any; user: any }) {
+  const clients = useFragment<userClient_client$key>(CLIENT_FRAGMENT, user.clients);
+
   return (
     <FormField
       control={form.control}
@@ -42,14 +47,14 @@ export function ProjectFormClientCommand({ form, user }: { form: any; user: any 
                       className={cn("w-72 justify-between", !field.value && "text-muted-foreground")}
                     >
                       {field.value
-                        ? user?.clients.find((client: CommandClientMapProps) => client?.id === field.value)?.name
+                        ? clients.find((client: CommandClientMapProps) => client?.id === field.value)?.name
                         : "Select Client"}
                       <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
                 <PopoverContent className="w-72 p-0">
-                  {user?.clients.length === 0 ? (
+                  {clients.length === 0 ? (
                     <div className="py-6 text-center text-sm">No Clients Found.</div>
                   ) : (
                     <Command value={field.value} onValueChange={field.onChange}>
@@ -58,7 +63,7 @@ export function ProjectFormClientCommand({ form, user }: { form: any; user: any 
                       <CommandInput placeholder="Search Client..." className="h-9" />
                       <ScrollArea className="max-h-72 overflow-auto">
                         <CommandGroup>
-                          {user?.clients.map((client: CommandClientMapProps) => (
+                          {clients.map((client: CommandClientMapProps) => (
                             <CommandItem
                               value={client?.id}
                               key={client?.id}

@@ -52,7 +52,7 @@ export const NewClient = ({ asSideItem = false }) => {
         });
         form.reset();
         {
-          !asSideItem && navigate("../app");
+          !asSideItem && navigate("/app");
         }
       },
       onError: (err) => {

@@ -5,7 +5,10 @@ import { useLazyLoadQuery } from "react-relay";
 import { PROJECT } from "@/features/project/project";
 import { useNavigate, useParams } from "react-router-dom";
 import { projectProjectQuery } from "./__generated__/projectProjectQuery.graphql";
-import { ClientInfo, DescriptionInfo, Tasks } from "../../pages/Project";
+import { ProjectClientInfo } from "@/features/project/ProjectClientInfo";
+import { ProjectDescriptionInfo } from "@/features/project/ProjectDescriptionInfo";
+import { ProjectTasks } from "@/features/project/ProjectTasks";
+import { useEffect } from "react";
 
 export const ProjectInfo = () => {
   const id = useParams<{ id: string }>()?.id;
@@ -17,7 +20,9 @@ export const ProjectInfo = () => {
   }
 
   const { project } = useLazyLoadQuery<projectProjectQuery>(PROJECT, { id });
-
+  useEffect(() => {
+    document.title = `mgmt.app - ${project?.name}`;
+  }, [project?.name]);
   const client = project?.client;
   const tasks = project.tasks;
   const description = project.description;
@@ -30,11 +35,11 @@ export const ProjectInfo = () => {
       </CardHeader>
       <CardContent className="space-y-16">
         <p className="text-3xl font-semibold px-3 -mb-8">Info</p>
-        <ClientInfo fragmentRef={client} />
+        <ProjectClientInfo fragmentRef={client} />
 
-        <DescriptionInfo description={description} />
+        <ProjectDescriptionInfo description={description} />
         {/*@ts-ignore */}
-        <Tasks fragmentRef={tasks} />
+        <ProjectTasks fragmentRef={tasks} />
       </CardContent>
     </Card>
   );

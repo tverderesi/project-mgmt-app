@@ -20,10 +20,13 @@ import { FormInput } from "@/components/FormInput";
 import { ProjectStatusSelect } from "../features/project/ProjectFormStatusSelect";
 import { ProjectFormClientCommand } from "../features/project/ProjectFormClientCommand";
 import { FormTextarea } from "@/components/FormTextArea";
+import { useNavigate } from "react-router-dom";
+import { NewProjectMutation, NewProjectMutation$data } from "./__generated__/NewProjectMutation.graphql";
 
 export const NewProject = () => {
   useSetPageTitle("mgmt.app - New Project");
   const { toast } = useToast();
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof projectV.create>>({
     resolver: zodResolver(projectV.create),
     defaultValues: {
@@ -43,7 +46,7 @@ export const NewProject = () => {
     }
   }, [user.id]);
 
-  const [mutate, isInFlight] = useMutation(graphql`
+  const [mutate, isInFlight] = useMutation<NewProjectMutation>(graphql`
     mutation NewProjectMutation($input: ProjectInput!) {
       createProject(input: $input) {
         id
@@ -57,30 +60,56 @@ export const NewProject = () => {
       }
     }
   `);
+
+  const onValid = (data: z.infer<typeof projectV.create>) => {
+    mutate({
+      variables: {
+        input: data,
+      },
+      onCompleted: ({ createProject }: NewProjectMutation$data) => {
+        toast({
+          title: "Project created",
+          description: "The project was created successfully.",
+        });
+        form.reset();
+        navigate(`/app/projects/${createProject?.id}`);
+      },
+      onError: (err) => {
+        toast({
+          title: "Error",
+          description: `There was an error creating the project. ${err.message}`,
+          variant: "destructive",
+        });
+      },
+    });
+  };
+
+  const onInvalid = (err: any) => {
+    toast({
+      title: "Error",
+      description: `There was an error creating the project. ${err.message}`,
+      variant: "destructive",
+    });
+  };
+
   return (
     <Sheet>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit((data) => {
-            mutate({
-              variables: {
-                input: data,
-              },
-            });
-            toast({
-              title: "Success",
-              description: "Project created successfully!",
-            });
-          })}
-          className="h-full w-full pt-18 pb-2"
-        >
+        <form onSubmit={form.handleSubmit(onValid, onInvalid)} className="h-full w-full pt-18 pb-2">
           <Card className="min-h-[calc(100vh-6rem)] w-full flex flex-col justify-between">
             <CardHeader>
               <h2 className={cn(h2, "inline-flex gap-2 items-center mb-8 justify-center border-none")}>New Project</h2>
             </CardHeader>
             <div className="mx-auto grow basis-1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-0  md:gap-4 md:gap-x-8 max-w-screen-md">
-                <FormInput form={form} label="Name" placeholder="Name" name="name" description="Insert the project name here." />
+                <FormInput
+                  form={form}
+                  label="Name"
+                  placeholder="Name"
+                  name="name"
+                  description="Insert the project name here."
+                  autoComplete="off"
+                />
                 <ProjectStatusSelect form={form} statusEnum={statusEnum} />
                 <FormTextarea
                   name="description"
