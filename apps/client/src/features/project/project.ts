@@ -11,7 +11,7 @@ export const PROJECT_CLIENT_FRAGMENT = graphql`
 export const PROJECT_TASKS_FRAGMENT = graphql`
   fragment projectTasks_tasks on Task @relay(plural: true) {
     id
-    name
+    title
     description
     status
   }
@@ -31,5 +31,33 @@ export const PROJECT = graphql`
         ...projectTasks_tasks
       }
     }
+  }
+`;
+
+export const CREATE_TASK = graphql`
+  mutation projectCreateTaskMutation($input: TaskInput!) {
+    createTask(input: $input) {
+      id
+      title
+      description
+      status
+    }
+  }
+`;
+
+export const UPDATE_TASK = graphql`
+  mutation projectUpdateTaskMutation($input: UpdateTaskInput!) {
+    updateTask(input: $input) {
+      id
+      title
+      description
+      status
+    }
+  }
+`;
+
+export const DELETE_TASK = graphql`
+  mutation projectDeleteTaskMutation($id: ID!) {
+    deleteTask(id: $id)
   }
 `;

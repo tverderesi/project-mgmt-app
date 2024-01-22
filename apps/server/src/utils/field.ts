@@ -11,7 +11,7 @@ export function checkRequiredFields<T>(
     const errors = Object.keys(formatted)
       .filter((key) => key !== "_errors")
       .map((key) => JSON.stringify({ [key]: formatted[key]?._errors?.[0] }));
-
+    console.log(errors);
     throw new Error(createErrorMessage({ type: "INPUT_ERROR", message: errors.join(", ") }));
   }
   return null;

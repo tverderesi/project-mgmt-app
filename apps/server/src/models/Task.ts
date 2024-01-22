@@ -3,7 +3,7 @@ import { Project } from "./Project";
 import { User } from "./User";
 import { Status, statuses } from "@/validators/shared";
 export interface Task extends Document {
-  name: string;
+  title: string;
   description: string;
   project: Project;
   user: User;
@@ -12,7 +12,7 @@ export interface Task extends Document {
 
 const taskSchema = new Schema<Task>(
   {
-    name: { type: String, required: true },
+    title: { type: String, required: true },
     description: { type: String },
     project: { type: Schema.Types.ObjectId, ref: "Project" },
     user: { type: Schema.Types.ObjectId, ref: "User" },

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b9194a9947a45b0f25d2b583b4235aea>>
+ * @generated SignedSource<<488f64b4719394c761e0f2db8026f6d4>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -188,7 +188,13 @@ return {
             "plural": true,
             "selections": [
               (v2/*: any*/),
-              (v3/*: any*/),
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "title",
+                "storageKey": null
+              },
               (v4/*: any*/),
               (v5/*: any*/)
             ],
@@ -200,12 +206,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "821e91f4e422a734e806f66d2e7faff8",
+    "cacheID": "3ddec28a860f8278e27afd3c3c86f94e",
     "id": null,
     "metadata": {},
     "name": "projectProjectQuery",
     "operationKind": "query",
-    "text": "query projectProjectQuery(\n  $id: ID!\n) {\n  project(id: $id) {\n    id\n    name\n    description\n    status\n    client {\n      ...projectClient_client\n      id\n    }\n    tasks {\n      ...projectTasks_tasks\n      id\n    }\n  }\n}\n\nfragment projectClient_client on Client {\n  name\n  email\n  phone\n}\n\nfragment projectTasks_tasks on Task {\n  id\n  name\n  description\n  status\n}\n"
+    "text": "query projectProjectQuery(\n  $id: ID!\n) {\n  project(id: $id) {\n    id\n    name\n    description\n    status\n    client {\n      ...projectClient_client\n      id\n    }\n    tasks {\n      ...projectTasks_tasks\n      id\n    }\n  }\n}\n\nfragment projectClient_client on Client {\n  name\n  email\n  phone\n}\n\nfragment projectTasks_tasks on Task {\n  id\n  title\n  description\n  status\n}\n"
   }
 };
 })();

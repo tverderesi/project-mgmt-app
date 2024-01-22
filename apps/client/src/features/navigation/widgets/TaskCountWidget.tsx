@@ -16,7 +16,7 @@ export function TaskCountWidget({ fragmentRef }: { fragmentRef: userTaskCountByS
             <span>
               {task.count} {statusDTO(task.status)}
             </span>
-            <Progress value={Math.round(task.count / totalTaskCount)} className="w-full" />
+            <Progress value={Math.round((task.count * 100) / totalTaskCount)} className="w-full" />
           </div>
         ))}
       </div>

@@ -13,7 +13,7 @@ type Mutation {
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   deleteProject(id: ID!): String!
   createTask(input: TaskInput!): Task!
-  updateTask(id: ID!, input: UpdateTaskInput!): Task!
+  updateTask(input: UpdateTaskInput!): Task!
   deleteTask(id: ID!): String!
   createUser(input: UserInput!): User!
   updateUser(input: UpdateUserInput!): User!
@@ -94,7 +94,7 @@ enum Status {
 
 type Task {
   id: ID!
-  name: String!
+  title: String!
   description: String
   project: Project!
   user: User!
@@ -102,7 +102,7 @@ type Task {
 }
 
 input TaskInput {
-  name: String!
+  title: String!
   description: String
   project: ID!
   user: ID!
@@ -110,7 +110,8 @@ input TaskInput {
 }
 
 input UpdateTaskInput {
-  name: String
+  id: ID!
+  title: String
   description: String
   status: Status
 }

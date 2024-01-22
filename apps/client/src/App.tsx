@@ -6,7 +6,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { ErrorBoundary } from "react-error-boundary";
 function App() {
   return (
-    <ErrorBoundary fallback={<div>Something went wrong</div>}>
+    <ErrorBoundary fallback={<div>Something went wrong</div>} onError={(e) => console.log(e)}>
       <RelayEnvironmentProvider environment={RelayEnvironment}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <ToastProvider>

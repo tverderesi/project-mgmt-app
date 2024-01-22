@@ -84,11 +84,10 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60,
       secure: !isDevelopment,
-      sameSite: isDevelopment ? "none" : true,
+      sameSite: isDevelopment ? "strict" : "none",
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,
-      autoRemove: "native",
     }),
   })
 );
@@ -99,7 +98,12 @@ app.use(passport.session());
 
 //Initializing the express server body parser
 app.use(bodyParser.json());
-
+app.use((req, res, next) => {
+  if (req.cookies["connect.sid"] && !req.user) {
+    res.clearCookie("connect.sid");
+  }
+  next();
+});
 //Initializing the GraphQL endpoint
 app.use(
   "/graphql",
