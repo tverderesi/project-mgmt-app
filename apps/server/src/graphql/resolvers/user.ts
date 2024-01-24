@@ -106,6 +106,8 @@ const query = {
     const me = await context.getUser();
 
     checkAuthetication(me);
+    viewerCanView(me.id, me);
+
     const { first = 10, after, last = 10, before } = args;
     const afterId = after ? new Types.ObjectId(after) : null;
     const beforeId = before ? new Types.ObjectId(before) : null;
