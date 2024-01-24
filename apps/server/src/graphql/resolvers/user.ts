@@ -128,7 +128,9 @@ const query = {
       if (hasPreviousPage) users.pop();
       users = users.reverse();
     } else {
-      users = await UserModel.find().sort({ _id: 1 }).limit(first);
+      users = await UserModel.find()
+        .sort({ _id: 1 })
+        .limit(first + 1);
       hasNextPage = users.length > first;
       if (hasNextPage) users.pop();
     }
