@@ -10,7 +10,6 @@ import { checkAuthetication } from "../../utils/checkAuthetication";
 import { pruneEmptyValues } from "@/utils/field";
 import { authError, invalidCredentials, userNotFound } from "@/utils/errors";
 import { viewerCanView } from "@/utils/viewerCanView";
-import { Types } from "mongoose";
 
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
@@ -65,11 +64,7 @@ const mutation = {
 
   deleteUser: async (_parent: any, { id }: { id: string }, context: any) => {
     const me = await context.getUser();
-
-    if (!me) {
-      const error = createErrorMessage(authError);
-      throw new Error(error);
-    }
+    checkAuthetication(me);
 
     doerCanDo(me, id);
 
@@ -155,16 +150,14 @@ const query = {
   user: async (_parent: any, { id }, context: any) => {
     const me = await context.getUser();
     checkAuthetication(me);
-    viewerCanView(id, me);
 
-    const user = await UserModel.findById(id || me.id);
+    const user = await UserModel.findById(me.role === "ADMIN" ? id : me.id);
 
     return user;
   },
 
   isLoggedIn: async (_parent: any, __: any, context: any) => {
     const me = await context.getUser();
-
     return !!me;
   },
 };
