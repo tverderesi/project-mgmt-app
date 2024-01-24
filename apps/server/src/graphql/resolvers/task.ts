@@ -27,7 +27,9 @@ export const query = {
         .limit(first + 1);
 
       hasNextPage = tasks.length > first;
-      const previousTask = await TaskModel.findOne({ _id: { $lt: after }, ...filter }).sort({ _id: -1 });
+      const previousTask = await TaskModel.findOne({ _id: { $lt: tasks.length > 0 ? tasks[0]._id : after }, ...filter }).sort({
+        _id: -1,
+      });
       hasPreviousPage = !!previousTask;
       if (hasNextPage) tasks.pop();
     } else if (before) {
@@ -37,7 +39,9 @@ export const query = {
       hasPreviousPage = tasks.length > last;
       if (hasPreviousPage) tasks.pop();
       tasks = tasks.reverse();
-      const nextTask = await TaskModel.findOne({ _id: { $gt: before }, ...filter }).sort({ _id: 1 });
+      const nextTask = await TaskModel.findOne({ _id: { $gt: tasks.length > 0 ? tasks[0]._id : before }, ...filter }).sort({
+        _id: 1,
+      });
       hasNextPage = !!nextTask;
     } else {
       tasks = await TaskModel.find(filter)
