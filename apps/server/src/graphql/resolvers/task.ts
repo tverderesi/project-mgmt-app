@@ -3,7 +3,7 @@ import { z } from "zod";
 import { TaskModel } from "@/models/Task";
 import { checkRequiredFields } from "@/utils/field";
 import { checkAuthetication } from "@/utils/checkAuthetication";
-import { Types } from "mongoose";
+
 export const query = {
   tasks: async (
     _parent,
