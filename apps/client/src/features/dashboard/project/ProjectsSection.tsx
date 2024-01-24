@@ -12,7 +12,7 @@ import { userProject_project$key } from "@/graphql/queries/__generated__/userPro
 import { ProjectCarouselItems } from "./ProjectCarouselItems";
 
 export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_project$key }) {
-  const data = useFragment(PROJECT_FRAGMENT, fragmentRef);
+  const data = useFragment<userProject_project$key>(PROJECT_FRAGMENT, fragmentRef);
   return (
     <Card className="shadow-none  h-100 flex flex-col justify-center">
       <CardHeader>
