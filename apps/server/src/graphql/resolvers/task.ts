@@ -16,25 +16,35 @@ export const query = {
     if (me.role !== "ADMIN") args.filter.user = me.id;
 
     const { first = 10, after, last = 10, before, filter } = args;
-    const afterId = after ? new Types.ObjectId(after) : null;
-    const beforeId = before ? new Types.ObjectId(before) : null;
 
     let tasks;
     let hasNextPage = false;
     let hasPreviousPage = false;
-    const taskCount = await TaskModel.find(filter).countDocuments();
-    if (afterId) {
-      tasks = await TaskModel.find({ _id: { $gt: afterId }, ...filter }).limit(first);
+
+    if (after) {
+      tasks = await TaskModel.find({ _id: { $gt: after }, ...filter })
+        .sort({ id: 1 })
+        .limit(first + 1);
+
       hasNextPage = tasks.length > first;
-    } else if (beforeId) {
-      tasks = await TaskModel.find({ _id: { $lt: beforeId }, ...filter })
-        .sort({ _id: -1 })
+      const previousTask = await TaskModel.findOne({ _id: { $lt: after }, ...filter }).sort({ _id: -1 });
+      hasPreviousPage = !!previousTask;
+      if (hasNextPage) tasks.pop();
+    } else if (before) {
+      tasks = await TaskModel.find({ _id: { $lt: before }, ...filter })
+        .sort({ id: -1 })
         .limit(last + 1);
       hasPreviousPage = tasks.length > last;
+      if (hasPreviousPage) tasks.pop();
       tasks = tasks.reverse();
+      const nextTask = await TaskModel.findOne({ _id: { $gt: before }, ...filter }).sort({ _id: 1 });
+      hasNextPage = !!nextTask;
     } else {
-      tasks = await TaskModel.find(filter).sort({ _id: 1 }).limit(first);
-      hasNextPage = taskCount > first;
+      tasks = await TaskModel.find(filter)
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = tasks.length > first;
+      if (hasNextPage) tasks.pop();
     }
 
     const edges = tasks.map((task) => ({
