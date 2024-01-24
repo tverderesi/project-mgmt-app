@@ -24,61 +24,10 @@ const userSchema = new Schema<User>(
     role: { type: String, enum: roles, default: "USER" },
   },
   {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
     timestamps: true,
     autoIndex: true,
-    methods: {
-      countTasksByType() {
-        type TaskCount = { status: Status; count: number }[];
-        const initialTaskCount: TaskCount = [
-          { status: "NOT_STARTED", count: 0 },
-          { status: "IN_PROGRESS", count: 0 },
-          { status: "COMPLETED", count: 0 },
-        ];
-
-        const taskCount = model("Task")
-          .aggregate([{ $match: { user: this._id } }, { $group: { _id: "$status", count: { $sum: 1 } } }])
-          .then((foundTaskCount) => {
-            if (foundTaskCount.length === 0) {
-              return initialTaskCount;
-            }
-            const taskCount = initialTaskCount.map((status) => {
-              const foundStatus = foundTaskCount.find((found) => found._id === status.status);
-              if (foundStatus) {
-                return { status: foundStatus._id, count: foundStatus.count };
-              }
-              return status;
-            });
-
-            return taskCount;
-          });
-        return taskCount;
-      },
-    },
   }
 );
-
-userSchema.virtual("projectCount", {
-  ref: "Project",
-  localField: "_id",
-  foreignField: "user",
-  count: true,
-});
-
-userSchema.virtual("clientCount", {
-  ref: "Client",
-  localField: "_id",
-  foreignField: "user",
-  count: true,
-});
-
-userSchema.virtual("totalTaskCount", {
-  ref: "Task",
-  localField: "_id",
-  foreignField: "user",
-  count: true,
-});
 
 userSchema.pre<User>("save", async function (next) {
   if (this.isModified("password")) {

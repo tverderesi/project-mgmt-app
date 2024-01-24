@@ -10,8 +10,7 @@ import { checkAuthetication } from "../../utils/checkAuthetication";
 import { pruneEmptyValues } from "@/utils/field";
 import { authError, invalidCredentials, userNotFound } from "@/utils/errors";
 import { viewerCanView } from "@/utils/viewerCanView";
-import { ProjectModel } from "@/models/Project";
-import { ClientModel } from "@/models/Client";
+import { Types } from "mongoose";
 
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
@@ -103,14 +102,48 @@ const mutation = {
 };
 
 const query = {
-  users: async (_parent: any, { filter }: { filter: z.infer<typeof userV.base> }, context: any) => {
+  users: async (_parent: any, args: { first: number; after: string; last: number; before: string }, context: any) => {
     const me = await context.getUser();
 
     checkAuthetication(me);
-    //TODO: enhance the filter algorithm to account for partial matches
-    const users = await UserModel.find(filter);
+    const { first = 10, after, last = 10, before } = args;
+    const afterId = after ? new Types.ObjectId(after) : null;
+    const beforeId = before ? new Types.ObjectId(before) : null;
 
-    return users;
+    let users;
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+
+    if (afterId) {
+      users = await UserModel.find({ _id: { $gt: afterId } }).limit(first + 1);
+      hasNextPage = users.length > first;
+      if (hasNextPage) users.pop();
+    } else if (beforeId) {
+      users = await UserModel.find({ _id: { $lt: beforeId } })
+        .sort({ _id: -1 })
+        .limit(last + 1);
+      hasPreviousPage = users.length > last;
+      if (hasPreviousPage) users.pop();
+      users = users.reverse();
+    } else {
+      users = await UserModel.find().sort({ _id: 1 }).limit(first);
+      hasNextPage = users.length > first;
+      if (hasNextPage) users.pop();
+    }
+
+    const edges = users.map((user) => ({
+      cursor: user.id,
+      node: user,
+    }));
+
+    const pageInfo = {
+      hasNextPage,
+      hasPreviousPage,
+      startCursor: edges[0]?.cursor,
+      endCursor: edges[edges.length - 1]?.cursor,
+    };
+
+    return { pageInfo, edges };
   },
 
   user: async (_parent: any, { id }, context: any) => {
@@ -118,17 +151,9 @@ const query = {
     checkAuthetication(me);
     viewerCanView(id, me);
 
-    const user = await UserModel.findById(id || me.id)
-      .populate("projectCount")
-      .populate("clientCount")
-      .populate("totalTaskCount");
+    const user = await UserModel.findById(id || me.id);
 
-    const projects = await ProjectModel.find({ user: id || me.id });
-    const clients = await ClientModel.find({ user: id || me.id });
-
-    const taskCountByStatus = await user?.countTasksByType();
-    const userWithTasks = { ...user?.toObject(), taskCountByStatus, projects, clients };
-    return userWithTasks;
+    return user;
   },
 
   isLoggedIn: async (_parent: any, __: any, context: any) => {

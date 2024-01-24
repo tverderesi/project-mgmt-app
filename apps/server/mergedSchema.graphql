@@ -48,7 +48,7 @@ type Query {
   project(id: ID!): Project!
   tasks(filter: TaskFilter): [Task]!
   task(id: ID!): Task!
-  users(filter: UserFilter): [User]!
+  users(first: Int, after: String, last: Int, before: String, filter: UserFilter): UserConnection!
   user(id: ID): User!
   isLoggedIn: Boolean!
 }
@@ -92,6 +92,17 @@ enum Status {
   COMPLETED
 }
 
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
 type Task {
   id: ID!
   title: String!
@@ -126,24 +137,23 @@ enum Role {
   ADMIN
 }
 
-type TaskCountByStatus {
-  status: Status!
-  count: Int!
+type UserEdge {
+  node: User!
+  cursor: String!
 }
 
-type User {
+type UserConnection {
+  edges: [UserEdge]!
+  pageInfo: PageInfo!
+}
+
+type User implements Node {
   id: ID!
   name: String!
   username: String!
   email: String!
   password: String!
   role: Role!
-  projects: [Project]!
-  clients: [Client]!
-  clientCount: Int
-  projectCount: Int
-  totalTaskCount: Int
-  taskCountByStatus: [TaskCountByStatus]
 }
 
 input UserInput {
