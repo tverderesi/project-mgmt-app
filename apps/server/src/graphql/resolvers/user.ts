@@ -109,24 +109,26 @@ const query = {
     viewerCanView(me.id, me);
 
     const { first = 10, after, last = 10, before } = args;
-    const afterId = after ? new Types.ObjectId(after) : null;
-    const beforeId = before ? new Types.ObjectId(before) : null;
 
     let users;
     let hasNextPage = false;
     let hasPreviousPage = false;
 
-    if (afterId) {
-      users = await UserModel.find({ _id: { $gt: afterId } }).limit(first + 1);
+    if (after) {
+      users = await UserModel.find({ _id: { $gt: after } }).limit(first + 1);
       hasNextPage = users.length > first;
       if (hasNextPage) users.pop();
-    } else if (beforeId) {
-      users = await UserModel.find({ _id: { $lt: beforeId } })
+      const previousUser = await UserModel.findOne({ _id: { $lt: users.length > 0 ? users[0]._id : after } }).sort({ _id: -1 });
+      hasPreviousPage = !!previousUser;
+    } else if (before) {
+      users = await UserModel.find({ _id: { $lt: before } })
         .sort({ _id: -1 })
         .limit(last + 1);
       hasPreviousPage = users.length > last;
       if (hasPreviousPage) users.pop();
       users = users.reverse();
+      const nextUser = await UserModel.findOne({ _id: { $gt: users.length > 0 ? users[0]._id : before } }).sort({ _id: 1 });
+      hasNextPage = !!nextUser;
     } else {
       users = await UserModel.find()
         .sort({ _id: 1 })
