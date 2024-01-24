@@ -52,7 +52,7 @@ export const Home = () => {
                     </p>
                   </div>
                   <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                    <Button className="font-semibold" size="lg">
+                    <Button className="font-semibold" size="lg" asChild>
                       <Link to="login">Get Started</Link>
                     </Button>
                   </div>
