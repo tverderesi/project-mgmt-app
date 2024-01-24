@@ -17,12 +17,14 @@ import { useEffect } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { status } from "./ProjectTasks";
+import { useToast } from "@/components/ui/use-toast";
+import { RecordSourceSelectorProxy } from "relay-runtime";
 
 export const CreateTaskForm = withSuspense(() => {
   const [createTask] = useMutation<projectCreateTaskMutation>(CREATE_TASK);
-
   const projectID = useParams<{ id: string }>().id || "";
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
+  const { toast } = useToast();
 
   const schema = z.object({
     title: z.string(),
@@ -45,32 +47,34 @@ export const CreateTaskForm = withSuspense(() => {
     form.setValue("user", user?.id || "");
     form.setValue("project", projectID);
   }, [user?.id, projectID]);
+
   return (
     <Form {...form}>
       <form className="flex items-center justify-center gap-2 w-full h-full">
         <Button
           variant="ghost"
           size="icon"
-          onClick={(e) => {
+          onClick={() => {
             createTask({
               variables: {
                 input: {
                   ...form.getValues(),
                 },
               },
-              onCompleted: () => {
-                console.log("completed");
-              },
               onError: (error) => {
-                console.log(error.message);
+                toast({
+                  title: "Error",
+                  description: error.message,
+                  variant: "destructive",
+                });
               },
-              updater: (store, data) => {
+              updater: (store: RecordSourceSelectorProxy, data) => {
                 const newTask = store.getRootField("createTask");
                 const createTask = data?.createTask;
                 const project = store.get(projectID);
                 const tasks = project?.getLinkedRecords("tasks");
 
-                if (createTask) {
+                if (createTask && newTask) {
                   newTask.setValue(createTask.title, "title");
                   newTask.setValue(createTask.description, "description");
                   newTask.setValue(createTask.status, "status");
