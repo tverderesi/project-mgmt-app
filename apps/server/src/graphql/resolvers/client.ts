@@ -7,12 +7,61 @@ import { checkAuthetication } from "@/utils/checkAuthetication";
 import { viewerCanView } from "@/utils/viewerCanView";
 
 const query = {
-  clients: async (_parent, args: Partial<z.infer<typeof clientV.base>>, context) => {
+  clients: async (
+    _parent,
+    args: { first: number; after: string; last: number; before: string; filter: z.infer<typeof clientV.filter> },
+    context
+  ) => {
     const me = await context.getUser();
-
     checkAuthetication(me);
-    const clients = await ClientModel.find(args);
-    return clients;
+    if (!args.filter) args.filter = {};
+    if (me.role !== "ADMIN") args.filter.user = me.id;
+    const { first = 10, after, last = 10, before, filter } = args;
+
+    let clients;
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+
+    if (after) {
+      clients = await ClientModel.find({ _id: { $gt: after }, ...filter })
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = clients.length > first;
+      if (hasNextPage) clients.pop();
+      const previousClient = await ClientModel.findOne({ _id: { $lt: clients.length > 0 ? clients[0]._id : after } }).sort({
+        _id: -1,
+      });
+      hasPreviousPage = !!previousClient;
+    } else if (before) {
+      clients = await ClientModel.find({ _id: { $lt: before }, ...filter }).limit(last + 1);
+      hasPreviousPage = clients.length > last;
+      if (hasPreviousPage) clients.pop();
+      clients = clients.reverse();
+      const nextClient = await ClientModel.findOne({ _id: { $gt: clients.length > 0 ? clients[0]._id : before } }).sort({
+        _id: 1,
+      });
+      hasNextPage = !!nextClient;
+    } else {
+      clients = ClientModel.find()
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = clients.length > first;
+      if (hasNextPage) clients.pop();
+    }
+
+    const edges = clients.map((client) => ({
+      cursor: client.id,
+      node: client,
+    }));
+
+    const pageInfo = {
+      hasNextPage,
+      hasPreviousPage,
+      startCursor: edges.length > 0 ? edges[0].cursor : null,
+      endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+    };
+
+    return { edges, pageInfo };
   },
 
   client: async (_parent, { id }: { id: string }, context) => {

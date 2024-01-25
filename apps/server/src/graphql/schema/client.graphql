@@ -3,13 +3,24 @@ type Client {
   name: String!
   email: String!
   phone: String!
-  projects: [Project]!
+  user: User!
+}
+
+type ClientEdge {
+  node: Client!
+  cursor: String!
+}
+
+type ClientConnection {
+  edges: [ClientEdge]!
+  pageInfo: PageInfo!
 }
 
 input ClientFilter {
   name: String
   email: String
   phone: String
+  user: ID
 }
 
 input ClientInput {
@@ -20,7 +31,7 @@ input ClientInput {
 }
 
 type Query {
-  clients(filter: ClientFilter): [Client]!
+  clients(filter: ClientFilter): ClientConnection!
   client(id: ID!): Client
 }
 
