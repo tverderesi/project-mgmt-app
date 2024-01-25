@@ -25,13 +25,14 @@ type Client {
   name: String!
   email: String!
   phone: String!
-  projects: [Project]!
+  user: User!
 }
 
 input ClientFilter {
   name: String
   email: String
   phone: String
+  user: ID
 }
 
 input ClientInput {
@@ -53,6 +54,15 @@ type Query {
   isLoggedIn: Boolean!
 }
 
+type Project {
+  id: ID!
+  name: String!
+  description: String!
+  client: Client!
+  user: User!
+  status: Status!
+}
+
 type ProjectEdge {
   node: Project!
   cursor: String!
@@ -61,16 +71,6 @@ type ProjectEdge {
 type ProjectConnection {
   edges: [ProjectEdge]!
   pageInfo: PageInfo!
-}
-
-type Project {
-  id: ID!
-  name: String!
-  description: String!
-  client: Client!
-  user: User!
-  tasks: [Task]!
-  status: Status!
 }
 
 input ProjectInput {
