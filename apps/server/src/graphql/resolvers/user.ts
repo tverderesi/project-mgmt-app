@@ -11,6 +11,72 @@ import { pruneEmptyValues } from "@/utils/field";
 import { authError, invalidCredentials, userNotFound } from "@/utils/errors";
 import { viewerCanView } from "@/utils/viewerCanView";
 
+const query = {
+  users: async (_parent: any, args: { first: number; after: string; last: number; before: string }, context: any) => {
+    const me = await context.getUser();
+
+    checkAuthetication(me);
+    viewerCanView(me.id, me);
+
+    const { first = 10, after, last = 10, before } = args;
+
+    let users;
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+
+    if (after) {
+      users = await UserModel.find({ _id: { $gt: after } }).limit(first + 1);
+      hasNextPage = users.length > first;
+      if (hasNextPage) users.pop();
+      const previousUser = await UserModel.findOne({ _id: { $lt: users.length > 0 ? users[0]._id : after } }).sort({ _id: -1 });
+      hasPreviousPage = !!previousUser;
+    } else if (before) {
+      users = await UserModel.find({ _id: { $lt: before } })
+        .sort({ _id: -1 })
+        .limit(last + 1);
+      hasPreviousPage = users.length > last;
+      if (hasPreviousPage) users.pop();
+      users = users.reverse();
+      const nextUser = await UserModel.findOne({ _id: { $gt: users.length > 0 ? users[0]._id : before } }).sort({ _id: 1 });
+      hasNextPage = !!nextUser;
+    } else {
+      users = await UserModel.find()
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = users.length > first;
+      if (hasNextPage) users.pop();
+    }
+
+    const edges = users.map((user) => ({
+      cursor: user.id,
+      node: user,
+    }));
+
+    const pageInfo = {
+      hasNextPage,
+      hasPreviousPage,
+      startCursor: edges[0]?.cursor,
+      endCursor: edges[edges.length - 1]?.cursor,
+    };
+
+    return { pageInfo, edges };
+  },
+
+  user: async (_parent: any, { id }, context: any) => {
+    const me = await context.getUser();
+    checkAuthetication(me);
+
+    const user = await UserModel.findById(me.role === "ADMIN" ? id : me.id);
+
+    return user;
+  },
+
+  isLoggedIn: async (_parent: any, __: any, context: any) => {
+    const me = await context.getUser();
+    return !!me;
+  },
+};
+
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
     const me = await context.getUser();
@@ -93,72 +159,6 @@ const mutation = {
   logout: async (_parent: any, __: any, context: any) => {
     await context.logout();
     return true;
-  },
-};
-
-const query = {
-  users: async (_parent: any, args: { first: number; after: string; last: number; before: string }, context: any) => {
-    const me = await context.getUser();
-
-    checkAuthetication(me);
-    viewerCanView(me.id, me);
-
-    const { first = 10, after, last = 10, before } = args;
-
-    let users;
-    let hasNextPage = false;
-    let hasPreviousPage = false;
-
-    if (after) {
-      users = await UserModel.find({ _id: { $gt: after } }).limit(first + 1);
-      hasNextPage = users.length > first;
-      if (hasNextPage) users.pop();
-      const previousUser = await UserModel.findOne({ _id: { $lt: users.length > 0 ? users[0]._id : after } }).sort({ _id: -1 });
-      hasPreviousPage = !!previousUser;
-    } else if (before) {
-      users = await UserModel.find({ _id: { $lt: before } })
-        .sort({ _id: -1 })
-        .limit(last + 1);
-      hasPreviousPage = users.length > last;
-      if (hasPreviousPage) users.pop();
-      users = users.reverse();
-      const nextUser = await UserModel.findOne({ _id: { $gt: users.length > 0 ? users[0]._id : before } }).sort({ _id: 1 });
-      hasNextPage = !!nextUser;
-    } else {
-      users = await UserModel.find()
-        .sort({ _id: 1 })
-        .limit(first + 1);
-      hasNextPage = users.length > first;
-      if (hasNextPage) users.pop();
-    }
-
-    const edges = users.map((user) => ({
-      cursor: user.id,
-      node: user,
-    }));
-
-    const pageInfo = {
-      hasNextPage,
-      hasPreviousPage,
-      startCursor: edges[0]?.cursor,
-      endCursor: edges[edges.length - 1]?.cursor,
-    };
-
-    return { pageInfo, edges };
-  },
-
-  user: async (_parent: any, { id }, context: any) => {
-    const me = await context.getUser();
-    checkAuthetication(me);
-
-    const user = await UserModel.findById(me.role === "ADMIN" ? id : me.id);
-
-    return user;
-  },
-
-  isLoggedIn: async (_parent: any, __: any, context: any) => {
-    const me = await context.getUser();
-    return !!me;
   },
 };
 
