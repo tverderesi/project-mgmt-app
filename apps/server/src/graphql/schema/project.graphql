@@ -1,3 +1,13 @@
+type ProjectEdge {
+  node: Project!
+  cursor: String!
+}
+
+type ProjectConnection {
+  edges: [ProjectEdge]!
+  pageInfo: PageInfo!
+}
+
 type Project {
   id: ID!
   name: String!
@@ -32,7 +42,7 @@ input ProjectFilter {
 }
 
 type Query {
-  projects(filter: ProjectFilter): [Project]!
+  projects(first: Int, after: String, last: Int, before: String, filter: ProjectFilter): ProjectConnection!
   project(id: ID!): Project!
 }
 

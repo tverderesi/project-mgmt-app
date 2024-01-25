@@ -44,13 +44,23 @@ input ClientInput {
 type Query {
   clients(filter: ClientFilter): [Client]!
   client(id: ID!): Client
-  projects(filter: ProjectFilter): [Project]!
+  projects(first: Int, after: String, last: Int, before: String, filter: ProjectFilter): ProjectConnection!
   project(id: ID!): Project!
   tasks(first: Int, after: String, last: Int, before: String, filter: TaskFilter): TaskConnection!
   task(id: ID!): Task!
   users(first: Int, after: String, last: Int, before: String, filter: UserFilter): UserConnection!
   user(id: ID): User!
   isLoggedIn: Boolean!
+}
+
+type ProjectEdge {
+  node: Project!
+  cursor: String!
+}
+
+type ProjectConnection {
+  edges: [ProjectEdge]!
+  pageInfo: PageInfo!
 }
 
 type Project {

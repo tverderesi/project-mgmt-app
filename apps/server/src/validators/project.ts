@@ -10,8 +10,9 @@ const base = z.object({
   status: z.enum(statuses),
 });
 
+const filter = base.partial().omit({ id: true });
 const create = base.omit({ id: true });
 
 const update = base.partial().required({ id: true });
 
-export default { base, create, update };
+export default { base, create, update, filter };
