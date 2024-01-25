@@ -8,8 +8,10 @@ const base = z.object({
   phone: z.string(),
 });
 
+const filter = base.partial();
+
 const create = base.omit({ id: true }).required();
 
 const update = base.required({ id: true });
 
-export default { base, create, update };
+export default { base, create, update, filter };
