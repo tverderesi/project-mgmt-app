@@ -60,4 +60,5 @@ const update = base
     path: ["password"],
   });
 
-export default { base, create, update };
+const filter = base.partial().omit({ id: true });
+export default { base, create, update, filter };
