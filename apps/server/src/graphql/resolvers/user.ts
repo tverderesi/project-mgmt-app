@@ -12,20 +12,26 @@ import { authError, invalidCredentials, userNotFound } from "@/utils/errors";
 import { viewerCanView } from "@/utils/viewerCanView";
 
 const query = {
-  users: async (_parent: any, args: { first: number; after: string; last: number; before: string }, context: any) => {
+  users: async (
+    _parent: any,
+    args: { first: number; after: string; last: number; before: string; filter: z.infer<typeof userV.filter> },
+    context: any
+  ) => {
     const me = await context.getUser();
 
     checkAuthetication(me);
     viewerCanView(me.id, me);
 
     const { first = 10, after, last = 10, before } = args;
-
+    const { filter } = args;
     let users;
     let hasNextPage = false;
     let hasPreviousPage = false;
 
     if (after) {
-      users = await UserModel.find({ _id: { $gt: after } }).limit(first + 1);
+      users = await UserModel.find({ _id: { $gt: after }, ...filter })
+        .limit(first + 1)
+        .sort({ _id: 1 });
       hasNextPage = users.length > first;
       if (hasNextPage) users.pop();
       const previousUser = await UserModel.findOne({ _id: { $lt: users.length > 0 ? users[0]._id : after } }).sort({ _id: -1 });
