@@ -51,3 +51,7 @@ type Mutation {
   updateProject(id: ID!, input: UpdateProjectInput!): Project!
   deleteProject(id: ID!): String!
 }
+
+type Subscription {
+  projectCount: Int!
+}

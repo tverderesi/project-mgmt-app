@@ -96,6 +96,10 @@ input ProjectFilter {
   user: ID
 }
 
+type Subscription {
+  projectCount: Int!
+}
+
 enum Status {
   NOT_STARTED
   IN_PROGRESS
@@ -208,4 +212,5 @@ input UserFilter {
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }

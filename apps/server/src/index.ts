@@ -22,19 +22,26 @@ import { fileURLToPath } from "url";
 import { rateLimit } from "express-rate-limit";
 import mergeSchemas from "./graphql/schema";
 import bcrypt from "bcrypt";
-export const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { createServer } from "http";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import WebSocket, { WebSocketServer as WSWebSocketServer } from "ws";
+import { useServer } from "graphql-ws/lib/use/ws";
 
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
+//create an http server
+const httpServer = createServer();
 
 //Configuring environment variables
 dotenv.config({ path: envPath });
-
+const WebSocketServer = WebSocket.Server || WSWebSocketServer;
 const isDevelopment = process.env.NODE_ENV === "development";
 
 //Creating Apollo Server
 const typeDefs = mergeSchemas();
-const server = new ApolloServer({
-  typeDefs: [typeDefs],
+const schema = makeExecutableSchema({
+  typeDefs,
   resolvers: {
     Query: {
       ...userResolvers.query,
@@ -49,7 +56,30 @@ const server = new ApolloServer({
       ...taskResolvers.mutation,
     },
   },
+});
+
+const wsServer = new WebSocketServer({
+  server: httpServer,
+  path: "/subscriptions",
+});
+
+const serverCleanup = useServer({ schema }, wsServer);
+
+const server = new ApolloServer({
+  schema,
   introspection: isDevelopment,
+  plugins: [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    {
+      async serverWillStart() {
+        return {
+          async drainServer() {
+            await serverCleanup.dispose();
+          },
+        };
+      },
+    },
+  ],
 });
 
 //Starting Express server
@@ -116,9 +146,10 @@ app.use(
 
 //Initializaing the server
 const port = process.env.PORT || 5000;
-app.listen(port, () => {
+httpServer.listen(port, () => {
   logger.verbose(`Server running on http://localhost:${port}`, { date: new Date(), env: process.env.NODE_ENV });
   logger.verbose(`GraphQL server running on http://localhost:${port}/graphql`);
+  logger.verbose(`🚀 Subscriptions ready at ws://localhost:${port}/graphql`);
 });
 
 //Connecting to the DB
