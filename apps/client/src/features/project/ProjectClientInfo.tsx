@@ -1,16 +1,15 @@
 import { Mail, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFragment } from "react-relay";
-import { PROJECT_CLIENT_FRAGMENT } from "@/features/project/project";
 
 export function ProjectClientInfo({ fragmentRef }: { fragmentRef: any }) {
-  const client = useFragment(PROJECT_CLIENT_FRAGMENT, fragmentRef);
+  // const client = useFragment(PROJECT_CLIENT_FRAGMENT, fragmentRef);
 
-  const { name, email, phone } = client;
+  // const { name, email, phone } = client;
 
   return (
     <div className="px-3 space-y-2">
-      <div className="inline-flex items-center gap-2">
+      {/* <div className="inline-flex items-center gap-2">
         <p className="text-2xl font-semibold">Client</p>
       </div>
       <div className="grid grid-cols-12 gap-3">
@@ -46,7 +45,7 @@ export function ProjectClientInfo({ fragmentRef }: { fragmentRef: any }) {
             </a>
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

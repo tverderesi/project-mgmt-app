@@ -1,5 +1,4 @@
 import { useLazyLoadQuery, useMutation } from "react-relay";
-import { CREATE_TASK } from "@/features/project/project";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { statusDTO } from "@/lib/utils";
@@ -18,10 +17,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { status } from "./ProjectTasks";
 import { useToast } from "@/components/ui/use-toast";
-import { RecordSourceSelectorProxy } from "relay-runtime";
+import { RecordSourceSelectorProxy, graphql } from "relay-runtime";
 
 export const CreateTaskForm = withSuspense(() => {
-  const [createTask] = useMutation<projectCreateTaskMutation>(CREATE_TASK);
+  const [createTask] = useMutation<projectCreateTaskMutation>(graphql`
+    mutation CreateTaskFormMutation($input: TaskInput!) {
+      createTask(input: $input) {
+        id
+        title
+        description
+        status
+      }
+    }
+  `);
   const projectID = useParams<{ id: string }>().id || "";
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
   const { toast } = useToast();

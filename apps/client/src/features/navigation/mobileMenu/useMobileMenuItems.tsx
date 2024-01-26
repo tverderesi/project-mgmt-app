@@ -1,16 +1,16 @@
 import { TotalTaskCountWidget } from "@/features/navigation/widgets/TotalTaskCountWidget";
 import { ProjectCountWidget } from "@/features/navigation/widgets/ProjectCountWidget";
 import { ClientCountWidget } from "@/features/navigation/widgets/ClientCountWidget";
+// @ts-ignore
 import { TaskCountWidget } from "@/features/navigation/widgets/TaskCountWidget";
 import { useLazyLoadQuery } from "react-relay";
 import { USER } from "@/graphql/queries/user";
 import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
-import { userTaskCountByStatus_TaskCount$key } from "@/graphql/queries/__generated__/userTaskCountByStatus_TaskCount.graphql";
 import { MobileMenuAccordionItemProps } from "./MobileMenuAccordionItem";
 
 export function useMobileMenuItems() {
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
-  const taskCountByStatus = user?.taskCountByStatus as userTaskCountByStatus_TaskCount$key;
+
   const mobileMenuItems: MobileMenuAccordionItemProps[] = [
     {
       value: "projects",
@@ -65,7 +65,7 @@ export function useMobileMenuItems() {
         },
       ],
       Widget: TotalTaskCountWidget,
-      children: <TaskCountWidget fragmentRef={taskCountByStatus} />,
+      // children: <TaskCountWidget fragmentRef={taskCountByStatus} />,
     },
   ];
 

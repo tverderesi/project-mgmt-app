@@ -6,13 +6,11 @@ import { PlusCircle } from "lucide-react";
 import { Suspense } from "react";
 import { CardFallback } from "../shared/CardFallback";
 import { Count } from "../shared/Count";
-import { useFragment } from "react-relay";
-import { PROJECT_FRAGMENT } from "@/graphql/queries/user";
-import { userProject_project$key } from "@/graphql/queries/__generated__/userProject_project.graphql";
+// @ts-ignore
 import { ProjectCarouselItems } from "./ProjectCarouselItems";
+import { userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 
-export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_project$key }) {
-  const data = useFragment<userProject_project$key>(PROJECT_FRAGMENT, fragmentRef);
+export function ProjectsSection({ user }: { user: userUserQuery$data["user"] }) {
   return (
     <Card className="shadow-none  h-100 flex flex-col justify-center">
       <CardHeader>
@@ -20,7 +18,7 @@ export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_proj
           Projects
           <CardDescription>
             <Suspense fallback={<span className="h-6 w-28 animate-pulse rounded-md bg-primary/10" />}>
-              <Count thing={{ singular: "Project", plural: "Projects" }} count={data.length} />
+              <Count thing={{ singular: "Project", plural: "Projects" }} count={10} />
             </Suspense>
           </CardDescription>
         </CardTitle>
@@ -28,9 +26,7 @@ export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_proj
 
       <CardContent className="px-6 h-auto">
         <div className="flex w-full gap-3 overflow-x-scroll  snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
-          <Suspense fallback={<CardFallback />}>
-            <ProjectCarouselItems projects={data} />
-          </Suspense>
+          <Suspense fallback={<CardFallback />}>{/* <ProjectCarouselItems projects={data} /> */}</Suspense>
         </div>
       </CardContent>
       <CardFooter className="gap-2 justify-end">

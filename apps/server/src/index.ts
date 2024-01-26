@@ -19,9 +19,7 @@ import passport from "./passportStrategy";
 import { UserModel } from "./models/User";
 import { logger } from "./utils/logger";
 import { fileURLToPath } from "url";
-import { rateLimit } from "express-rate-limit";
 import mergeSchemas from "./graphql/schema";
-import bcrypt from "bcrypt";
 import { createServer } from "http";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { makeExecutableSchema } from "@graphql-tools/schema";
@@ -30,8 +28,10 @@ import { useServer } from "graphql-ws/lib/use/ws";
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const envPath = path.resolve(__dirname, "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
-//create an http server
-const httpServer = createServer();
+
+const app = express();
+const httpServer = createServer(app);
+//Initializing the express server
 
 //Configuring environment variables
 dotenv.config({ path: envPath });
@@ -84,8 +84,6 @@ const server = new ApolloServer({
 
 //Starting Express server
 await server.start();
-//Initializing the express server
-const app = express();
 
 app.use(cookieParser());
 app.use(

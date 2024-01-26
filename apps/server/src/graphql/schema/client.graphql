@@ -1,4 +1,4 @@
-type Client {
+type Client implements Node {
   id: ID!
   name: String!
   email: String!
@@ -33,6 +33,7 @@ input ClientInput {
 type Query {
   clients(filter: ClientFilter): ClientConnection!
   client(id: ID!): Client
+  clientCount(user: ID): Int!
 }
 
 type Mutation {

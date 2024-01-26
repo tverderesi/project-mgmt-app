@@ -3,6 +3,7 @@ import { z } from "zod";
 import { TaskModel } from "@/models/Task";
 import { checkRequiredFields } from "@/utils/field";
 import { checkAuthetication } from "@/utils/checkAuthetication";
+import { viewerCanView } from "@/utils/viewerCanView";
 
 export const query = {
   tasks: async (
@@ -72,6 +73,21 @@ export const query = {
     const task = await TaskModel.findById(id);
     if (!task) throw new Error("Task not found!");
     return task;
+  },
+
+  taskCountByStatus: async (_parent, { user }: { user: string }, context) => {
+    const me = await context.getUser();
+    checkAuthetication(me);
+    viewerCanView(user, me);
+
+    const [NOT_STARTED, IN_PROGRESS, COMPLETED] = await Promise.all([
+      TaskModel.countDocuments({ user, status: "NOT_STARTED" }),
+      TaskModel.countDocuments({ user, status: "IN_PROGRESS" }),
+      TaskModel.countDocuments({ user, status: "COMPLETED" }),
+    ]);
+
+    const TOTAL = NOT_STARTED + IN_PROGRESS + COMPLETED;
+    return { NOT_STARTED, IN_PROGRESS, COMPLETED, TOTAL };
   },
 };
 

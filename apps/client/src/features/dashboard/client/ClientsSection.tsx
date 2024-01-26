@@ -6,13 +6,10 @@ import { PlusCircle } from "lucide-react";
 import { Suspense } from "react";
 import { CardFallback } from "../shared/CardFallback";
 import { Count } from "../shared/Count";
-import { useFragment } from "react-relay";
-import { CLIENT_FRAGMENT } from "@/graphql/queries/user";
-import { userClient_client$key } from "@/graphql/queries/__generated__/userClient_client.graphql";
+// @ts-ignore
 import { ClientCarouselItems } from "./ClientCarouselItems";
 
-export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client$key }) {
-  const data = useFragment(CLIENT_FRAGMENT, fragmentRef);
+export function ClientsSection() {
   return (
     <Card className="shadow-none h-100 flex flex-col justify-center">
       <CardHeader>
@@ -20,16 +17,14 @@ export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client
           Clients
           <CardDescription>
             <Suspense fallback={<span className="h-6 w-28 animate-pulse rounded-md bg-primary/10" />}>
-              <Count thing={{ singular: "Client", plural: "Clients" }} count={data.length} />
+              <Count thing={{ singular: "Client", plural: "Clients" }} count={10} />
             </Suspense>
           </CardDescription>
         </CardTitle>
       </CardHeader>
       <CardContent className="px-6 h-auto">
         <div className="flex w-full gap-3 overflow-x-scroll snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
-          <Suspense fallback={<CardFallback />}>
-            <ClientCarouselItems clients={data} />
-          </Suspense>
+          <Suspense fallback={<CardFallback />}>{/* <ClientCarouselItems clients={data} /> */}</Suspense>
         </div>
       </CardContent>
       <CardFooter className="gap-2 justify-end">

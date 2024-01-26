@@ -7,6 +7,7 @@ import { z } from "zod";
 import { checkAuthetication } from "@/utils/checkAuthetication";
 import { doerCanDo } from "@/utils/doerCanDo";
 import { TaskModel } from "@/models/Task";
+import { viewerCanView } from "@/utils/viewerCanView";
 
 const query = {
   projects: async (
@@ -86,6 +87,14 @@ const query = {
     const client = await ClientModel.findById(project?.client);
     const tasks = await TaskModel.find({ project: id });
     return { ...project?.toObject(), client, tasks };
+  },
+
+  projectCount: async (_parent, { user }: { user: string }, context) => {
+    const me = await context.getUser();
+    checkAuthetication(me);
+    viewerCanView(user, me);
+    const projectCount = await ProjectModel.countDocuments({ user });
+    return projectCount;
   },
 };
 

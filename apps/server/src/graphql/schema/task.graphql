@@ -39,8 +39,16 @@ input TaskFilter {
   user: ID
 }
 
+type TaskCountByStatus {
+  NOT_STARTED: Int!
+  IN_PROGRESS: Int!
+  COMPLETED: Int!
+  TOTAL: Int!
+}
+
 type Query {
   tasks(first: Int, after: String, last: Int, before: String, filter: TaskFilter): TaskConnection!
+  taskCountByStatus(user: ID): TaskCountByStatus!
   task(id: ID!): Task!
 }
 

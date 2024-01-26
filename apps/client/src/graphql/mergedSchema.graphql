@@ -20,18 +20,29 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
 }
 
-type Client {
+type Client implements Node {
   id: ID!
   name: String!
   email: String!
   phone: String!
-  projects: [Project]!
+  user: User!
+}
+
+type ClientEdge {
+  node: Client!
+  cursor: String!
+}
+
+type ClientConnection {
+  edges: [ClientEdge]!
+  pageInfo: PageInfo!
 }
 
 input ClientFilter {
   name: String
   email: String
   phone: String
+  user: ID
 }
 
 input ClientInput {
@@ -42,25 +53,38 @@ input ClientInput {
 }
 
 type Query {
-  clients(filter: ClientFilter): [Client]!
+  clients(filter: ClientFilter): ClientConnection!
   client(id: ID!): Client
-  projects(filter: ProjectFilter): [Project]!
+  clientCount(user: ID): Int!
+  projects(first: Int, after: String, last: Int, before: String, filter: ProjectFilter): ProjectConnection!
   project(id: ID!): Project!
-  tasks(filter: TaskFilter): [Task]!
+  projectCount(user: ID): Int!
+  tasks(first: Int, after: String, last: Int, before: String, filter: TaskFilter): TaskConnection!
+  taskCountByStatus(user: ID): TaskCountByStatus!
   task(id: ID!): Task!
-  users(filter: UserFilter): [User]!
+  users(first: Int, after: String, last: Int, before: String, filter: UserFilter): UserConnection!
+  userCount: Int!
   user(id: ID): User!
   isLoggedIn: Boolean!
 }
 
-type Project {
+type Project implements Node {
   id: ID!
   name: String!
   description: String!
   client: Client!
   user: User!
-  tasks: [Task]!
   status: Status!
+}
+
+type ProjectEdge {
+  node: Project!
+  cursor: String!
+}
+
+type ProjectConnection {
+  edges: [ProjectEdge]!
+  pageInfo: PageInfo!
 }
 
 input ProjectInput {
@@ -86,19 +110,44 @@ input ProjectFilter {
   user: ID
 }
 
+type Subscription {
+  projectCount: Int!
+}
+
 enum Status {
   NOT_STARTED
   IN_PROGRESS
   COMPLETED
 }
 
-type Task {
+interface Node {
+  id: ID!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Task implements Node {
   id: ID!
   title: String!
   description: String
   project: Project!
   user: User!
   status: Status!
+}
+
+type TaskEdge {
+  node: Task!
+  cursor: String!
+}
+
+type TaskConnection {
+  edges: [TaskEdge]!
+  pageInfo: PageInfo!
 }
 
 input TaskInput {
@@ -119,6 +168,15 @@ input UpdateTaskInput {
 input TaskFilter {
   name: String
   status: Status
+  project: ID
+  user: ID
+}
+
+type TaskCountByStatus {
+  NOT_STARTED: Int!
+  IN_PROGRESS: Int!
+  COMPLETED: Int!
+  TOTAL: Int!
 }
 
 enum Role {
@@ -126,24 +184,23 @@ enum Role {
   ADMIN
 }
 
-type TaskCountByStatus {
-  status: Status!
-  count: Int!
+type UserEdge {
+  node: User!
+  cursor: String!
 }
 
-type User {
+type UserConnection {
+  edges: [UserEdge]!
+  pageInfo: PageInfo!
+}
+
+type User implements Node {
   id: ID!
   name: String!
   username: String!
   email: String!
   password: String!
   role: Role!
-  projects: [Project]!
-  clients: [Client]!
-  clientCount: Int
-  projectCount: Int
-  totalTaskCount: Int
-  taskCountByStatus: [TaskCountByStatus]
 }
 
 input UserInput {
@@ -176,4 +233,5 @@ input UserFilter {
 schema {
   query: Query
   mutation: Mutation
+  subscription: Subscription
 }

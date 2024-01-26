@@ -51,6 +51,7 @@ input UserFilter {
 
 type Query {
   users(first: Int, after: String, last: Int, before: String, filter: UserFilter): UserConnection!
+  userCount: Int!
   user(id: ID): User!
   isLoggedIn: Boolean!
 }

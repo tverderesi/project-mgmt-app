@@ -65,9 +65,19 @@ const query = {
   },
 
   client: async (_parent, { id }: { id: string }, context) => {
+    const me = await context.getUser();
+    checkAuthetication(me);
     const client = await ClientModel.findById(id);
     if (!client || client === null) throw new Error("Client not found!");
     return client;
+  },
+
+  clientCount: async (_parent, { user }: { user: string }, context) => {
+    const me = await context.getUser();
+    checkAuthetication(me);
+    viewerCanView(user, me);
+    const clientCount = await ClientModel.countDocuments({ user });
+    return clientCount;
   },
 };
 

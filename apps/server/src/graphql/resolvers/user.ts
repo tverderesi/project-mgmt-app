@@ -81,6 +81,15 @@ const query = {
     const me = await context.getUser();
     return !!me;
   },
+
+  userCount: async (_parent: any, __: any, context: any) => {
+    const me = await context.getUser();
+    checkAuthetication(me);
+    viewerCanView(me.id, me);
+
+    const count = await UserModel.countDocuments();
+    return count;
+  },
 };
 
 const mutation = {

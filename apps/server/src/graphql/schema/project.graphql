@@ -1,4 +1,4 @@
-type Project {
+type Project implements Node {
   id: ID!
   name: String!
   description: String!
@@ -43,6 +43,7 @@ input ProjectFilter {
 type Query {
   projects(first: Int, after: String, last: Int, before: String, filter: ProjectFilter): ProjectConnection!
   project(id: ID!): Project!
+  projectCount(user: ID): Int!
 }
 
 type Mutation {
