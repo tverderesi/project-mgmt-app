@@ -43,7 +43,7 @@ export function SignUpForm() {
     onValid: (input: any) => {
       createUser({
         variables: { input },
-        onCompleted: (response, errors) => {
+        onCompleted: () => {
           toast({
             title: "Account Created",
             description: "Your account has been created successfully.",
