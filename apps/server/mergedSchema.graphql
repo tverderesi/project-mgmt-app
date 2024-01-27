@@ -20,12 +20,22 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
 }
 
-type Client {
+type Client implements Node {
   id: ID!
   name: String!
   email: String!
   phone: String!
-  projects: [Project]!
+  projects: ProjectConnection
+}
+
+type ClientEdge {
+  cursor: String!
+  node: Client
+}
+
+type ClientConnection {
+  pageInfo: PageInfo!
+  edges: [ClientEdge]
 }
 
 input ClientFilter {
@@ -53,14 +63,24 @@ type Query {
   isLoggedIn: Boolean!
 }
 
-type Project {
+type Project implements Node {
   id: ID!
   name: String!
   description: String!
   client: Client!
   user: User!
-  tasks: [Task]!
+  tasks: TaskConnection
   status: Status!
+}
+
+type ProjectEdge {
+  cursor: String!
+  node: Project
+}
+
+type ProjectConnection {
+  pageInfo: PageInfo!
+  edges: [ProjectEdge]
 }
 
 input ProjectInput {
@@ -92,6 +112,17 @@ enum Status {
   COMPLETED
 }
 
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+interface Node {
+  id: ID!
+}
+
 type Task {
   id: ID!
   title: String!
@@ -99,6 +130,16 @@ type Task {
   project: Project!
   user: User!
   status: Status!
+}
+
+type TaskEdge {
+  cursor: String!
+  node: Task
+}
+
+type TaskConnection {
+  pageInfo: PageInfo!
+  edges: [TaskEdge]
 }
 
 input TaskInput {
@@ -126,9 +167,11 @@ enum Role {
   ADMIN
 }
 
-type TaskCountByStatus {
-  status: Status!
-  count: Int!
+type TaskCount {
+  NOT_STARTED: Int
+  IN_PROGRESS: Int
+  COMPLETED: Int
+  TOTAL: Int
 }
 
 type User {
@@ -138,12 +181,12 @@ type User {
   email: String!
   password: String!
   role: Role!
-  projects: [Project]!
-  clients: [Client]!
+  projects(first: Int, after: String, last: Int, before: String): ProjectConnection
+  clients(first: Int, after: String, last: Int, before: String): ClientConnection
+  tasks(first: Int, after: String, last: Int, before: String): TaskConnection
   clientCount: Int
   projectCount: Int
-  totalTaskCount: Int
-  taskCountByStatus: [TaskCountByStatus]
+  taskCount: TaskCount
 }
 
 input UserInput {
