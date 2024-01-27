@@ -3,9 +3,11 @@ enum Role {
   ADMIN
 }
 
-type TaskCountByStatus {
-  status: Status!
-  count: Int!
+type TaskCount {
+  NOT_STARTED: Int
+  IN_PROGRESS: Int
+  COMPLETED: Int
+  TOTAL: Int
 }
 
 type User {
@@ -15,12 +17,12 @@ type User {
   email: String!
   password: String!
   role: Role!
-  projects: [Project]!
-  clients: [Client]!
+  projects(first: Int, after: String, last: Int, before: String): ProjectConnection
+  clients(first: Int, after: String, last: Int, before: String): ClientConnection
+  tasks(first: Int, after: String, last: Int, before: String): TaskConnection
   clientCount: Int
   projectCount: Int
-  totalTaskCount: Int
-  taskCountByStatus: [TaskCountByStatus]
+  taskCount: TaskCount
 }
 
 input UserInput {
