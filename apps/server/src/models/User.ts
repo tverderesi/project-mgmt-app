@@ -28,34 +28,6 @@ const userSchema = new Schema<User>(
     toObject: { virtuals: true },
     timestamps: true,
     autoIndex: true,
-    methods: {
-      countTasksByType() {
-        type TaskCount = { status: Status; count: number }[];
-        const initialTaskCount: TaskCount = [
-          { status: "NOT_STARTED", count: 0 },
-          { status: "IN_PROGRESS", count: 0 },
-          { status: "COMPLETED", count: 0 },
-        ];
-
-        const taskCount = model("Task")
-          .aggregate([{ $match: { user: this._id } }, { $group: { _id: "$status", count: { $sum: 1 } } }])
-          .then((foundTaskCount) => {
-            if (foundTaskCount.length === 0) {
-              return initialTaskCount;
-            }
-            const taskCount = initialTaskCount.map((status) => {
-              const foundStatus = foundTaskCount.find((found) => found._id === status.status);
-              if (foundStatus) {
-                return { status: foundStatus._id, count: foundStatus.count };
-              }
-              return status;
-            });
-
-            return taskCount;
-          });
-        return taskCount;
-      },
-    },
   }
 );
 
@@ -68,13 +40,6 @@ userSchema.virtual("projectCount", {
 
 userSchema.virtual("clientCount", {
   ref: "Client",
-  localField: "_id",
-  foreignField: "user",
-  count: true,
-});
-
-userSchema.virtual("totalTaskCount", {
-  ref: "Task",
   localField: "_id",
   foreignField: "user",
   count: true,
