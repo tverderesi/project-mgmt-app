@@ -1,5 +1,8 @@
 import { UserModel } from "@/models/User";
 import userV from "@/validators/user";
+import projectV from "@/validators/project";
+import clientV from "@/validators/client";
+import taskV from "@/validators/task";
 import { checkRequiredFields } from "@/utils/field";
 import { z } from "zod";
 import bcrypt from "bcrypt";
@@ -12,6 +15,7 @@ import { authError, invalidCredentials, userNotFound } from "@/utils/errors";
 import { viewerCanView } from "@/utils/viewerCanView";
 import { ProjectModel } from "@/models/Project";
 import { ClientModel } from "@/models/Client";
+import { TaskModel } from "@/models/Task";
 
 const mutation = {
   createUser: async (_parent: any, { input }: { input: z.infer<typeof userV.create> }, context: any) => {
@@ -103,12 +107,12 @@ const mutation = {
 };
 
 const query = {
-  users: async (_parent: any, { filter }: { filter: z.infer<typeof userV.base> }, context: any) => {
+  users: async (_parent: any, args, context: any) => {
     const me = await context.getUser();
 
     checkAuthetication(me);
     //TODO: enhance the filter algorithm to account for partial matches
-    const users = await UserModel.find(filter);
+    const users = await UserModel.find(args.filter);
 
     return users;
   },
@@ -120,15 +124,8 @@ const query = {
 
     const user = await UserModel.findById(id || me.id)
       .populate("projectCount")
-      .populate("clientCount")
-      .populate("totalTaskCount");
-
-    const projects = await ProjectModel.find({ user: id || me.id });
-    const clients = await ClientModel.find({ user: id || me.id });
-
-    const taskCountByStatus = await user?.countTasksByType();
-    const userWithTasks = { ...user?.toObject(), taskCountByStatus, projects, clients };
-    return userWithTasks;
+      .populate("clientCount");
+    return user;
   },
 
   isLoggedIn: async (_parent: any, __: any, context: any) => {
@@ -139,3 +136,202 @@ const query = {
 };
 
 export const userResolvers = { query, mutation };
+
+export const User = {
+  projects: async (
+    user,
+    args: {
+      first: number;
+      after: string;
+      last: number;
+      before: string;
+      filter: z.infer<typeof projectV.filter>;
+    }
+  ) => {
+    if (!args.filter) args.filter = {};
+    if (user.role !== "ADMIN") args.filter.user = user.id;
+    const { first = 10, after, last = 10, before, filter } = args;
+    let projects;
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+    if (after) {
+      projects = await ProjectModel.find({ user: user.id, _id: { $gt: after }, ...filter })
+        .sort({ id: 1 })
+        .limit(first + 1);
+
+      hasNextPage = projects.length > first;
+      const previousProject = await ProjectModel.findOne({
+        _id: { $lt: projects.length > 0 ? projects[0]._id : after },
+        ...filter,
+      }).sort({
+        _id: -1,
+      });
+      hasPreviousPage = !!previousProject;
+    } else if (before) {
+      projects = await ProjectModel.find({ _id: { $lt: before }, ...filter })
+        .sort({ id: -1 })
+        .limit(last + 1);
+      hasPreviousPage = projects.length > last;
+      if (hasPreviousPage) projects.pop();
+      projects = projects.reverse();
+      const nextProject = await ProjectModel.findOne({
+        _id: { $gt: projects.length > 0 ? projects[0]._id : before },
+        ...filter,
+      }).sort({
+        _id: 1,
+      });
+      hasNextPage = !!nextProject;
+    } else {
+      projects = await ProjectModel.find(filter)
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = projects.length > first;
+      if (hasNextPage) projects.pop();
+    }
+
+    const edges = projects.map((project) => ({
+      cursor: project.id,
+      node: project,
+    }));
+
+    const pageInfo = {
+      hasNextPage,
+      hasPreviousPage,
+      startCursor: edges.length > 0 ? edges[0].cursor : null,
+      endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+    };
+
+    return { pageInfo, edges };
+  },
+  clients: async (
+    user: { role: string; id: string | undefined },
+    args: { first: number; after: string; last: number; before: string; filter: z.infer<typeof clientV.filter> }
+  ) => {
+    if (!args.filter) args.filter = {};
+    if (user.role !== "ADMIN") args.filter.user = user.id;
+    const { first = 10, after, last = 10, before, filter } = args;
+
+    let clients;
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+
+    if (after) {
+      clients = await ClientModel.find({ user: user.id, _id: { $gt: after }, ...filter })
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = clients.length > first;
+      if (hasNextPage) clients.pop();
+      const previousClient = await ClientModel.findOne({
+        user: user.id,
+        _id: { $lt: clients.length > 0 ? clients[0]._id : after },
+      }).sort({
+        _id: -1,
+      });
+      hasPreviousPage = !!previousClient;
+    } else if (before) {
+      clients = await ClientModel.find({ user: user.id, _id: { $lt: before }, ...filter }).limit(last + 1);
+      hasPreviousPage = clients.length > last;
+      if (hasPreviousPage) clients.pop();
+      clients = clients.reverse();
+      const nextClient = await ClientModel.findOne({
+        user: user.id,
+        _id: { $gt: clients.length > 0 ? clients[0]._id : before },
+      }).sort({
+        _id: 1,
+      });
+      hasNextPage = !!nextClient;
+    } else {
+      clients = await ClientModel.find({ user: user.id, ...filter })
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = clients.length > first;
+      if (hasNextPage) clients.pop();
+    }
+
+    const edges = clients.map((client) => ({
+      cursor: client.id,
+      node: client,
+    }));
+
+    const pageInfo = {
+      hasNextPage,
+      hasPreviousPage,
+      startCursor: edges.length > 0 ? edges[0].cursor : null,
+      endCursor: edges.length > 0 ? edges[edges.length - 1].cursor : null,
+    };
+
+    return { edges, pageInfo };
+  },
+  tasks: async (
+    user: { role: string; id: string | undefined },
+    args: { first: number; after: string; last: number; before: string; filter: z.infer<typeof taskV.filter> }
+  ) => {
+    if (!args.filter) args.filter = {};
+    if (user.role !== "ADMIN") args.filter.user = user.id;
+
+    const { first = 10, after, last = 10, before, filter } = args;
+
+    let tasks;
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+
+    if (after) {
+      tasks = await TaskModel.find({ user: user.id, _id: { $gt: after }, ...filter })
+        .sort({ id: 1 })
+        .limit(first + 1);
+
+      hasNextPage = tasks.length > first;
+      const previousTask = await TaskModel.findOne({
+        user: user.id,
+        _id: { $lt: tasks.length > 0 ? tasks[0]._id : after },
+        ...filter,
+      }).sort({
+        _id: -1,
+      });
+      hasPreviousPage = !!previousTask;
+      if (hasNextPage) tasks.pop();
+    } else if (before) {
+      tasks = await TaskModel.find({ user: user.id, _id: { $lt: before }, ...filter })
+        .sort({ id: -1 })
+        .limit(last + 1);
+      hasPreviousPage = tasks.length > last;
+      if (hasPreviousPage) tasks.pop();
+      tasks = tasks.reverse();
+      const nextTask = await TaskModel.findOne({
+        user: user.id,
+        _id: { $gt: tasks.length > 0 ? tasks[0]._id : before },
+        ...filter,
+      }).sort({
+        _id: 1,
+      });
+      hasNextPage = !!nextTask;
+    } else {
+      tasks = await TaskModel.find({ user: user.id, ...filter })
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = tasks.length > first;
+      if (hasNextPage) tasks.pop();
+    }
+
+    const edges = tasks.map((task) => ({
+      cursor: task.id,
+      node: task,
+    }));
+
+    const pageInfo = {
+      hasNextPage,
+      hasPreviousPage,
+      startCursor: edges[0]?.cursor,
+      endCursor: edges[edges.length - 1]?.cursor,
+    };
+
+    return { pageInfo, edges };
+  },
+  taskCount: async (user) => {
+    const tasks = await TaskModel.find({ user: user.id });
+    const NOT_STARTED = tasks.filter((task) => task.status === "NOT_STARTED").length;
+    const IN_PROGRESS = tasks.filter((task) => task.status === "IN_PROGRESS").length;
+    const COMPLETED = tasks.filter((task) => task.status === "COMPLETED").length;
+    return { IN_PROGRESS, NOT_STARTED, COMPLETED, TOTAL: tasks.length };
+  },
+};
