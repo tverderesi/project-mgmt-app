@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import { connectDB } from "./config/db";
 import { clientResolvers } from "./graphql/resolvers/client";
 import { projectResolvers } from "./graphql/resolvers/project";
-import { userResolvers } from "./graphql/resolvers/user";
+import { User, userResolvers } from "./graphql/resolvers/user";
 import { taskResolvers } from "./graphql/resolvers/task";
 import passport from "./passportStrategy";
 import { UserModel } from "./models/User";
@@ -48,6 +48,7 @@ const server = new ApolloServer({
       ...clientResolvers.mutation,
       ...taskResolvers.mutation,
     },
+    User: User,
   },
   introspection: isDevelopment,
 });
