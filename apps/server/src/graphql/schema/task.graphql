@@ -7,6 +7,16 @@ type Task {
   status: Status!
 }
 
+type TaskEdge {
+  cursor: String!
+  node: Task
+}
+
+type TaskConnection {
+  pageInfo: PageInfo!
+  edges: [TaskEdge]
+}
+
 input TaskInput {
   title: String!
   description: String

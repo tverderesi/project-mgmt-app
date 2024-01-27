@@ -1,11 +1,21 @@
-type Project {
+type Project implements Node {
   id: ID!
   name: String!
   description: String!
   client: Client!
   user: User!
-  tasks: [Task]!
+  tasks: TaskConnection
   status: Status!
+}
+
+type ProjectEdge {
+  cursor: String!
+  node: Project
+}
+
+type ProjectConnection {
+  pageInfo: PageInfo!
+  edges: [ProjectEdge]
 }
 
 input ProjectInput {

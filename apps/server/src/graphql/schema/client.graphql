@@ -1,9 +1,19 @@
-type Client {
+type Client implements Node {
   id: ID!
   name: String!
   email: String!
   phone: String!
-  projects: [Project]!
+  projects: ProjectConnection
+}
+
+type ClientEdge {
+  cursor: String!
+  node: Client
+}
+
+type ClientConnection {
+  pageInfo: PageInfo!
+  edges: [ClientEdge]
 }
 
 input ClientFilter {
