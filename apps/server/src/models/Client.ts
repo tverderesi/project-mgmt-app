@@ -16,7 +16,7 @@ const clientSchema = new Schema<Client>(
     phone: { type: String, required: true },
     user: { type: Schema.Types.ObjectId, ref: "User" },
   },
-  { timestamps: true, autoIndex: true }
+  { timestamps: true, autoIndex: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
 export const ClientModel = model<Client>("Client", clientSchema);

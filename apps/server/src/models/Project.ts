@@ -20,7 +20,6 @@ const projectSchema = new Schema<Project>(
     name: { type: String, required: true },
     description: { type: String },
     client: { type: Schema.Types.ObjectId, ref: "Client" },
-    deadline: { type: Date, nullable: true },
     status: {
       type: String,
       enum: statuses,

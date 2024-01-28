@@ -7,6 +7,7 @@ import { z } from "zod";
 import { checkAuthetication } from "@/utils/checkAuthetication";
 import { doerCanDo } from "@/utils/doerCanDo";
 import { TaskModel } from "@/models/Task";
+import taskV from "@/validators/task";
 
 const query = {
   projects: async (_parent, args: z.infer<typeof projectV.base>, context) => {
@@ -18,10 +19,7 @@ const query = {
   project: async (_parent, { id }: { id: string }, context) => {
     checkAuthetication(context.getUser());
     const project = await ProjectModel.findById(id);
-    const client = await ClientModel.findById(project?.client);
-    const tasks = await TaskModel.find({ project: id });
-
-    return { ...project?.toObject(), client, tasks };
+    return project;
   },
 };
 
@@ -47,6 +45,73 @@ const mutation = {
     const project = await ProjectModel.findByIdAndDelete(id);
     if (!project) throw new Error("Project not found!");
     return "Project deleted successfully!";
+  },
+};
+
+export const Project = {
+  tasks: async (
+    project: { id: string; user: string },
+    args: { first: number; after: string; last: number; before: string; filter: z.infer<typeof taskV.filter> }
+  ) => {
+    if (!args.filter) args.filter = {};
+
+    const { first = 10, after, last = 10, before, filter } = args;
+
+    let tasks;
+    let hasNextPage = false;
+    let hasPreviousPage = false;
+
+    if (after) {
+      tasks = await TaskModel.find({ project: project.id, _id: { $gt: after }, ...filter })
+        .sort({ id: 1 })
+        .limit(first + 1);
+
+      hasNextPage = tasks.length > first;
+      const previousTask = await TaskModel.findOne({
+        project: project.id,
+        _id: { $lt: tasks.length > 0 ? tasks[0]._id : after },
+        ...filter,
+      }).sort({
+        _id: -1,
+      });
+      hasPreviousPage = !!previousTask;
+      if (hasNextPage) tasks.pop();
+    } else if (before) {
+      tasks = await TaskModel.find({ project: project.id, _id: { $lt: before }, ...filter })
+        .sort({ id: -1 })
+        .limit(last + 1);
+      hasPreviousPage = tasks.length > last;
+      if (hasPreviousPage) tasks.pop();
+      tasks = tasks.reverse();
+      const nextTask = await TaskModel.findOne({
+        project: project.id,
+        _id: { $gt: tasks.length > 0 ? tasks[0]._id : before },
+        ...filter,
+      }).sort({
+        _id: 1,
+      });
+      hasNextPage = !!nextTask;
+    } else {
+      tasks = await TaskModel.find({ project: project.id, ...filter })
+        .sort({ _id: 1 })
+        .limit(first + 1);
+      hasNextPage = tasks.length > first;
+      if (hasNextPage) tasks.pop();
+    }
+
+    const edges = tasks.map((task) => ({
+      cursor: task.id,
+      node: task,
+    }));
+
+    const pageInfo = {
+      hasNextPage,
+      hasPreviousPage,
+      startCursor: edges[0]?.cursor,
+      endCursor: edges[edges.length - 1]?.cursor,
+    };
+
+    return { pageInfo, edges };
   },
 };
 
