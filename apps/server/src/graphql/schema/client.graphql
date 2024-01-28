@@ -4,6 +4,9 @@ type Client implements Node {
   email: String!
   phone: String!
   projects: ProjectConnection
+  user: User!
+  createdAt: String!
+  updatedAt: String
 }
 
 type ClientEdge {
