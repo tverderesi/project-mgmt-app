@@ -4,8 +4,10 @@ type Project implements Node {
   description: String!
   client: Client!
   user: User!
-  tasks: TaskConnection
+  tasks(first: Int, after: String, last: Int, before: String): TaskConnection
   status: Status!
+  createdAt: String!
+  updatedAt: String
 }
 
 type ProjectEdge {
