@@ -5,6 +5,8 @@ type Task {
   project: Project!
   user: User!
   status: Status!
+  createdAt: String!
+  updatedAt: String
 }
 
 type TaskEdge {
