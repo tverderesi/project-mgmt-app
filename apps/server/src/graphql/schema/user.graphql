@@ -23,6 +23,8 @@ type User {
   clientCount: Int
   projectCount: Int
   taskCount: TaskCount
+  createdAt: String!
+  updatedAt: String
 }
 
 input UserInput {
