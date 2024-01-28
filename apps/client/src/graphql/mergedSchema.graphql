@@ -26,6 +26,9 @@ type Client implements Node {
   email: String!
   phone: String!
   projects: ProjectConnection
+  user: User!
+  createdAt: String!
+  updatedAt: String
 }
 
 type ClientEdge {
@@ -61,6 +64,7 @@ type Query {
   users(filter: UserFilter): [User]!
   user(id: ID): User!
   isLoggedIn: Boolean!
+  node(id: ID!): Node
 }
 
 type Project implements Node {
@@ -69,8 +73,10 @@ type Project implements Node {
   description: String!
   client: Client!
   user: User!
-  tasks: TaskConnection
+  tasks(first: Int, after: String, last: Int, before: String): TaskConnection
   status: Status!
+  createdAt: String!
+  updatedAt: String
 }
 
 type ProjectEdge {
@@ -123,13 +129,15 @@ interface Node {
   id: ID!
 }
 
-type Task {
+type Task implements Node {
   id: ID!
   title: String!
   description: String
   project: Project!
   user: User!
   status: Status!
+  createdAt: String!
+  updatedAt: String
 }
 
 type TaskEdge {
@@ -167,26 +175,28 @@ enum Role {
   ADMIN
 }
 
-type TaskCountByStatus {
+type TaskCount {
   NOT_STARTED: Int
   IN_PROGRESS: Int
   COMPLETED: Int
   TOTAL: Int
 }
 
-type User {
+type User implements Node {
   id: ID!
   name: String!
   username: String!
   email: String!
   password: String!
   role: Role!
-  projects: ProjectConnection
-  clients: ClientConnection
-  tasks: TaskConnection
+  projects(first: Int, after: String, last: Int, before: String): ProjectConnection
+  clients(first: Int, after: String, last: Int, before: String): ClientConnection
+  tasks(first: Int, after: String, last: Int, before: String): TaskConnection
   clientCount: Int
   projectCount: Int
-  taskCountByStatus: TaskCountByStatus
+  taskCount: TaskCount
+  createdAt: String!
+  updatedAt: String
 }
 
 input UserInput {
