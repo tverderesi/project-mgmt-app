@@ -2,7 +2,7 @@ import { Document, Schema, model } from "mongoose";
 import { Project } from "./Project";
 import { Client } from "./Client";
 import bcrypt from "bcrypt";
-import { Status, statuses, Role, roles } from "@/validators/shared";
+import { Role, roles } from "@/validators/shared";
 
 export interface User extends Document {
   name: string;
@@ -12,7 +12,8 @@ export interface User extends Document {
   projects: Project[];
   clients: Client[];
   role: Role;
-  countTasksByType: () => Promise<{ status: Status; count: number }[]>;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const userSchema = new Schema<User>(
