@@ -1,6 +1,4 @@
-import { z } from "zod";
-
-export type Enum<T extends readonly any[]> = T[number];
+type Enum<T extends readonly any[]> = T[number];
 
 export const statuses = ["NOT_STARTED", "IN_PROGRESS", "COMPLETED"] as const;
 export const roles = ["ADMIN", "USER"] as const;

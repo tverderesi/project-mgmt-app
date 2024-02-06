@@ -4,10 +4,12 @@
   "description": "",
   "type": "module",
   "scripts": {
+    "type-check": "tsc --noEmit",
     "lint": "eslint --ext .ts ./src",
     "dev": "cross-env NODE_ENV=development tsx watch ./src/index.ts",
     "build": "babel --extensions .ts src --out-dir dist --copy-files",
-    "start": "cross-env NODE_ENV=production node ./dist/index.js"
+    "start": "cross-env NODE_ENV=production node ./dist/index.js",
+    "update-schema": "tsx ./src/utils/updateSchema.ts"
   },
   "keywords": [],
   "author": "",
@@ -22,11 +24,13 @@
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dataloader": "^2.2.2",
     "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
     "express-session": "^1.17.3",
     "graphql": "^16.8.1",
     "graphql-passport": "^0.6.7",
+    "graphql-relay": "^0.10.0",
     "graphql-ws": "^5.14.2",
     "helmet": "^7.1.0",
     "mongoose": "^8.0.3",
@@ -57,7 +61,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
-    "tsx": "^4.6.2",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   }
 }

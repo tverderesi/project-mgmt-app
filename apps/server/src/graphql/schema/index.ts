@@ -1,17 +1,10 @@
-import { loadFilesSync } from "@graphql-tools/load-files";
-import { mergeTypeDefs } from "@graphql-tools/merge";
-import { print } from "graphql";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import { GraphQLSchema } from "graphql";
+import { mutationType } from "./mutationType";
+import { queryType } from "./queryType";
 
-function mergeSchemas() {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const loadedFiles = loadFilesSync(`${__dirname}/**/*.graphql`);
-  const typeDefs = mergeTypeDefs(loadedFiles);
-  const printedTypeDefs = print(typeDefs);
-  fs.writeFileSync("mergedSchema.graphql", printedTypeDefs);
-  return typeDefs;
-}
+export const schema = new GraphQLSchema({
+  query: queryType,
+  mutation: mutationType,
+});
 
-export default mergeSchemas;
+export default schema;

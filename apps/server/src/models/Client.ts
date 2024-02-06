@@ -7,6 +7,8 @@ export interface Client extends Document {
   email: string;
   phone: string;
   user: User;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const clientSchema = new Schema<Client>(

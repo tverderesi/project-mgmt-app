@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<db3118489cdca4d5bfb2c04084ef9f26>>
+ * @generated SignedSource<<01c4b77970db2a5f98cbcb230c00598c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,28 +9,31 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type Status = "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED" | "%future added value";
-export type ProjectInput = {
+export type ProjectStatus = "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED" | "%future added value";
+export type CreateProjectInput = {
   client: string;
+  clientMutationId?: string | null | undefined;
   description?: string | null | undefined;
   name: string;
-  status: Status;
+  status?: ProjectStatus | null | undefined;
   user: string;
 };
 export type NewProjectMutation$variables = {
-  input: ProjectInput;
+  input: CreateProjectInput;
 };
 export type NewProjectMutation$data = {
   readonly createProject: {
-    readonly client: {
+    readonly project: {
+      readonly client: {
+        readonly id: string;
+        readonly name: string | null | undefined;
+      } | null | undefined;
+      readonly description: string | null | undefined;
       readonly id: string;
-      readonly name: string;
-    };
-    readonly description: string;
-    readonly id: string;
-    readonly name: string;
-    readonly status: Status;
-  };
+      readonly name: string | null | undefined;
+      readonly status: string | null | undefined;
+    } | null | undefined;
+  } | null | undefined;
 };
 export type NewProjectMutation = {
   response: NewProjectMutation$data;
@@ -69,37 +72,48 @@ v3 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "Project",
+    "concreteType": "CreateProjectPayload",
     "kind": "LinkedField",
     "name": "createProject",
     "plural": false,
     "selections": [
-      (v1/*: any*/),
-      (v2/*: any*/),
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
-        "name": "description",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "status",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "concreteType": "Client",
+        "concreteType": "Project",
         "kind": "LinkedField",
-        "name": "client",
+        "name": "project",
         "plural": false,
         "selections": [
           (v1/*: any*/),
-          (v2/*: any*/)
+          (v2/*: any*/),
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "description",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "status",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "Client",
+            "kind": "LinkedField",
+            "name": "client",
+            "plural": false,
+            "selections": [
+              (v1/*: any*/),
+              (v2/*: any*/)
+            ],
+            "storageKey": null
+          }
         ],
         "storageKey": null
       }
@@ -125,16 +139,16 @@ return {
     "selections": (v3/*: any*/)
   },
   "params": {
-    "cacheID": "7e6127a736cb8eaeae10e45b0fa3fb87",
+    "cacheID": "4acd6cd79decdad807e53ec630fd9a06",
     "id": null,
     "metadata": {},
     "name": "NewProjectMutation",
     "operationKind": "mutation",
-    "text": "mutation NewProjectMutation(\n  $input: ProjectInput!\n) {\n  createProject(input: $input) {\n    id\n    name\n    description\n    status\n    client {\n      id\n      name\n    }\n  }\n}\n"
+    "text": "mutation NewProjectMutation(\n  $input: CreateProjectInput!\n) {\n  createProject(input: $input) {\n    project {\n      id\n      name\n      description\n      status\n      client {\n        id\n        name\n      }\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "1297b521ffbb68c1701b06965ee29c0b";
+(node as any).hash = "ae62bbca0009f4a6bf965c66c6139e15";
 
 export default node;

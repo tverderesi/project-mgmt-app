@@ -7,9 +7,7 @@ import { createErrorMessage } from "./utils/createErrorMessage";
 passport.use(
   new GraphQLLocalStrategy(async (username: string, password: string, done) => {
     const isEmail = username?.includes("@");
-
     const foundUser = await UserModel.findOne({ [isEmail ? "email" : "username"]: username });
-
     if (!foundUser) {
       const error = createErrorMessage({ type: "NO_USER_ERROR", message: "No User Found!" });
 

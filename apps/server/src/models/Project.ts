@@ -13,6 +13,8 @@ export interface Project extends Document {
   status: Status;
   tasks: Task[];
   user: User;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const projectSchema = new Schema<Project>(
