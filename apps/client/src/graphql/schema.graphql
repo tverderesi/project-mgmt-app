@@ -48,7 +48,7 @@ type User implements Node {
   name: String
   email: String
   username: String
-  clients(
+  clientEdge(
     """Returns the items in the list that come after the specified cursor."""
     after: String
 

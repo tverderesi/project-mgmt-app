@@ -2,8 +2,9 @@ import { UserCircle2 } from "lucide-react";
 import { useFragment } from "react-relay";
 import { CLIENT_COUNT_FRAGMENT } from "@/graphql/queries/user";
 import { userClientCount_clientCount$key } from "@/graphql/queries/__generated__/userClientCount_clientCount.graphql";
+import { userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 
-export function ClientCountWidget({ fragmentRef }: { fragmentRef: userClientCount_clientCount$key }) {
+export function ClientCountWidget({ fragmentRef }: { fragmentRef: userUserQuery$data["user"] }) {
   const data = useFragment<userClientCount_clientCount$key>(CLIENT_COUNT_FRAGMENT, fragmentRef);
   const clientCount = data?.clientCount;
   return (

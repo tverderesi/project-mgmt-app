@@ -21,7 +21,7 @@ export const userType = new GraphQLObjectType<User, any>({
     name: { type: GraphQLString, resolve: (user) => user.name },
     email: { type: GraphQLString, resolve: (user) => user.email },
     username: { type: GraphQLString, resolve: (user) => user.username },
-    clients: {
+    clientEdge: {
       type: new GraphQLNonNull(clientConnection.connectionType),
       args: connectionArgs,
       resolve: resolveClientsInUser,

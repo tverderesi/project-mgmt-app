@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<b57e7eb265ef3b79a621b6c3f8cc0c7a>>
+ * @generated SignedSource<<7ba01b3d51c0968f4d4d7a434a191d39>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -11,7 +11,7 @@
 import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type userClient_Connection$data = {
-  readonly clients: {
+  readonly clientEdge: {
     readonly edges: ReadonlyArray<{
       readonly node: {
         readonly email: string | null | undefined;
@@ -33,7 +33,7 @@ import userClient_ConnectionQuery_graphql from './userClient_ConnectionQuery.gra
 
 const node: ReaderFragment = (function(){
 var v0 = [
-  "clients"
+  "clientEdge"
 ],
 v1 = {
   "alias": null,
@@ -100,11 +100,11 @@ return {
   "name": "userClient_Connection",
   "selections": [
     {
-      "alias": "clients",
+      "alias": "clientEdge",
       "args": null,
       "concreteType": "ClientConnection",
       "kind": "LinkedField",
-      "name": "__User_clients_connection",
+      "name": "__User_clientEdge_connection",
       "plural": false,
       "selections": [
         {
@@ -214,6 +214,6 @@ return {
 };
 })();
 
-(node as any).hash = "dfbcb7ef287596bec2923197f161ec64";
+(node as any).hash = "92221b9a88e2af2e009a6fe5a9b03e67";
 
 export default node;

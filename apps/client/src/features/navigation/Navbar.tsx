@@ -29,7 +29,7 @@ export function Navbar() {
         <NavigationMenu>
           <NavigationMenuList>
             <ProjectNavigationItem projectCount={user} />
-            <ClientNavigationItem clientCount={user} />
+            <ClientNavigationItem fragmentRef={user} />
             <TaskNavigationItem taskCount={user} />
           </NavigationMenuList>
         </NavigationMenu>

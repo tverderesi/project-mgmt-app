@@ -45,7 +45,7 @@ export const CLIENT_FRAGMENT = graphql`
   fragment userClient_Connection on User
   @refetchable(queryName: "userClient_ConnectionQuery")
   @argumentDefinitions(first: { type: "Int" }, after: { type: "String" }, last: { type: "Int" }, before: { type: "String" }) {
-    clients(first: $first, after: $after, last: $last, before: $before) @connection(key: "User_clients") {
+    clientEdge(first: $first, after: $after, last: $last, before: $before) @connection(key: "User_clientEdge") {
       edges {
         node {
           id

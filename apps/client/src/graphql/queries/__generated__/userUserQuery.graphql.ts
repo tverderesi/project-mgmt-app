@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<0a7035ebec9aaabfaecb0c5713e45920>>
+ * @generated SignedSource<<cb3abbeb21d638812a0fef4834f18bbb>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -300,7 +300,7 @@ return {
             "args": null,
             "concreteType": "ClientConnection",
             "kind": "LinkedField",
-            "name": "clients",
+            "name": "clientEdge",
             "plural": false,
             "selections": [
               {
@@ -346,9 +346,9 @@ return {
             "args": null,
             "filters": null,
             "handle": "connection",
-            "key": "User_clients",
+            "key": "User_clientEdge",
             "kind": "LinkedHandle",
-            "name": "clients"
+            "name": "clientEdge"
           },
           {
             "alias": null,
@@ -395,12 +395,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "21c8294191d9eaf43f56a1e4d8ef7bbe",
+    "cacheID": "b439b6c2f91774073adaf0e066ebf299",
     "id": null,
     "metadata": {},
     "name": "userUserQuery",
     "operationKind": "query",
-    "text": "query userUserQuery(\n  $id: String!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    createdAt\n    updatedAt\n    projectCount\n    clientCount\n    ...userProject_ProjectConnection\n    ...userClient_Connection\n    ...userProjectCount_projectCount\n    ...userClientCount_clientCount\n    ...userTaskCount_TaskCount\n  }\n}\n\nfragment userClientCount_clientCount on User {\n  clientCount\n  id\n}\n\nfragment userClient_Connection on User {\n  clients {\n    edges {\n      node {\n        id\n        name\n        email\n        phone\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n\nfragment userProjectCount_projectCount on User {\n  projectCount\n  id\n}\n\nfragment userProject_ProjectConnection on User {\n  projects {\n    edges {\n      node {\n        id\n        name\n        description\n        createdAt\n        updatedAt\n        status\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n\nfragment userTaskCount_TaskCount on User {\n  taskCount {\n    NOT_STARTED\n    IN_PROGRESS\n    COMPLETED\n    TOTAL\n  }\n  id\n}\n"
+    "text": "query userUserQuery(\n  $id: String!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    createdAt\n    updatedAt\n    projectCount\n    clientCount\n    ...userProject_ProjectConnection\n    ...userClient_Connection\n    ...userProjectCount_projectCount\n    ...userClientCount_clientCount\n    ...userTaskCount_TaskCount\n  }\n}\n\nfragment userClientCount_clientCount on User {\n  clientCount\n  id\n}\n\nfragment userClient_Connection on User {\n  clientEdge {\n    edges {\n      node {\n        id\n        name\n        email\n        phone\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n\nfragment userProjectCount_projectCount on User {\n  projectCount\n  id\n}\n\nfragment userProject_ProjectConnection on User {\n  projects {\n    edges {\n      node {\n        id\n        name\n        description\n        createdAt\n        updatedAt\n        status\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n\nfragment userTaskCount_TaskCount on User {\n  taskCount {\n    NOT_STARTED\n    IN_PROGRESS\n    COMPLETED\n    TOTAL\n  }\n  id\n}\n"
   }
 };
 })();

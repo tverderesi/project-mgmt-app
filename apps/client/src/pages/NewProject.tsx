@@ -41,10 +41,10 @@ export const NewProject = () => {
   const status = projectV.create.shape.status.Values;
   const statusEnum = Object.values(status).map((status) => ({ value: status, label: toTitleCase(status) }));
   useEffect(() => {
-    if (user.id) {
+    if (user?.id) {
       form.setValue("user", user.id);
     }
-  }, [user.id]);
+  }, [user?.id]);
 
   const [mutate, isInFlight] = useMutation<NewProjectMutation>(graphql`
     mutation NewProjectMutation($input: CreateProjectInput!) {

@@ -70,7 +70,7 @@ export const NewClient = ({ asSideItem = false }) => {
   };
 
   return (
-    <section className={cn("h-full w-full relative flex flex-col  items-center justify-start lg:justify-center p-2 pt-16")}>
+    <section className={"h-full w-full relative flex flex-col  items-center justify-start lg:justify-center p-2 pt-16"}>
       <Form {...form}>
         <form
           className={cn("grid gap-y-4 gap-x-8 p-4 relative grid-cols-2", asSideItem && "gap-y-2")}

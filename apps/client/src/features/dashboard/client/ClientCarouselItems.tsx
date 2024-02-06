@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { NoClientsCard } from "./NoClientsCard";
 
 export const ClientCarouselItems = ({ data }: { data: any }) => {
-  const clients = data?.clients?.edges.map((edge: any) => edge.node);
+  const clients = data?.clientEdge?.edges.map((edge: any) => edge.node);
 
   if (clients.count === 0) {
     return <NoClientsCard />;

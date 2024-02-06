@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<bb8ca5757caa61d24c5d59937a193352>>
+ * @generated SignedSource<<091b5fca2b362d444618d527a41f4424>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -159,7 +159,7 @@ return {
                 "args": (v6/*: any*/),
                 "concreteType": "ClientConnection",
                 "kind": "LinkedField",
-                "name": "clients",
+                "name": "clientEdge",
                 "plural": false,
                 "selections": [
                   {
@@ -261,9 +261,9 @@ return {
                 "args": (v6/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "User_clients",
+                "key": "User_clientEdge",
                 "kind": "LinkedHandle",
-                "name": "clients"
+                "name": "clientEdge"
               }
             ],
             "type": "User",
@@ -275,16 +275,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "85bea4aeedab9e1ef90ce8904b959465",
+    "cacheID": "e864df670b4ce628fa708a40acfc3575",
     "id": null,
     "metadata": {},
     "name": "userClient_ConnectionQuery",
     "operationKind": "query",
-    "text": "query userClient_ConnectionQuery(\n  $after: String\n  $before: String\n  $first: Int\n  $last: Int\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...userClient_Connection_pbnwq\n    id\n  }\n}\n\nfragment userClient_Connection_pbnwq on User {\n  clients(first: $first, after: $after, last: $last, before: $before) {\n    edges {\n      node {\n        id\n        name\n        email\n        phone\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n"
+    "text": "query userClient_ConnectionQuery(\n  $after: String\n  $before: String\n  $first: Int\n  $last: Int\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...userClient_Connection_pbnwq\n    id\n  }\n}\n\nfragment userClient_Connection_pbnwq on User {\n  clientEdge(first: $first, after: $after, last: $last, before: $before) {\n    edges {\n      node {\n        id\n        name\n        email\n        phone\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "dfbcb7ef287596bec2923197f161ec64";
+(node as any).hash = "92221b9a88e2af2e009a6fe5a9b03e67";
 
 export default node;
