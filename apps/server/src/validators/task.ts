@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { statuses } from "./shared";
 
-export const base = z.object({
+const base = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string().optional(),
@@ -9,8 +9,8 @@ export const base = z.object({
   user: z.string(),
   status: z.enum(statuses),
 });
-export const filter = base.partial();
-export const update = base.partial().required({ id: true });
-export const create = base.omit({ id: true });
+const filter = base.partial();
+const update = base.partial().required({ id: true });
+const create = base.omit({ id: true });
 
 export default { base, filter, update, create };

@@ -8,6 +8,8 @@ export interface Task extends Document {
   project: Project;
   user: User;
   status: Status;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const taskSchema = new Schema<Task>(
