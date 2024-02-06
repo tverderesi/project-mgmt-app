@@ -464,7 +464,7 @@ input CreateTaskInput {
 }
 
 type UpdateTaskPayload {
-  taskEdge: TaskEdge
+  task: Task
   clientMutationId: String
 }
 

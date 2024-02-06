@@ -66,13 +66,11 @@ export const CREATE_TASK = graphql`
 export const UPDATE_TASK = graphql`
   mutation projectUpdateTaskMutation($input: UpdateTaskInput!) {
     updateTask(input: $input) {
-      taskEdge {
-        node {
-          id
-          title
-          description
-          status
-        }
+      task {
+        id
+        title
+        description
+        status
       }
     }
   }

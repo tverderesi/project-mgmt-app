@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2a701b8a6267935bc23a300a1af375e3>>
+ * @generated SignedSource<<0afb46b5ec898edb97443d3c03c86d16>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -24,13 +24,11 @@ export type projectUpdateTaskMutation$variables = {
 };
 export type projectUpdateTaskMutation$data = {
   readonly updateTask: {
-    readonly taskEdge: {
-      readonly node: {
-        readonly description: string | null | undefined;
-        readonly id: string;
-        readonly status: TaskStatus | null | undefined;
-        readonly title: string | null | undefined;
-      } | null | undefined;
+    readonly task: {
+      readonly description: string | null | undefined;
+      readonly id: string;
+      readonly status: TaskStatus | null | undefined;
+      readonly title: string | null | undefined;
     } | null | undefined;
   } | null | undefined;
 };
@@ -65,48 +63,37 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "concreteType": "TaskEdge",
+        "concreteType": "Task",
         "kind": "LinkedField",
-        "name": "taskEdge",
+        "name": "task",
         "plural": false,
         "selections": [
           {
             "alias": null,
             "args": null,
-            "concreteType": "Task",
-            "kind": "LinkedField",
-            "name": "node",
-            "plural": false,
-            "selections": [
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "title",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "description",
-                "storageKey": null
-              },
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "status",
-                "storageKey": null
-              }
-            ],
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "title",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "description",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "status",
             "storageKey": null
           }
         ],
@@ -134,16 +121,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "87785755d2bec61adaf94516b3c92ef4",
+    "cacheID": "0534b0dd0f863d01673668bc845ba888",
     "id": null,
     "metadata": {},
     "name": "projectUpdateTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation projectUpdateTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    taskEdge {\n      node {\n        id\n        title\n        description\n        status\n      }\n    }\n  }\n}\n"
+    "text": "mutation projectUpdateTaskMutation(\n  $input: UpdateTaskInput!\n) {\n  updateTask(input: $input) {\n    task {\n      id\n      title\n      description\n      status\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "0c8eea0a75bb013117163c9c4d9b88f8";
+(node as any).hash = "8ac4757a96599523728307e892c0d285";
 
 export default node;

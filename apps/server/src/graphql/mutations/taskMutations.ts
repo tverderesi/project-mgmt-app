@@ -66,19 +66,17 @@ const updateTaskMutation = mutationWithClientMutationId({
     },
   },
   outputFields: {
-    taskEdge: { type: taskConnection.edgeType },
+    task: { type: taskType },
   },
-  mutateAndGetPayload: async (_parent, args: z.infer<typeof taskV.update>, context) => {
+  mutateAndGetPayload: async (args: z.infer<typeof taskV.update>, context) => {
+    const me = context.getUser();
+    checkAuthetication(me);
+    const { id } = fromGlobalId(args.id);
     checkRequiredFields(args, taskV.update);
-    const task = await TaskModel.findByIdAndUpdate(args.id, args, { new: true });
+    const task = await TaskModel.findByIdAndUpdate(id, args, { new: true });
+    console.log(task, "task");
     if (!task) throw new Error("Task not found!");
-    const taskEdge = {
-      cursor: task.id,
-      node: task,
-    };
-    return {
-      taskEdge,
-    };
+    return { task };
   },
 });
 
@@ -106,7 +104,6 @@ const deleteTaskMutation = mutationWithClientMutationId({
       const error = createErrorMessage(projectNotFound);
       throw new Error(error);
     }
-    console.log(task, "task");
     return {
       taskEdge: {
         cursor: task.id,

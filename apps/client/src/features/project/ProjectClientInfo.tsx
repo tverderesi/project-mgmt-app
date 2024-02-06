@@ -1,7 +1,7 @@
 import { Mail, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useFragment } from "react-relay";
-import { PROJECT_CLIENT_FRAGMENT } from "@/features/project/project";
+import { PROJECT_CLIENT_FRAGMENT } from "@/features/project/gql/project";
 
 export function ProjectClientInfo({ fragmentRef }: { fragmentRef: any }) {
   const client = useFragment(PROJECT_CLIENT_FRAGMENT, fragmentRef);

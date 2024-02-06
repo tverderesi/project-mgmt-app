@@ -1,5 +1,5 @@
 import { ConnectionHandler, useLazyLoadQuery, useMutation } from "react-relay";
-import { CREATE_TASK } from "@/features/project/project";
+import { CREATE_TASK } from "@/features/project/gql/project";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { statusDTO } from "@/lib/utils";
@@ -9,18 +9,16 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "@/components/ui/form";
-import { projectCreateTaskMutation } from "./__generated__/projectCreateTaskMutation.graphql";
+import { projectCreateTaskMutation } from "../__generated__/projectCreateTaskMutation.graphql";
 import { useParams } from "react-router-dom";
 import { USER } from "@/graphql/queries/user";
 import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 import { useEffect } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
-import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { status } from "./ProjectTasks";
 import { useToast } from "@/components/ui/use-toast";
 
-export const CreateTaskForm = withSuspense(() => {
-  const [createTask] = useMutation<projectCreateTaskMutation>(CREATE_TASK);
+export const CreateTaskForm = () => {
+  const [createTask, isInFlight] = useMutation<projectCreateTaskMutation>(CREATE_TASK);
   const projectID = useParams<{ id: string }>().id || "";
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
   const { toast } = useToast();
@@ -138,4 +136,4 @@ export const CreateTaskForm = withSuspense(() => {
       </form>
     </Form>
   );
-}, <Skeleton className="h-full w-full" />);
+};

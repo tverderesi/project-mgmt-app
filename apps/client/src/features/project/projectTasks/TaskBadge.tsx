@@ -1,6 +1,6 @@
 import { cn, statusDTO } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { ProjectTaskProps } from "./ProjectTasks";
+import { ProjectTaskProps } from "../types/ProjectTaskProps";
 
 export function TaskBadge({ task }: { task: ProjectTaskProps }) {
   return (

@@ -24,7 +24,7 @@ dotenv.config({ path: envPath });
 const isDevelopment = process.env.NODE_ENV === "development";
 logger.log("info", "intializing rate limiter");
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 1000,
   max: 100,
 });
 

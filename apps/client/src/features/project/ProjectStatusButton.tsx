@@ -1,10 +1,11 @@
 import { useMutation } from "react-relay";
-import { UPDATE_TASK } from "@/features/project/project";
+import { UPDATE_TASK } from "@/features/project/gql/project";
 import { statusDTO } from "@/lib/utils";
 import { ArrowRightCircle, CheckCircle2, CircleDot, Loader2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { projectUpdateTaskMutation, projectUpdateTaskMutation$data } from "./__generated__/projectUpdateTaskMutation.graphql";
-import { ProjectTaskProps, status } from "./ProjectTasks";
+import { status } from "./projectTasks/ProjectTasks";
+import { ProjectTaskProps } from "./types/ProjectTaskProps";
 import { RecordSourceSelectorProxy } from "relay-runtime";
 
 export function ProjectStatusButton({ task }: { task: ProjectTaskProps }) {

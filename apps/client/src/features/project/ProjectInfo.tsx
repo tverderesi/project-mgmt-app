@@ -2,12 +2,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { statusDTO } from "@/lib/utils";
 import { useLazyLoadQuery } from "react-relay";
-import { PROJECT } from "@/features/project/project";
+import { PROJECT } from "@/features/project/gql/project";
 import { useNavigate, useParams } from "react-router-dom";
 import { projectProjectQuery } from "./__generated__/projectProjectQuery.graphql";
 import { ProjectClientInfo } from "@/features/project/ProjectClientInfo";
 import { ProjectDescriptionInfo } from "@/features/project/ProjectDescriptionInfo";
-import { ProjectTasks } from "@/features/project/ProjectTasks";
+import { ProjectTasks } from "@/features/project/projectTasks/ProjectTasks";
 import { useEffect } from "react";
 
 export const ProjectInfo = () => {

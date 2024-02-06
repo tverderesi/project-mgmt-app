@@ -1,7 +1,7 @@
-import { useMutation, useRelayEnvironment } from "react-relay";
-import { DELETE_TASK } from "@/features/project/project";
+import { useMutation } from "react-relay";
+import { DELETE_TASK } from "@/features/project/gql/project";
 import { Loader2, XCircle } from "lucide-react";
-import { projectDeleteTaskMutation } from "./__generated__/projectDeleteTaskMutation.graphql";
+import { projectDeleteTaskMutation } from "../gql/__generated__/projectDeleteTaskMutation.graphql";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { getConnectionID } from "relay-runtime/lib/handlers/connection/ConnectionHandler";
@@ -12,8 +12,6 @@ export function DeleteTaskButton({ task, projectID }: { task: any; projectID: st
   const handleDeleteTask = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     e.preventDefault();
     const connectionId = getConnectionID(projectID, "project_taskEdge");
-    console.log(connectionId);
-
     deleteTask({
       variables: {
         input: {
@@ -39,11 +37,7 @@ export function DeleteTaskButton({ task, projectID }: { task: any; projectID: st
       },
       updater: (store) => {
         const taskId = store.get(task.id)?.getDataID();
-        store.delete(taskId!);
-      },
-      optimisticUpdater: (store) => {
-        const taskId = store.get(task.id)?.getDataID();
-        store.delete(taskId!);
+        if (taskId) store.delete(taskId);
       },
     });
   };

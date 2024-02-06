@@ -11,6 +11,7 @@ import { userType } from "./userType";
 export const { nodeInterface, nodesField, nodeField } = nodeDefinitions(
   async (globalId) => {
     const { type, id } = fromGlobalId(globalId);
+    console.log("type", type, "id", id);
     if (type === "User") {
       return await UserModel.findById(id);
     }
