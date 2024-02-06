@@ -71,11 +71,6 @@ export const CreateTaskForm = withSuspense(() => {
             description: errors.map((error) => error.message).join(", "),
             variant: "destructive",
           });
-        } else {
-          toast({
-            title: "Task Created",
-            description: "Task has been created",
-          });
         }
       },
     });

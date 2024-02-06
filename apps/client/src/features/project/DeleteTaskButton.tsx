@@ -35,11 +35,6 @@ export function DeleteTaskButton({ task, projectID }: { task: any; projectID: st
             description: "Task could not be deleted. Please try again.",
             variant: "destructive",
           });
-        } else {
-          toast({
-            title: "Task Deleted",
-            description: "Task has been deleted",
-          });
         }
       },
       updater: (store) => {
