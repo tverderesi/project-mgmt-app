@@ -3,24 +3,24 @@ import { UPDATE_TASK } from "@/features/project/project";
 import { statusDTO } from "@/lib/utils";
 import { ArrowRightCircle, CheckCircle2, CircleDot, Loader2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { projectUpdateTaskMutation } from "./__generated__/projectUpdateTaskMutation.graphql";
-import { Status } from "./__generated__/projectProjectQuery.graphql";
-import { status } from "./ProjectTasks";
+import { projectUpdateTaskMutation, projectUpdateTaskMutation$data } from "./__generated__/projectUpdateTaskMutation.graphql";
+import { ProjectTaskProps, status } from "./ProjectTasks";
+import { RecordSourceSelectorProxy } from "relay-runtime";
 
-export function ProjectStatusButton({
-  task,
-  projectID,
-}: {
-  task: {
-    readonly description: string | null | undefined;
-    readonly id: string;
-    readonly status: Status;
-    readonly title: string;
-    readonly " $fragmentType": "projectTasks_tasks";
-  };
-  projectID: string;
-}) {
+export function ProjectStatusButton({ task }: { task: ProjectTaskProps }) {
   const [updateTask, isUpdateTaskInFlight] = useMutation<projectUpdateTaskMutation>(UPDATE_TASK);
+  const updateTaskInRecord = (store: RecordSourceSelectorProxy<projectUpdateTaskMutation$data>) => {
+    const taskInRecord = store.get(task.id);
+    if (taskInRecord && task.status) {
+      taskInRecord.setValue(
+        status[status.indexOf(task.status) === status.length - 1 ? 0 : status.indexOf(task.status) + 1] as
+          | "NOT_STARTED"
+          | "IN_PROGRESS"
+          | "COMPLETED",
+        "status"
+      );
+    }
+  };
   return (
     <TooltipProvider>
       <Tooltip>
@@ -34,26 +34,17 @@ export function ProjectStatusButton({
                   input: {
                     id: task.id,
                     status: status[
-                      status.indexOf(task.status) === status.length - 1 ? 0 : status.indexOf(task.status) + 1
-                    ] as Status,
+                      status.indexOf(task.status || "NOT_STARTED") === status.length - 1
+                        ? 0
+                        : status.indexOf(task.status || "NOT_STARTED") + 1
+                    ] as "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED",
                   },
                 },
-
                 updater: (store) => {
-                  const updatedTask = store.getRootField("updateTask");
-
-                  const tasks = store.get(projectID)?.getLinkedRecords("tasks");
-                  if (tasks && updatedTask) {
-                    store.get(projectID)?.setLinkedRecords(
-                      tasks.map((taskRecord) => {
-                        if (taskRecord.getValue("id") === updatedTask.getValue("id")) {
-                          return updatedTask;
-                        }
-                        return taskRecord;
-                      }),
-                      "tasks"
-                    );
-                  }
+                  updateTaskInRecord(store);
+                },
+                optimisticUpdater: (store) => {
+                  updateTaskInRecord(store);
                 },
               });
             }}
@@ -69,7 +60,7 @@ export function ProjectStatusButton({
             )}
           </div>
         </TooltipTrigger>
-        <TooltipContent>{statusDTO(task.status)}</TooltipContent>
+        <TooltipContent>{statusDTO(task.status || "NOT_STARTED")}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );

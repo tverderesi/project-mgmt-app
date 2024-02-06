@@ -1,4 +1,4 @@
-import { useLazyLoadQuery, useMutation } from "react-relay";
+import { ConnectionHandler, useLazyLoadQuery, useMutation } from "react-relay";
 import { CREATE_TASK } from "@/features/project/project";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -18,7 +18,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { withSuspense } from "@/lib/buildComponentWithSuspenseAndErrorBoundary";
 import { status } from "./ProjectTasks";
 import { useToast } from "@/components/ui/use-toast";
-import { RecordSourceSelectorProxy } from "relay-runtime";
 
 export const CreateTaskForm = withSuspense(() => {
   const [createTask] = useMutation<projectCreateTaskMutation>(CREATE_TASK);
@@ -43,10 +42,44 @@ export const CreateTaskForm = withSuspense(() => {
       user: user?.id || "",
     },
   });
+
   useEffect(() => {
     form.setValue("user", user?.id || "");
     form.setValue("project", projectID);
   }, [user?.id, projectID]);
+  const handleTaskSubmit = () => {
+    const connectionID = ConnectionHandler.getConnectionID(projectID, "project_taskEdge");
+    createTask({
+      variables: {
+        input: {
+          clientMutationId: projectID,
+          ...form.getValues(),
+        },
+        connections: [connectionID],
+      },
+      onError: (error) => {
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+        });
+      },
+      onCompleted: (_, errors) => {
+        if (errors) {
+          toast({
+            title: "Error",
+            description: errors.map((error) => error.message).join(", "),
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Task Created",
+            description: "Task has been created",
+          });
+        }
+      },
+    });
+  };
 
   return (
     <Form {...form}>
@@ -54,37 +87,9 @@ export const CreateTaskForm = withSuspense(() => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => {
-            createTask({
-              variables: {
-                input: {
-                  ...form.getValues(),
-                },
-              },
-              onError: (error) => {
-                toast({
-                  title: "Error",
-                  description: error.message,
-                  variant: "destructive",
-                });
-              },
-              updater: (store: RecordSourceSelectorProxy, data) => {
-                const newTask = store.getRootField("createTask");
-                const createTask = data?.createTask;
-                const project = store.get(projectID);
-                const tasks = project?.getLinkedRecords("tasks");
-
-                if (createTask && newTask) {
-                  newTask.setValue(createTask.title, "title");
-                  newTask.setValue(createTask.description, "description");
-                  newTask.setValue(createTask.status, "status");
-                }
-
-                if (tasks && newTask) {
-                  project?.setLinkedRecords([...tasks, newTask], "tasks");
-                }
-              },
-            });
+          onClick={(e) => {
+            e.preventDefault();
+            handleTaskSubmit();
           }}
         >
           <PlusCircle className="w-8 h-8 " strokeWidth={1.2} />
@@ -99,35 +104,14 @@ export const CreateTaskForm = withSuspense(() => {
               className="border-b border-t-0 border-l-0 border-r-0 shadow-none rounded-none focus-visible:ring-0"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && form.getValues().title !== undefined) {
-                  createTask({
-                    variables: {
-                      input: {
-                        ...form.getValues(),
-                      },
-                    },
-                    onCompleted: () => {
-                      console.log("completed");
-                    },
-                    onError: (error) => {
-                      console.log(error.message);
-                    },
-                    updater: (store, data) => {
-                      const newTask = store.getRootField("createTask");
-                      const createTask = store.getRoot().getLinkedRecord("createTask");
-                      console.log(createTask);
-                      newTask.setValue(data?.createTask.title, "title");
-                      newTask.setValue(data?.createTask.description, "description");
-                      newTask.setValue(data?.createTask.status, "status");
-                      const project = store.get(projectID);
-                      const tasks = project?.getLinkedRecords("tasks");
-                      if (tasks && newTask) {
-                        project?.setLinkedRecords([...tasks, newTask], "tasks");
-                      }
-                    },
-                  });
+                  handleTaskSubmit();
                   e.currentTarget.value = "";
-                  form.reset();
-                  form.setValue("status", "NOT_STARTED");
+                  form.reset({
+                    title: "",
+                    status: "NOT_STARTED",
+                    project: projectID,
+                    user: user?.id || "",
+                  });
                   e.preventDefault();
                 }
                 if (e.key === "Escape") {
@@ -159,4 +143,4 @@ export const CreateTaskForm = withSuspense(() => {
       </form>
     </Form>
   );
-}, <Skeleton className="flex items-center justify-center gap-2 w-full h-full -ml-4" />);
+}, <Skeleton className="h-full w-full" />);

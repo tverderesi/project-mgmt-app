@@ -13,12 +13,9 @@ import { MobileMenu } from "./mobileMenu/MobileMenu";
 import { useLazyLoadQuery } from "react-relay";
 import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 import { USER } from "@/graphql/queries/user";
-import { userTaskCountByStatus_TaskCount$key } from "@/graphql/queries/__generated__/userTaskCountByStatus_TaskCount.graphql";
 
 export function Navbar() {
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
-
-  const taskCountByStatus = user?.taskCountByStatus as userTaskCountByStatus_TaskCount$key;
 
   return (
     <div className="fixed z-30 top-0 bg-background/80 -mx-4 border-b border-bottom border-border shadow-sm backdrop-blur w-screen h-16 flex flex-row items-center justify-between px-8">
@@ -33,7 +30,7 @@ export function Navbar() {
           <NavigationMenuList>
             <ProjectNavigationItem projectCount={user} />
             <ClientNavigationItem clientCount={user} />
-            <TaskNavigationItem taskCount={taskCountByStatus} />
+            <TaskNavigationItem taskCount={user} />
           </NavigationMenuList>
         </NavigationMenu>
       </div>

@@ -1,24 +1,57 @@
-import { useMutation } from "react-relay";
+import { useMutation, useRelayEnvironment } from "react-relay";
 import { DELETE_TASK } from "@/features/project/project";
 import { Loader2, XCircle } from "lucide-react";
 import { projectDeleteTaskMutation } from "./__generated__/projectDeleteTaskMutation.graphql";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Status } from "./__generated__/projectProjectQuery.graphql";
+import { useToast } from "@/components/ui/use-toast";
+import { getConnectionID } from "relay-runtime/lib/handlers/connection/ConnectionHandler";
 
-export function DeleteTaskButton({
-  task,
-  projectID,
-}: {
-  task: {
-    readonly description: string | null | undefined;
-    readonly id: string;
-    readonly status: Status;
-    readonly title: string;
-    readonly " $fragmentType": "projectTasks_tasks";
-  };
-  projectID: string;
-}) {
+export function DeleteTaskButton({ task, projectID }: { task: any; projectID: string }) {
+  const { toast } = useToast();
   const [deleteTask, isInFlight] = useMutation<projectDeleteTaskMutation>(DELETE_TASK);
+  const handleDeleteTask = (e: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    e.preventDefault();
+    const connectionId = getConnectionID(projectID, "project_taskEdge");
+    console.log(connectionId);
+
+    deleteTask({
+      variables: {
+        input: {
+          id: task.id,
+        },
+        connections: [connectionId],
+      },
+      onError: () => {
+        toast({
+          title: "Error",
+          description: "Task could not be deleted. Please try again.",
+          variant: "destructive",
+        });
+      },
+      onCompleted: (_, errors) => {
+        if (errors && errors?.length > 0) {
+          toast({
+            title: "Error",
+            description: "Task could not be deleted. Please try again.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Task Deleted",
+            description: "Task has been deleted",
+          });
+        }
+      },
+      updater: (store) => {
+        const taskId = store.get(task.id)?.getDataID();
+        store.delete(taskId!);
+      },
+      optimisticUpdater: (store) => {
+        const taskId = store.get(task.id)?.getDataID();
+        store.delete(taskId!);
+      },
+    });
+  };
   return (
     <TooltipProvider>
       <Tooltip>
@@ -27,29 +60,7 @@ export function DeleteTaskButton({
             {isInFlight ? (
               <Loader2 className="h-8 w-8 animate-spin stroke-red-600" strokeWidth={1.2} />
             ) : (
-              <XCircle
-                className="w-8 h-8 stroke-red-600 cursor-pointer"
-                strokeWidth={1.2}
-                onClick={(e) => {
-                  e.preventDefault();
-                  deleteTask({
-                    variables: {
-                      id: task.id,
-                    },
-
-                    updater: (store) => {
-                      const project = store.get(projectID);
-                      const tasks = project?.getLinkedRecords("tasks");
-                      if (tasks) {
-                        project?.setLinkedRecords(
-                          tasks.filter((taskRecord) => taskRecord.getValue("id") !== task.id),
-                          "tasks"
-                        );
-                      }
-                    },
-                  });
-                }}
-              />
+              <XCircle className="w-8 h-8 stroke-red-600 cursor-pointer" strokeWidth={1.2} onClick={handleDeleteTask} />
             )}
           </div>
         </TooltipTrigger>

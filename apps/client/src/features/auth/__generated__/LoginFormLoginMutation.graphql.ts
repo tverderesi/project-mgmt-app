@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<8c1aa1e81f157ba1716b3cb76cd57144>>
+ * @generated SignedSource<<032c0c35b35de1a4405bf80049b023b7>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,8 +9,8 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type Role = "ADMIN" | "USER" | "%future added value";
 export type LoginInput = {
+  clientMutationId?: string | null | undefined;
   password: string;
   user: string;
 };
@@ -19,9 +19,11 @@ export type LoginFormLoginMutation$variables = {
 };
 export type LoginFormLoginMutation$data = {
   readonly login: {
-    readonly id: string;
-    readonly name: string;
-    readonly role: Role;
+    readonly user: {
+      readonly id: string;
+      readonly name: string | null | undefined;
+      readonly username: string | null | undefined;
+    } | null | undefined;
   } | null | undefined;
 };
 export type LoginFormLoginMutation = {
@@ -47,7 +49,7 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "User",
+    "concreteType": "LoginPayload",
     "kind": "LinkedField",
     "name": "login",
     "plural": false,
@@ -55,22 +57,33 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "name",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "role",
+        "concreteType": "User",
+        "kind": "LinkedField",
+        "name": "user",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "username",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       }
     ],
@@ -95,16 +108,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "8201fd27b3f3322d892dc0e3a5af7131",
+    "cacheID": "5efe14110fcf499178dbb63892a5272f",
     "id": null,
     "metadata": {},
     "name": "LoginFormLoginMutation",
     "operationKind": "mutation",
-    "text": "mutation LoginFormLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    id\n    name\n    role\n  }\n}\n"
+    "text": "mutation LoginFormLoginMutation(\n  $input: LoginInput!\n) {\n  login(input: $input) {\n    user {\n      id\n      username\n      name\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "d7e01582067c811997e1237abece9564";
+(node as any).hash = "7300703ae5d0d384f90fcd0ccb160135";
 
 export default node;

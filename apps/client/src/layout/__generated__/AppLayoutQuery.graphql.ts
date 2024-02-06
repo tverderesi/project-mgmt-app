@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<3a91977515af9d6cb21da5c5979d8a8a>>
+ * @generated SignedSource<<e9fc4cf121a898a539045deabdf95d0f>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,13 +9,13 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Query } from 'relay-runtime';
-export type useLoggedInRedirectQuery$variables = Record<PropertyKey, never>;
-export type useLoggedInRedirectQuery$data = {
+export type AppLayoutQuery$variables = Record<PropertyKey, never>;
+export type AppLayoutQuery$data = {
   readonly isLoggedIn: boolean | null | undefined;
 };
-export type useLoggedInRedirectQuery = {
-  response: useLoggedInRedirectQuery$data;
-  variables: useLoggedInRedirectQuery$variables;
+export type AppLayoutQuery = {
+  response: AppLayoutQuery$data;
+  variables: AppLayoutQuery$variables;
 };
 
 const node: ConcreteRequest = (function(){
@@ -33,7 +33,7 @@ return {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "useLoggedInRedirectQuery",
+    "name": "AppLayoutQuery",
     "selections": (v0/*: any*/),
     "type": "Query",
     "abstractKey": null
@@ -42,20 +42,20 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "useLoggedInRedirectQuery",
+    "name": "AppLayoutQuery",
     "selections": (v0/*: any*/)
   },
   "params": {
-    "cacheID": "66afb7642f5698d2fb54d6b61e49df51",
+    "cacheID": "e004f58ad1423c6458170c3dbdead6fb",
     "id": null,
     "metadata": {},
-    "name": "useLoggedInRedirectQuery",
+    "name": "AppLayoutQuery",
     "operationKind": "query",
-    "text": "query useLoggedInRedirectQuery {\n  isLoggedIn\n}\n"
+    "text": "query AppLayoutQuery {\n  isLoggedIn\n}\n"
   }
 };
 })();
 
-(node as any).hash = "5c7d6330f5cfaf24cdbfad8ccc89c4c5";
+(node as any).hash = "fa7a19b04ec20e37392047c8e052dd1e";
 
 export default node;

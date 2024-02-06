@@ -30,11 +30,13 @@ export function SignUpForm() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [createUser, isInFlight] = useMutation<SignUpFormMutation>(graphql`
-    mutation SignUpFormMutation($input: UserInput!) {
+    mutation SignUpFormMutation($input: CreateUserInput!) {
       createUser(input: $input) {
-        id
-        role
-        name
+        user {
+          id
+          role
+          name
+        }
       }
     }
   `);

@@ -8,10 +8,13 @@ import { useMutation, graphql } from "react-relay";
 import { AuthErrorFallbackMutation } from "./__generated__/AuthErrorFallbackMutation.graphql";
 export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
   const navigate = useNavigate();
-  const errorObject = isolateErrorObject(error);
+
+  // const errorObject = isolateErrorObject(error);
   const [mutate, isInFlight] = useMutation<AuthErrorFallbackMutation>(graphql`
-    mutation AuthErrorFallbackMutation {
-      logout
+    mutation AuthErrorFallbackMutation($input: LogoutInput!) {
+      logout(input: $input) {
+        success
+      }
     }
   `);
 
@@ -22,14 +25,14 @@ export function AuthErrorFallback({ error, resetErrorBoundary }: { error: Error;
           <AlertOctagon className="me-2 w-6 h-6" /> Error
         </DialogHeader>
         <DialogDescription className="flex flex-col justify-center mt-2">
-          <p className={p}> {errorObject.message} </p>
+          {/* <p className={p}> {errorObject.message} </p> */}
         </DialogDescription>
         <DialogFooter className="flex justify-start">
           <Button
             className="font-semibold gap-2"
             onClick={() => {
               mutate({
-                variables: {},
+                variables: { input: {} },
                 updater: (store) => {
                   store.invalidateStore();
                 },

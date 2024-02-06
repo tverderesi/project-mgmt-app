@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<e7c2e665888bfce18684e114e86ad4f6>>
+ * @generated SignedSource<<37b2a8f3a59dcdee6c1f15329ace8a82>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,22 +9,25 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type ClientInput = {
+export type CreateClientInput = {
+  clientMutationId?: string | null | undefined;
   email: string;
   name: string;
-  phone: string;
+  phone?: string | null | undefined;
   user: string;
 };
 export type clientCreateMutation$variables = {
-  input: ClientInput;
+  input: CreateClientInput;
 };
 export type clientCreateMutation$data = {
   readonly createClient: {
-    readonly email: string;
-    readonly id: string;
-    readonly name: string;
-    readonly phone: string;
-  };
+    readonly client: {
+      readonly email: string | null | undefined;
+      readonly id: string;
+      readonly name: string | null | undefined;
+      readonly phone: string | null | undefined;
+    } | null | undefined;
+  } | null | undefined;
 };
 export type clientCreateMutation = {
   response: clientCreateMutation$data;
@@ -49,7 +52,7 @@ v1 = [
         "variableName": "input"
       }
     ],
-    "concreteType": "Client",
+    "concreteType": "CreateClientPayload",
     "kind": "LinkedField",
     "name": "createClient",
     "plural": false,
@@ -57,29 +60,40 @@ v1 = [
       {
         "alias": null,
         "args": null,
-        "kind": "ScalarField",
-        "name": "id",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "name",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "email",
-        "storageKey": null
-      },
-      {
-        "alias": null,
-        "args": null,
-        "kind": "ScalarField",
-        "name": "phone",
+        "concreteType": "Client",
+        "kind": "LinkedField",
+        "name": "client",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "name",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "email",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "phone",
+            "storageKey": null
+          }
+        ],
         "storageKey": null
       }
     ],
@@ -104,16 +118,16 @@ return {
     "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "348f077cb7a3e141c3628251c38fd014",
+    "cacheID": "a3b614382284798543d0bbd676169eb9",
     "id": null,
     "metadata": {},
     "name": "clientCreateMutation",
     "operationKind": "mutation",
-    "text": "mutation clientCreateMutation(\n  $input: ClientInput!\n) {\n  createClient(input: $input) {\n    id\n    name\n    email\n    phone\n  }\n}\n"
+    "text": "mutation clientCreateMutation(\n  $input: CreateClientInput!\n) {\n  createClient(input: $input) {\n    client {\n      id\n      name\n      email\n      phone\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6a22ca0cb74030f54a341993b97f6885";
+(node as any).hash = "51926def511e183f4532938b758544fc";
 
 export default node;

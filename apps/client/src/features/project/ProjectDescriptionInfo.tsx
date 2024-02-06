@@ -1,6 +1,6 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-export const ProjectDescriptionInfo = ({ description }: { description: string }) => {
+export const ProjectDescriptionInfo = ({ description }: { description?: string | null }) => {
   if (description)
     return (
       <Accordion type="single" collapsible defaultValue="description">

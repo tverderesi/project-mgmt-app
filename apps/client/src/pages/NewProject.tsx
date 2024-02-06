@@ -47,15 +47,17 @@ export const NewProject = () => {
   }, [user.id]);
 
   const [mutate, isInFlight] = useMutation<NewProjectMutation>(graphql`
-    mutation NewProjectMutation($input: ProjectInput!) {
+    mutation NewProjectMutation($input: CreateProjectInput!) {
       createProject(input: $input) {
-        id
-        name
-        description
-        status
-        client {
+        project {
           id
           name
+          description
+          status
+          client {
+            id
+            name
+          }
         }
       }
     }

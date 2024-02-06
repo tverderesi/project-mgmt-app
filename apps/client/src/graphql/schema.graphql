@@ -1,0 +1,489 @@
+type Query {
+  users: [User]
+  user(id: String!): User
+  isLoggedIn: Boolean
+
+  """
+  This query returns all clients in the system. It is not yet paginated or filtered.
+  """
+  clients: [Client]
+
+  """This query returns a client by its ID."""
+  client(id: String!): Client
+
+  """
+  This query returns all the projects in the system. It is not yet paginated or filtered.
+  """
+  projects: [Project]
+
+  """This query returns a project by its ID."""
+  project(id: String!): Project
+
+  """
+  This query returns all the tasks in the system. It is not yet paginated or filtered.
+  """
+  tasks: [Task]
+
+  """This query returns a task by its ID."""
+  task(id: String!): Task
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+
+  """Fetches objects given their IDs"""
+  nodes(
+    """The IDs of objects"""
+    ids: [ID!]!
+  ): [Node]!
+}
+
+"""Represents a User in the system."""
+type User implements Node {
+  """The ID of an object"""
+  id: ID!
+  role: UserRole!
+  name: String
+  email: String
+  username: String
+  clients(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ClientConnection!
+  projects(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): ProjectConnection!
+  taskCount: TaskCount!
+  clientCount: Int
+  projectCount: Int
+  password: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""
+User role enum type. This is used to define the user role. The user role can be either USER or ADMIN.
+"""
+enum UserRole {
+  ADMIN
+  USER
+}
+
+"""A connection to a list of items."""
+type ClientConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ClientEdge]
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+"""An edge in a connection."""
+type ClientEdge {
+  """The item at the end of the edge"""
+  node: Client
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""
+Represents a Client in the system. A client is a company or a person that has projects. A client isn't a user.
+"""
+type Client implements Node {
+  """The ID of an object"""
+  id: ID!
+  name: String
+  email: String
+  phone: String
+  user: String
+  createdAt: String
+  updatedAt: String
+}
+
+"""A connection to a list of items."""
+type ProjectConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ProjectEdge]
+}
+
+"""An edge in a connection."""
+type ProjectEdge {
+  """The item at the end of the edge"""
+  node: Project
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""
+Represents a Project in the system. A project contains tasks that a user has to do.
+"""
+type Project implements Node {
+  """The ID of an object"""
+  id: ID!
+  name: String
+  description: String
+  status: String
+  client: Client
+  user: User
+  taskEdge(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+  ): TaskConnection!
+  createdAt: String
+  updatedAt: String
+}
+
+"""A connection to a list of items."""
+type TaskConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TaskEdge]
+}
+
+"""An edge in a connection."""
+type TaskEdge {
+  """The item at the end of the edge"""
+  node: Task
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+"""
+Represents a Task in the system. A task is something that a user has to do.
+"""
+type Task implements Node {
+  """The ID of an object"""
+  id: ID!
+  title: String
+  description: String
+  project: Project
+  user: User
+  status: TaskStatus
+  createdAt: String
+  updatedAt: String
+}
+
+"""The status of a Task."""
+enum TaskStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+type TaskCount {
+  TOTAL: Int
+  COMPLETED: Int
+  NOT_STARTED: Int
+  IN_PROGRESS: Int
+}
+
+type Mutation {
+  """
+  Login mutation. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  login(input: LoginInput!): LoginPayload
+
+  """
+  Logout mutation. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  logout(input: LogoutInput!): LogoutPayload
+
+  """
+  Create a new user mutation. This mutation is used when a new user wishes to be registered on the website. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  createUser(input: CreateUserInput!): CreateUserPayload
+
+  """
+  This mutation is used to update a user. An user with the 'USER' role can only edit his own profile, whereas an user with the 'ADMIN' role can edit any user.  The clientMutationId is how Relay keeps track of the mutations.
+  """
+  updateUser(input: UpdateUserInput!): UpdateUserPayload
+
+  """
+  This mutation is used to delete a user. An user with the 'USER' role can only delete his own profile, whereas an user with the 'ADMIN' role can delete any user.  The clientMutationId is how Relay keeps track of the mutations.
+  """
+  deleteUser(input: DeleteUserInput!): DeleteUserPayload
+
+  """
+  Creates a new project. This mutation is used when a new user wishes to add a project to their account. An user with the USER role can only create projects for themselves, whereas an user with ADMIN role can create for any user in the database. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  createProject(input: CreateProjectInput!): CreateProjectPayload
+
+  """
+  This mutation is used to update a project. An user with the 'USER' role can only edit his own projects, whereas an user with the 'ADMIN' role can edit a project from any user. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  updateProject(input: UpdateProjectInput!): UpdateProjectPayload
+
+  """
+  This mutation is used to delete a project. An user with the 'USER' role can only delete one of their own projects, whereas an user with the 'ADMIN' role can delete a project from any user.  The clientMutationId is how Relay keeps track of the mutations.
+  """
+  deleteProject(input: DeleteProjectInput!): DeleteProjectPayload
+
+  """
+  Creates a new client. This mutation is used when a new user wishes to add a client to their account. An user with the USER role can only create clients for themselves, whereas an use with the ADMIN role can create a client for any user in the database. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  createClient(input: CreateClientInput!): CreateClientPayload
+
+  """
+  This mutation is used to update a client. An user with the 'USER' role can only edit his own clients, whereas a user with the 'ADMIN' role can edit a client from any user. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  updateClient(input: UpdateClientInput!): UpdateClientPayload
+
+  """
+  This mutation is used to delete a client. An user with the 'USER' role can only delete one of his own clients, whereas an user with the 'ADMIN' role can delete a client from any user.  The clientMutationId is how Relay keeps track of the mutations.
+  """
+  deleteClient(input: DeleteClientInput!): DeleteClientPayload
+
+  """
+  Creates a new task. This mutation is used when a new user wishes to add a task to a project that belongs to their account. An user with the USER role can only create tasks for themselves, whereas an user with ADMIN role can create them for any user in the database. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  createTask(input: CreateTaskInput!): CreateTaskPayload
+
+  """
+  This mutation is used to update a Tasker with the 'USER' role can only edit his own tasks, whereas an user with the 'ADMIN' role can edit a task from any user. The clientMutationId is how Relay keeps track of the mutations.
+  """
+  updateTask(input: UpdateTaskInput!): UpdateTaskPayload
+
+  """
+  This mutation is used to delete a task. An user with the 'USER' role can only delete one of their own tasks, whereas an user with the 'ADMIN' role can delete a task from any user.  The clientMutationId is how Relay keeps track of the mutations.
+  """
+  deleteTask(input: DeleteTaskInput!): DeleteTaskPayload
+}
+
+type LoginPayload {
+  user: User
+  clientMutationId: String
+}
+
+input LoginInput {
+  user: String!
+  password: String!
+  clientMutationId: String
+}
+
+type LogoutPayload {
+  success: Boolean
+  clientMutationId: String
+}
+
+input LogoutInput {
+  clientMutationId: String
+}
+
+type CreateUserPayload {
+  user: User
+  clientMutationId: String
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  confirmEmail: String!
+  password: String!
+  confirmPassword: String!
+  role: UserRole!
+  username: String!
+  clientMutationId: String
+}
+
+type UpdateUserPayload {
+  user: User
+  clientMutationId: String
+}
+
+input UpdateUserInput {
+  id: String!
+  name: String
+  email: String
+  password: String
+  oldPassword: String!
+  role: UserRole
+  clientMutationId: String
+}
+
+type DeleteUserPayload {
+  success: Boolean
+  clientMutationId: String
+}
+
+input DeleteUserInput {
+  id: String!
+  clientMutationId: String
+}
+
+type CreateProjectPayload {
+  project: Project
+  clientMutationId: String
+}
+
+input CreateProjectInput {
+  name: String!
+  description: String
+  client: String!
+  user: String!
+  status: ProjectStatus
+  clientMutationId: String
+}
+
+"""The status of the project."""
+enum ProjectStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+type UpdateProjectPayload {
+  project: Project
+  clientMutationId: String
+}
+
+input UpdateProjectInput {
+  id: String!
+  clientMutationId: String
+}
+
+type DeleteProjectPayload {
+  success: Boolean
+  clientMutationId: String
+}
+
+input DeleteProjectInput {
+  id: String!
+  deleteTasks: Boolean = false
+  clientMutationId: String
+}
+
+type CreateClientPayload {
+  client: Client
+  clientMutationId: String
+}
+
+input CreateClientInput {
+  name: String!
+  email: String!
+  phone: String
+  user: String!
+  clientMutationId: String
+}
+
+type UpdateClientPayload {
+  client: Client
+  clientMutationId: String
+}
+
+input UpdateClientInput {
+  id: String!
+  name: String
+  email: String
+  phone: String
+  user: String
+  clientMutationId: String
+}
+
+type DeleteClientPayload {
+  success: Boolean
+  clientMutationId: String
+}
+
+input DeleteClientInput {
+  id: String!
+  deleteProjects: Boolean = false
+  clientMutationId: String
+}
+
+type CreateTaskPayload {
+  taskEdge: TaskEdge
+  clientMutationId: String
+}
+
+input CreateTaskInput {
+  title: String!
+  description: String
+  project: String!
+  user: String!
+  status: TaskStatus
+  clientMutationId: String
+}
+
+type UpdateTaskPayload {
+  taskEdge: TaskEdge
+  clientMutationId: String
+}
+
+input UpdateTaskInput {
+  id: String!
+  title: String
+  description: String
+  project: String
+  user: String
+  status: TaskStatus
+  clientMutationId: String
+}
+
+type DeleteTaskPayload {
+  taskEdge: TaskEdge
+  clientMutationId: String
+}
+
+input DeleteTaskInput {
+  id: String!
+  clientMutationId: String
+}

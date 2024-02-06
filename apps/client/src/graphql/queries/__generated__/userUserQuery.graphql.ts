@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<7b89dfc212bb295938eea9e764d24b69>>
+ * @generated SignedSource<<0a7035ebec9aaabfaecb0c5713e45920>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,21 +15,16 @@ export type userUserQuery$variables = {
 };
 export type userUserQuery$data = {
   readonly user: {
-    readonly clients: ReadonlyArray<{
-      readonly " $fragmentSpreads": FragmentRefs<"userClient_client">;
-    } | null | undefined>;
-    readonly email: string;
+    readonly clientCount: number | null | undefined;
+    readonly createdAt: string | null | undefined;
+    readonly email: string | null | undefined;
     readonly id: string;
-    readonly name: string;
-    readonly projects: ReadonlyArray<{
-      readonly " $fragmentSpreads": FragmentRefs<"userProject_project">;
-    } | null | undefined>;
-    readonly taskCountByStatus: ReadonlyArray<{
-      readonly " $fragmentSpreads": FragmentRefs<"userTaskCountByStatus_TaskCount">;
-    } | null | undefined> | null | undefined;
-    readonly username: string;
-    readonly " $fragmentSpreads": FragmentRefs<"userClientCount_clientCount" | "userProjectCount_projectCount" | "userTaskCount_taskCount">;
-  };
+    readonly name: string | null | undefined;
+    readonly projectCount: number | null | undefined;
+    readonly updatedAt: string | null | undefined;
+    readonly username: string | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"userClientCount_clientCount" | "userClient_Connection" | "userProjectCount_projectCount" | "userProject_ProjectConnection" | "userTaskCount_TaskCount">;
+  } | null | undefined;
 };
 export type userUserQuery = {
   response: userUserQuery$data;
@@ -83,7 +78,81 @@ v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
-  "name": "status",
+  "name": "createdAt",
+  "storageKey": null
+},
+v7 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "updatedAt",
+  "storageKey": null
+},
+v8 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "projectCount",
+  "storageKey": null
+},
+v9 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "clientCount",
+  "storageKey": null
+},
+v10 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "__typename",
+  "storageKey": null
+},
+v11 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "cursor",
+  "storageKey": null
+},
+v12 = {
+  "alias": null,
+  "args": null,
+  "concreteType": "PageInfo",
+  "kind": "LinkedField",
+  "name": "pageInfo",
+  "plural": false,
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "endCursor",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasNextPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "hasPreviousPage",
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "startCursor",
+      "storageKey": null
+    }
+  ],
   "storageKey": null
 };
 return {
@@ -105,37 +174,19 @@ return {
           (v3/*: any*/),
           (v4/*: any*/),
           (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/),
+          (v9/*: any*/),
           {
-            "alias": null,
             "args": null,
-            "concreteType": "Project",
-            "kind": "LinkedField",
-            "name": "projects",
-            "plural": true,
-            "selections": [
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "userProject_project"
-              }
-            ],
-            "storageKey": null
+            "kind": "FragmentSpread",
+            "name": "userProject_ProjectConnection"
           },
           {
-            "alias": null,
             "args": null,
-            "concreteType": "Client",
-            "kind": "LinkedField",
-            "name": "clients",
-            "plural": true,
-            "selections": [
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "userClient_client"
-              }
-            ],
-            "storageKey": null
+            "kind": "FragmentSpread",
+            "name": "userClient_Connection"
           },
           {
             "args": null,
@@ -150,23 +201,7 @@ return {
           {
             "args": null,
             "kind": "FragmentSpread",
-            "name": "userTaskCount_taskCount"
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "TaskCountByStatus",
-            "kind": "LinkedField",
-            "name": "taskCountByStatus",
-            "plural": true,
-            "selections": [
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "userTaskCountByStatus_TaskCount"
-              }
-            ],
-            "storageKey": null
+            "name": "userTaskCount_TaskCount"
           }
         ],
         "storageKey": null
@@ -193,83 +228,162 @@ return {
           (v3/*: any*/),
           (v4/*: any*/),
           (v5/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
+          (v8/*: any*/),
+          (v9/*: any*/),
           {
             "alias": null,
             "args": null,
-            "concreteType": "Project",
+            "concreteType": "ProjectConnection",
             "kind": "LinkedField",
             "name": "projects",
-            "plural": true,
+            "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "description",
+                "concreteType": "ProjectEdge",
+                "kind": "LinkedField",
+                "name": "edges",
+                "plural": true,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Project",
+                    "kind": "LinkedField",
+                    "name": "node",
+                    "plural": false,
+                    "selections": [
+                      (v2/*: any*/),
+                      (v3/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "description",
+                        "storageKey": null
+                      },
+                      (v6/*: any*/),
+                      (v7/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "status",
+                        "storageKey": null
+                      },
+                      (v10/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  (v11/*: any*/)
+                ],
                 "storageKey": null
               },
-              (v6/*: any*/)
+              (v12/*: any*/)
             ],
             "storageKey": null
           },
           {
             "alias": null,
             "args": null,
-            "concreteType": "Client",
+            "filters": null,
+            "handle": "connection",
+            "key": "User_projects",
+            "kind": "LinkedHandle",
+            "name": "projects"
+          },
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "ClientConnection",
             "kind": "LinkedField",
             "name": "clients",
-            "plural": true,
+            "plural": false,
             "selections": [
-              (v2/*: any*/),
-              (v3/*: any*/),
-              (v5/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "phone",
+                "concreteType": "ClientEdge",
+                "kind": "LinkedField",
+                "name": "edges",
+                "plural": true,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Client",
+                    "kind": "LinkedField",
+                    "name": "node",
+                    "plural": false,
+                    "selections": [
+                      (v2/*: any*/),
+                      (v3/*: any*/),
+                      (v5/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "phone",
+                        "storageKey": null
+                      },
+                      (v10/*: any*/)
+                    ],
+                    "storageKey": null
+                  },
+                  (v11/*: any*/)
+                ],
                 "storageKey": null
-              }
+              },
+              (v12/*: any*/)
             ],
             "storageKey": null
           },
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "projectCount",
-            "storageKey": null
+            "filters": null,
+            "handle": "connection",
+            "key": "User_clients",
+            "kind": "LinkedHandle",
+            "name": "clients"
           },
           {
             "alias": null,
             "args": null,
-            "kind": "ScalarField",
-            "name": "clientCount",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "totalTaskCount",
-            "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "TaskCountByStatus",
+            "concreteType": "TaskCount",
             "kind": "LinkedField",
-            "name": "taskCountByStatus",
-            "plural": true,
+            "name": "taskCount",
+            "plural": false,
             "selections": [
-              (v6/*: any*/),
               {
                 "alias": null,
                 "args": null,
                 "kind": "ScalarField",
-                "name": "count",
+                "name": "NOT_STARTED",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "IN_PROGRESS",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "COMPLETED",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "TOTAL",
                 "storageKey": null
               }
             ],
@@ -281,16 +395,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "758e8e193917f79482320bd0d56bc545",
+    "cacheID": "21c8294191d9eaf43f56a1e4d8ef7bbe",
     "id": null,
     "metadata": {},
     "name": "userUserQuery",
     "operationKind": "query",
-    "text": "query userUserQuery(\n  $id: ID!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    projects {\n      ...userProject_project\n      id\n    }\n    clients {\n      ...userClient_client\n      id\n    }\n    ...userProjectCount_projectCount\n    ...userClientCount_clientCount\n    ...userTaskCount_taskCount\n    taskCountByStatus {\n      ...userTaskCountByStatus_TaskCount\n    }\n  }\n}\n\nfragment userClientCount_clientCount on User {\n  clientCount\n}\n\nfragment userClient_client on Client {\n  id\n  name\n  email\n  phone\n}\n\nfragment userProjectCount_projectCount on User {\n  projectCount\n}\n\nfragment userProject_project on Project {\n  id\n  name\n  description\n  status\n}\n\nfragment userTaskCountByStatus_TaskCount on TaskCountByStatus {\n  status\n  count\n}\n\nfragment userTaskCount_taskCount on User {\n  totalTaskCount\n}\n"
+    "text": "query userUserQuery(\n  $id: String!\n) {\n  user(id: $id) {\n    id\n    name\n    username\n    email\n    createdAt\n    updatedAt\n    projectCount\n    clientCount\n    ...userProject_ProjectConnection\n    ...userClient_Connection\n    ...userProjectCount_projectCount\n    ...userClientCount_clientCount\n    ...userTaskCount_TaskCount\n  }\n}\n\nfragment userClientCount_clientCount on User {\n  clientCount\n  id\n}\n\nfragment userClient_Connection on User {\n  clients {\n    edges {\n      node {\n        id\n        name\n        email\n        phone\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n\nfragment userProjectCount_projectCount on User {\n  projectCount\n  id\n}\n\nfragment userProject_ProjectConnection on User {\n  projects {\n    edges {\n      node {\n        id\n        name\n        description\n        createdAt\n        updatedAt\n        status\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n\nfragment userTaskCount_TaskCount on User {\n  taskCount {\n    NOT_STARTED\n    IN_PROGRESS\n    COMPLETED\n    TOTAL\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "2f2a7272b626302d08f7c7bf973536f3";
+(node as any).hash = "c16b243c38da22337d42205cd57a1208";
 
 export default node;

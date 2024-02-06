@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<242258fa3fdfa7b18cae25c0a0e892e7>>
+ * @generated SignedSource<<f6ca9390420feb878e54c382ee0a1ed0>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,9 +9,16 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type authLogoutMutation$variables = Record<PropertyKey, never>;
+export type LogoutInput = {
+  clientMutationId?: string | null | undefined;
+};
+export type authLogoutMutation$variables = {
+  input: LogoutInput;
+};
 export type authLogoutMutation$data = {
-  readonly logout: boolean;
+  readonly logout: {
+    readonly success: boolean | null | undefined;
+  } | null | undefined;
 };
 export type authLogoutMutation = {
   response: authLogoutMutation$data;
@@ -21,41 +28,65 @@ export type authLogoutMutation = {
 const node: ConcreteRequest = (function(){
 var v0 = [
   {
+    "defaultValue": null,
+    "kind": "LocalArgument",
+    "name": "input"
+  }
+],
+v1 = [
+  {
     "alias": null,
-    "args": null,
-    "kind": "ScalarField",
+    "args": [
+      {
+        "kind": "Variable",
+        "name": "input",
+        "variableName": "input"
+      }
+    ],
+    "concreteType": "LogoutPayload",
+    "kind": "LinkedField",
     "name": "logout",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "kind": "ScalarField",
+        "name": "success",
+        "storageKey": null
+      }
+    ],
     "storageKey": null
   }
 ];
 return {
   "fragment": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
     "name": "authLogoutMutation",
-    "selections": (v0/*: any*/),
+    "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": [],
+    "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "authLogoutMutation",
-    "selections": (v0/*: any*/)
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "f7246dd7ad83a4ca117cb85cb1bd79cf",
+    "cacheID": "a484fd98f57f4c14467d2b241d8646f9",
     "id": null,
     "metadata": {},
     "name": "authLogoutMutation",
     "operationKind": "mutation",
-    "text": "mutation authLogoutMutation {\n  logout\n}\n"
+    "text": "mutation authLogoutMutation(\n  $input: LogoutInput!\n) {\n  logout(input: $input) {\n    success\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "310e140564f7cabdc2bd488c526c6eea";
+(node as any).hash = "7350103a5431c3fdadf0c09fe5af6e3f";
 
 export default node;

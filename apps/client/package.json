@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "relay": "relay-compiler",
     "relay:watch": "relay-compiler --watch",
+    "relay:compile": "relay-compiler --validate",
     "type-check": "tsc"
   },
   "dependencies": {
@@ -42,12 +43,14 @@
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.12",
     "react-hook-form": "^7.49.2",
+    "react-infinite-scroller": "^1.2.6",
     "react-input-mask": "^2.0.4",
     "react-relay": "^16.1.0",
     "react-router-dom": "^6.21.1",
     "relay-runtime": "^16.1.0",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
+    "usehooks-ts": "^2.12.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {

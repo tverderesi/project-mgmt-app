@@ -2,17 +2,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { CardStackIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
-import { PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { Suspense } from "react";
 import { CardFallback } from "../shared/CardFallback";
 import { Count } from "../shared/Count";
-import { useFragment } from "react-relay";
+import { usePaginationFragment } from "react-relay";
 import { PROJECT_FRAGMENT } from "@/graphql/queries/user";
-import { userProject_project$key } from "@/graphql/queries/__generated__/userProject_project.graphql";
 import { ProjectCarouselItems } from "./ProjectCarouselItems";
+import { userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
+import { h2 } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 
-export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_project$key }) {
-  const data = useFragment<userProject_project$key>(PROJECT_FRAGMENT, fragmentRef);
+export function ProjectsSection({ fragmentRef }: { fragmentRef: userUserQuery$data["user"] }) {
+  const { data, hasNext, hasPrevious, isLoadingNext, isLoadingPrevious, loadNext, loadPrevious, refetch } = usePaginationFragment(
+    PROJECT_FRAGMENT,
+    fragmentRef
+  );
   return (
     <Card className="shadow-none  h-100 flex flex-col justify-center">
       <CardHeader>
@@ -20,7 +25,7 @@ export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_proj
           Projects
           <CardDescription>
             <Suspense fallback={<span className="h-6 w-28 animate-pulse rounded-md bg-primary/10" />}>
-              <Count thing={{ singular: "Project", plural: "Projects" }} count={data.length} />
+              <Count thing={{ singular: "Project", plural: "Projects" }} count={fragmentRef?.projectCount as number} />
             </Suspense>
           </CardDescription>
         </CardTitle>
@@ -30,6 +35,24 @@ export function ProjectsSection({ fragmentRef }: { fragmentRef: userProject_proj
         <div className="flex w-full gap-3 overflow-x-scroll  snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
           <Suspense fallback={<CardFallback />}>
             <ProjectCarouselItems projects={data} />
+            {hasNext && (
+              <Card
+                className="w-48 h-48 shrink-0 overflow-hidden snap-start flex-col flex justify-between hover:bg-primary/10 transition-all ease-in-out hover:cursor-pointer"
+                onClick={() => {
+                  loadNext(10);
+                }}
+              >
+                <CardContent
+                  className={cn("px-3 pb-1.5 h-max flex flex-col flex-grow justify-center items-center", isLoadingNext && "p-0")}
+                >
+                  {isLoadingNext ? (
+                    <Loader2 className="h-20 w-20 animate-spin" strokeWidth={1} />
+                  ) : (
+                    <span className={cn(h2, "border-none")}>Load More Projects</span>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </Suspense>
         </div>
       </CardContent>

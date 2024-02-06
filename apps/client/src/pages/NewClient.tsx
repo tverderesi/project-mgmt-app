@@ -30,12 +30,12 @@ export const NewClient = ({ asSideItem = false }) => {
       name: "",
       email: "",
       phone: "",
-      user: "",
+      user: user?.id || "",
     },
   });
 
   useEffect(() => {
-    if (user.id) {
+    if (user?.id) {
       form.setValue("user", user.id);
     }
   }, [user]);
@@ -50,7 +50,12 @@ export const NewClient = ({ asSideItem = false }) => {
           title: "Client created",
           description: "The client was created successfully.",
         });
-        form.reset();
+        form.reset({
+          name: "",
+          email: "",
+          phone: "",
+          user: user?.id || "",
+        });
         {
           !asSideItem && navigate("/app");
         }
@@ -121,7 +126,7 @@ export const NewClient = ({ asSideItem = false }) => {
                 name: "",
                 email: "",
                 phone: "",
-                user: user.id,
+                user: user?.id || "",
               });
             }}
           >

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<488f64b4719394c761e0f2db8026f6d4>>
+ * @generated SignedSource<<9f89ab954de0f9a2793392c183d36dbd>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,7 +10,6 @@
 
 import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type Status = "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED" | "%future added value";
 export type projectProjectQuery$variables = {
   id: string;
 };
@@ -18,15 +17,13 @@ export type projectProjectQuery$data = {
   readonly project: {
     readonly client: {
       readonly " $fragmentSpreads": FragmentRefs<"projectClient_client">;
-    };
-    readonly description: string;
+    } | null | undefined;
+    readonly description: string | null | undefined;
     readonly id: string;
-    readonly name: string;
-    readonly status: Status;
-    readonly tasks: ReadonlyArray<{
-      readonly " $fragmentSpreads": FragmentRefs<"projectTasks_tasks">;
-    } | null | undefined>;
-  };
+    readonly name: string | null | undefined;
+    readonly status: string | null | undefined;
+    readonly " $fragmentSpreads": FragmentRefs<"projectTasks_Connection">;
+  } | null | undefined;
 };
 export type projectProjectQuery = {
   response: projectProjectQuery$data;
@@ -112,20 +109,9 @@ return {
             "storageKey": null
           },
           {
-            "alias": null,
             "args": null,
-            "concreteType": "Task",
-            "kind": "LinkedField",
-            "name": "tasks",
-            "plural": true,
-            "selections": [
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "projectTasks_tasks"
-              }
-            ],
-            "storageKey": null
+            "kind": "FragmentSpread",
+            "name": "projectTasks_Connection"
           }
         ],
         "storageKey": null
@@ -182,23 +168,107 @@ return {
           {
             "alias": null,
             "args": null,
-            "concreteType": "Task",
+            "concreteType": "TaskConnection",
             "kind": "LinkedField",
-            "name": "tasks",
-            "plural": true,
+            "name": "taskEdge",
+            "plural": false,
             "selections": [
-              (v2/*: any*/),
               {
                 "alias": null,
                 "args": null,
-                "kind": "ScalarField",
-                "name": "title",
+                "concreteType": "TaskEdge",
+                "kind": "LinkedField",
+                "name": "edges",
+                "plural": true,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "concreteType": "Task",
+                    "kind": "LinkedField",
+                    "name": "node",
+                    "plural": false,
+                    "selections": [
+                      (v2/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "title",
+                        "storageKey": null
+                      },
+                      (v4/*: any*/),
+                      (v5/*: any*/),
+                      {
+                        "alias": null,
+                        "args": null,
+                        "kind": "ScalarField",
+                        "name": "__typename",
+                        "storageKey": null
+                      }
+                    ],
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "cursor",
+                    "storageKey": null
+                  }
+                ],
                 "storageKey": null
               },
-              (v4/*: any*/),
-              (v5/*: any*/)
+              {
+                "alias": null,
+                "args": null,
+                "concreteType": "PageInfo",
+                "kind": "LinkedField",
+                "name": "pageInfo",
+                "plural": false,
+                "selections": [
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasNextPage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "endCursor",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "hasPreviousPage",
+                    "storageKey": null
+                  },
+                  {
+                    "alias": null,
+                    "args": null,
+                    "kind": "ScalarField",
+                    "name": "startCursor",
+                    "storageKey": null
+                  }
+                ],
+                "storageKey": null
+              }
             ],
             "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "filters": null,
+            "handle": "connection",
+            "key": "project_taskEdge",
+            "kind": "LinkedHandle",
+            "name": "taskEdge"
           }
         ],
         "storageKey": null
@@ -206,16 +276,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3ddec28a860f8278e27afd3c3c86f94e",
+    "cacheID": "7817f160c64da24974371da05bdeb017",
     "id": null,
     "metadata": {},
     "name": "projectProjectQuery",
     "operationKind": "query",
-    "text": "query projectProjectQuery(\n  $id: ID!\n) {\n  project(id: $id) {\n    id\n    name\n    description\n    status\n    client {\n      ...projectClient_client\n      id\n    }\n    tasks {\n      ...projectTasks_tasks\n      id\n    }\n  }\n}\n\nfragment projectClient_client on Client {\n  name\n  email\n  phone\n}\n\nfragment projectTasks_tasks on Task {\n  id\n  title\n  description\n  status\n}\n"
+    "text": "query projectProjectQuery(\n  $id: String!\n) {\n  project(id: $id) {\n    id\n    name\n    description\n    status\n    client {\n      ...projectClient_client\n      id\n    }\n    ...projectTasks_Connection\n  }\n}\n\nfragment projectClient_client on Client {\n  name\n  email\n  phone\n}\n\nfragment projectTasks_Connection on Project {\n  taskEdge {\n    edges {\n      node {\n        id\n        title\n        description\n        status\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasNextPage\n      endCursor\n      hasPreviousPage\n      startCursor\n    }\n  }\n  id\n}\n"
   }
 };
 })();
 
-(node as any).hash = "74c84d2b1a387c1ebe6de1e79fcef934";
+(node as any).hash = "3aa5a567b397c621dbb718ef19bf8994";
 
 export default node;

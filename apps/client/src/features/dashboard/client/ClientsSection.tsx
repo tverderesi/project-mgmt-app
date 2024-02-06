@@ -6,13 +6,16 @@ import { PlusCircle } from "lucide-react";
 import { Suspense } from "react";
 import { CardFallback } from "../shared/CardFallback";
 import { Count } from "../shared/Count";
-import { useFragment } from "react-relay";
+import { usePaginationFragment } from "react-relay";
 import { CLIENT_FRAGMENT } from "@/graphql/queries/user";
-import { userClient_client$key } from "@/graphql/queries/__generated__/userClient_client.graphql";
 import { ClientCarouselItems } from "./ClientCarouselItems";
+import { Loader2 } from "lucide-react";
+import { h2 } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 
-export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client$key }) {
-  const data = useFragment(CLIENT_FRAGMENT, fragmentRef);
+export function ClientsSection({ fragmentRef }: { fragmentRef: any }) {
+  const { data, hasNext, loadNext, isLoadingNext } = usePaginationFragment(CLIENT_FRAGMENT, fragmentRef);
+
   return (
     <Card className="shadow-none h-100 flex flex-col justify-center">
       <CardHeader>
@@ -20,7 +23,7 @@ export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client
           Clients
           <CardDescription>
             <Suspense fallback={<span className="h-6 w-28 animate-pulse rounded-md bg-primary/10" />}>
-              <Count thing={{ singular: "Client", plural: "Clients" }} count={data.length} />
+              <Count thing={{ singular: "Client", plural: "Clients" }} count={fragmentRef.clientCount} />
             </Suspense>
           </CardDescription>
         </CardTitle>
@@ -28,7 +31,25 @@ export function ClientsSection({ fragmentRef }: { fragmentRef: userClient_client
       <CardContent className="px-6 h-auto">
         <div className="flex w-full gap-3 overflow-x-scroll snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
           <Suspense fallback={<CardFallback />}>
-            <ClientCarouselItems clients={data} />
+            <ClientCarouselItems data={data} />
+            {hasNext && (
+              <Card
+                className="w-48 h-48 shrink-0 overflow-hidden snap-start flex-col flex justify-between hover:bg-primary/10 transition-all ease-in-out hover:cursor-pointer"
+                onClick={() => {
+                  loadNext(10);
+                }}
+              >
+                <CardContent
+                  className={cn("px-3 pb-1.5 h-max flex flex-col flex-grow justify-center items-center", isLoadingNext && "p-0")}
+                >
+                  {isLoadingNext ? (
+                    <Loader2 className="h-20 w-20 animate-spin" strokeWidth={1} />
+                  ) : (
+                    <span className={cn(h2, "border-none")}>Load More Projects</span>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </Suspense>
         </div>
       </CardContent>

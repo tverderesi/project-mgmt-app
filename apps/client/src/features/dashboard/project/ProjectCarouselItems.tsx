@@ -5,18 +5,18 @@ import { EyeOpenIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { statusDTO } from "@/lib/utils";
-import { userProject_project$data } from "@/graphql/queries/__generated__/userProject_project.graphql";
 import { NoProjectsCard } from "./NoProjectsCard";
 
-export const ProjectCarouselItems = ({ projects }: { projects: userProject_project$data }) => {
+export const ProjectCarouselItems = ({ projects }) => {
   const projectCount = projects.length;
   if (projectCount === 0) {
     return <NoProjectsCard />;
   }
+  const edges = projects.projects.edges;
 
   return (
     <>
-      {projects.map((project) => {
+      {edges.map(({ node: project }) => {
         return (
           <Card className="w-48 h-48 shrink-0 overflow-hidden snap-start flex-col flex justify-between" key={project.id}>
             <CardHeader className="p-3 pb-1.5">

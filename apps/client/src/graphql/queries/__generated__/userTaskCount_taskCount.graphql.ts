@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<79115193ae122e035bd2840ae499c02a>>
+ * @generated SignedSource<<70f664b43be5a678e8532c968f48d62b>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -8,28 +8,87 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { Fragment, ReaderFragment } from 'relay-runtime';
+import { ReaderFragment, RefetchableFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type userTaskCount_taskCount$data = {
-  readonly totalTaskCount: number | null | undefined;
-  readonly " $fragmentType": "userTaskCount_taskCount";
+export type userTaskCount_TaskCount$data = {
+  readonly id: string;
+  readonly taskCount: {
+    readonly COMPLETED: number | null | undefined;
+    readonly IN_PROGRESS: number | null | undefined;
+    readonly NOT_STARTED: number | null | undefined;
+    readonly TOTAL: number | null | undefined;
+  };
+  readonly " $fragmentType": "userTaskCount_TaskCount";
 };
-export type userTaskCount_taskCount$key = {
-  readonly " $data"?: userTaskCount_taskCount$data;
-  readonly " $fragmentSpreads": FragmentRefs<"userTaskCount_taskCount">;
+export type userTaskCount_TaskCount$key = {
+  readonly " $data"?: userTaskCount_TaskCount$data;
+  readonly " $fragmentSpreads": FragmentRefs<"userTaskCount_TaskCount">;
 };
+
+import userTaskCount_TaskCountQuery_graphql from './userTaskCount_TaskCountQuery.graphql';
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
-  "metadata": null,
-  "name": "userTaskCount_taskCount",
+  "metadata": {
+    "refetch": {
+      "connection": null,
+      "fragmentPathInResult": [
+        "node"
+      ],
+      "operation": userTaskCount_TaskCountQuery_graphql,
+      "identifierInfo": {
+        "identifierField": "id",
+        "identifierQueryVariableName": "id"
+      }
+    }
+  },
+  "name": "userTaskCount_TaskCount",
   "selections": [
     {
       "alias": null,
       "args": null,
+      "concreteType": "TaskCount",
+      "kind": "LinkedField",
+      "name": "taskCount",
+      "plural": false,
+      "selections": [
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "NOT_STARTED",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "IN_PROGRESS",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "COMPLETED",
+          "storageKey": null
+        },
+        {
+          "alias": null,
+          "args": null,
+          "kind": "ScalarField",
+          "name": "TOTAL",
+          "storageKey": null
+        }
+      ],
+      "storageKey": null
+    },
+    {
+      "alias": null,
+      "args": null,
       "kind": "ScalarField",
-      "name": "totalTaskCount",
+      "name": "id",
       "storageKey": null
     }
   ],
@@ -37,6 +96,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "0e806d583e27eab346f842e754d7f21d";
+(node as any).hash = "65b1b6c9afcc01741f2d8baffa95fe76";
 
 export default node;

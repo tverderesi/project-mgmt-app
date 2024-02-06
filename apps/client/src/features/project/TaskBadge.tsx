@@ -1,18 +1,8 @@
 import { cn, statusDTO } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { Status } from "./__generated__/projectProjectQuery.graphql";
+import { ProjectTaskProps } from "./ProjectTasks";
 
-export function TaskBadge({
-  task,
-}: {
-  task: {
-    readonly description: string | null | undefined;
-    readonly id: string;
-    readonly status: Status;
-    readonly title: string;
-    readonly " $fragmentType": "projectTasks_tasks";
-  };
-}) {
+export function TaskBadge({ task }: { task: ProjectTaskProps }) {
   return (
     <Badge
       variant="outline"
@@ -22,7 +12,7 @@ export function TaskBadge({
         task.status === "COMPLETED" && "border-green-500 text-green-500"
       )}
     >
-      {statusDTO(task.status)}
+      {statusDTO(task.status || "NOT_STARTED")}
     </Badge>
   );
 }

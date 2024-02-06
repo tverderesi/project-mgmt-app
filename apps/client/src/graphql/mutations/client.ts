@@ -1,12 +1,14 @@
 import { graphql } from "react-relay";
 
 export const CREATE_CLIENT = graphql`
-  mutation clientCreateMutation($input: ClientInput!) {
+  mutation clientCreateMutation($input: CreateClientInput!) {
     createClient(input: $input) {
-      id
-      name
-      email
-      phone
+      client {
+        id
+        name
+        email
+        phone
+      }
     }
   }
 `;

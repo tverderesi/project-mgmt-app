@@ -23,23 +23,20 @@ export const ProjectInfo = () => {
   useEffect(() => {
     document.title = `mgmt.app - ${project?.name}`;
   }, [project?.name]);
-  const client = project?.client;
-  const tasks = project.tasks;
-  const description = project.description;
 
   return (
     <Card className="shadow-none h-96 border-none">
       <CardHeader className="flex flex-row gap-4 items-center flex-wrap">
-        <CardTitle className="text-4xl mr-4">{project.name}</CardTitle>
-        <Badge>{statusDTO(project?.status)}</Badge>
+        <CardTitle className="text-4xl mr-4">{project?.name}</CardTitle>
+        <Badge>{project?.status && statusDTO(project?.status)}</Badge>
       </CardHeader>
       <CardContent className="space-y-16">
         <p className="text-3xl font-semibold px-3 -mb-8">Info</p>
-        <ProjectClientInfo fragmentRef={client} />
+        <ProjectClientInfo fragmentRef={project?.client} />
 
-        <ProjectDescriptionInfo description={description} />
-        {/*@ts-ignore */}
-        <ProjectTasks fragmentRef={tasks} />
+        <ProjectDescriptionInfo description={project?.description} />
+
+        <ProjectTasks fragmentRef={project} />
       </CardContent>
     </Card>
   );

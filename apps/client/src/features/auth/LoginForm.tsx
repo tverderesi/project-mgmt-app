@@ -10,7 +10,6 @@ import { loginSchema } from "@/validators/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { FormInput } from "../../components/FormInput";
 import { isolateErrorObject } from "@/components/error-handling/isolateErrorObject";
-import { LoginFormLoginMutation } from "./__generated__/LoginFormLoginMutation.graphql";
 
 export function LoginForm() {
   const { toast } = useToast();
@@ -20,19 +19,21 @@ export function LoginForm() {
     mode: "onSubmit",
   });
 
-  const [login, isInFlight] = useMutation<LoginFormLoginMutation>(graphql`
+  const [login, isInFlight] = useMutation(graphql`
     mutation LoginFormLoginMutation($input: LoginInput!) {
       login(input: $input) {
-        id
-        name
-        role
+        user {
+          id
+          username
+          name
+        }
       }
     }
   `);
 
   const onSubmit = (data: z.infer<typeof loginSchema>) => {
     login({
-      variables: { input: data },
+      variables: { input: { ...data } },
       onCompleted(_response, errors) {
         if (errors) {
           const errorObject = isolateErrorObject(errors[0].message.replace(/\\/g, ""));

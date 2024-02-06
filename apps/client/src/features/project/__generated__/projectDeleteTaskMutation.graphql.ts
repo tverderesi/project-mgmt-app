@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ddd3ca7cf0315b524f909158d6623c88>>
+ * @generated SignedSource<<816de30f0238bd1a18a02bd6819b4d2d>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -9,11 +9,27 @@
 // @ts-nocheck
 
 import { ConcreteRequest, Mutation } from 'relay-runtime';
-export type projectDeleteTaskMutation$variables = {
+export type TaskStatus = "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED" | "%future added value";
+export type DeleteTaskInput = {
+  clientMutationId?: string | null | undefined;
   id: string;
 };
+export type projectDeleteTaskMutation$variables = {
+  connections: ReadonlyArray<string>;
+  input: DeleteTaskInput;
+};
 export type projectDeleteTaskMutation$data = {
-  readonly deleteTask: string;
+  readonly deleteTask: {
+    readonly taskEdge: {
+      readonly cursor: string;
+      readonly node: {
+        readonly description: string | null | undefined;
+        readonly id: string;
+        readonly status: TaskStatus | null | undefined;
+        readonly title: string | null | undefined;
+      } | null | undefined;
+    } | null | undefined;
+  } | null | undefined;
 };
 export type projectDeleteTaskMutation = {
   response: projectDeleteTaskMutation$data;
@@ -21,56 +37,126 @@ export type projectDeleteTaskMutation = {
 };
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "id"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "connections"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "input"
+},
+v2 = [
   {
     "alias": null,
     "args": [
       {
         "kind": "Variable",
-        "name": "id",
-        "variableName": "id"
+        "name": "input",
+        "variableName": "input"
       }
     ],
-    "kind": "ScalarField",
+    "concreteType": "DeleteTaskPayload",
+    "kind": "LinkedField",
     "name": "deleteTask",
+    "plural": false,
+    "selections": [
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "TaskEdge",
+        "kind": "LinkedField",
+        "name": "taskEdge",
+        "plural": false,
+        "selections": [
+          {
+            "alias": null,
+            "args": null,
+            "concreteType": "Task",
+            "kind": "LinkedField",
+            "name": "node",
+            "plural": false,
+            "selections": [
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "id",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "title",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "description",
+                "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "status",
+                "storageKey": null
+              }
+            ],
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "cursor",
+            "storageKey": null
+          }
+        ],
+        "storageKey": null
+      }
+    ],
     "storageKey": null
   }
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "projectDeleteTaskMutation",
-    "selections": (v1/*: any*/),
+    "selections": (v2/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v1/*: any*/),
+      (v0/*: any*/)
+    ],
     "kind": "Operation",
     "name": "projectDeleteTaskMutation",
-    "selections": (v1/*: any*/)
+    "selections": (v2/*: any*/)
   },
   "params": {
-    "cacheID": "156b819ac38d9c84a534397a022617e2",
+    "cacheID": "e02610914918667365647b0a482e9745",
     "id": null,
     "metadata": {},
     "name": "projectDeleteTaskMutation",
     "operationKind": "mutation",
-    "text": "mutation projectDeleteTaskMutation(\n  $id: ID!\n) {\n  deleteTask(id: $id)\n}\n"
+    "text": "mutation projectDeleteTaskMutation(\n  $input: DeleteTaskInput!\n) {\n  deleteTask(input: $input) {\n    taskEdge {\n      node {\n        id\n        title\n        description\n        status\n      }\n      cursor\n    }\n  }\n}\n"
   }
 };
 })();
 
-(node as any).hash = "e809f92b4d89980880f9b39faa24a251";
+(node as any).hash = "886baa8a81ce15e24a357ac05b223975";
 
 export default node;

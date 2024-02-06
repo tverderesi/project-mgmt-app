@@ -4,18 +4,19 @@ import { EyeOpenIcon, PersonIcon } from "@radix-ui/react-icons";
 import { Mail, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { userClient_client$data } from "@/graphql/queries/__generated__/userClient_client.graphql";
+
 import { NoClientsCard } from "./NoClientsCard";
 
-export const ClientCarouselItems = ({ clients }: { clients: userClient_client$data }) => {
-  const clientCount = clients.length;
-  if (clientCount === 0) {
+export const ClientCarouselItems = ({ data }: { data: any }) => {
+  const clients = data?.clients?.edges.map((edge: any) => edge.node);
+
+  if (clients.count === 0) {
     return <NoClientsCard />;
   }
 
   return (
     <>
-      {clients.map((client) => {
+      {clients.map((client: any) => {
         return (
           <Card className="w-48 h-48 shrink-0 overflow-hidden snap-start flex-col flex justify-between" key={client.id}>
             <CardHeader className="p-3 pb-1.5"></CardHeader>

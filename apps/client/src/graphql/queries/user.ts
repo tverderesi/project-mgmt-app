@@ -1,66 +1,79 @@
 import { graphql } from "react-relay";
 
-export const TASK_COUNT_BY_STATUS_FRAGMENT = graphql`
-  fragment userTaskCountByStatus_TaskCount on TaskCountByStatus @relay(plural: true) {
-    status
-    count
-  }
-`;
-
-export const TOTAL_TASK_COUNT_FRAGMENT = graphql`
-  fragment userTaskCount_taskCount on User {
-    totalTaskCount
+export const TASK_COUNT_FRAGMENT = graphql`
+  fragment userTaskCount_TaskCount on User @refetchable(queryName: "userTaskCount_TaskCountQuery") {
+    taskCount {
+      NOT_STARTED
+      IN_PROGRESS
+      COMPLETED
+      TOTAL
+    }
   }
 `;
 
 export const CLIENT_COUNT_FRAGMENT = graphql`
-  fragment userClientCount_clientCount on User {
+  fragment userClientCount_clientCount on User @refetchable(queryName: "userClientCount_clientCountQuery") {
     clientCount
   }
 `;
 
 export const PROJECT_COUNT_FRAGMENT = graphql`
-  fragment userProjectCount_projectCount on User {
+  fragment userProjectCount_projectCount on User @refetchable(queryName: "userProjectCount_projectCountQuery") {
     projectCount
   }
 `;
 export const PROJECT_FRAGMENT = graphql`
-  fragment userProject_project on Project @relay(plural: true) {
-    id
-    name
-    description
-    status
+  fragment userProject_ProjectConnection on User
+  @refetchable(queryName: "userProject_ProjectConnectionQuery")
+  @argumentDefinitions(first: { type: "Int" }, after: { type: "String" }, last: { type: "Int" }, before: { type: "String" }) {
+    projects(first: $first, after: $after, last: $last, before: $before) @connection(key: "User_projects") {
+      edges {
+        node {
+          id
+          name
+          description
+          createdAt
+          updatedAt
+          status
+        }
+      }
+    }
   }
 `;
 
 export const CLIENT_FRAGMENT = graphql`
-  fragment userClient_client on Client @relay(plural: true) {
-    id
-    name
-    email
-    phone
+  fragment userClient_Connection on User
+  @refetchable(queryName: "userClient_ConnectionQuery")
+  @argumentDefinitions(first: { type: "Int" }, after: { type: "String" }, last: { type: "Int" }, before: { type: "String" }) {
+    clients(first: $first, after: $after, last: $last, before: $before) @connection(key: "User_clients") {
+      edges {
+        node {
+          id
+          name
+          email
+          phone
+        }
+      }
+    }
   }
 `;
 
 export const USER = graphql`
-  query userUserQuery($id: ID!) {
+  query userUserQuery($id: String!) {
     user(id: $id) {
       id
       name
       username
       email
-      projects {
-        ...userProject_project
-      }
-      clients {
-        ...userClient_client
-      }
+      createdAt
+      updatedAt
+      projectCount
+      clientCount
+      ...userProject_ProjectConnection
+      ...userClient_Connection
       ...userProjectCount_projectCount
       ...userClientCount_clientCount
-      ...userTaskCount_taskCount
-      taskCountByStatus {
-        ...userTaskCountByStatus_TaskCount
-      }
+      ...userTaskCount_TaskCount
     }
   }
 `;

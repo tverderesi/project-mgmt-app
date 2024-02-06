@@ -1,6 +1,8 @@
 import { graphql } from "react-relay";
 export const LOGOUT = graphql`
-  mutation authLogoutMutation {
-    logout
+  mutation authLogoutMutation($input: LogoutInput!) {
+    logout(input: $input) {
+      success
+    }
   }
 `;
