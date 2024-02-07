@@ -1,5 +1,5 @@
 import { GraphQLEnumType, GraphQLNonNull, GraphQLString } from "graphql";
-import { mutationWithClientMutationId } from "graphql-relay";
+import { fromGlobalId, mutationWithClientMutationId } from "graphql-relay";
 import { userType } from "../schema/userType";
 import { GraphQLBoolean } from "graphql";
 import { checkAuthetication } from "@/utils/checkAuthetication";
@@ -14,7 +14,7 @@ import { ProjectModel } from "@/models/Project";
 import { ClientModel } from "@/models/Client";
 import clientV from "@/validators/client";
 import { TaskModel } from "@/models/Task";
-import { clientType } from "../schema/clientType";
+import { clientConnection, clientType } from "../schema/clientType";
 
 const createClientMutation = mutationWithClientMutationId({
   name: "CreateClient",
@@ -27,16 +27,20 @@ const createClientMutation = mutationWithClientMutationId({
     user: { type: new GraphQLNonNull(GraphQLString) },
   },
   outputFields: {
-    client: { type: clientType },
+    clientEdge: { type: clientConnection.edgeType },
   },
-  mutateAndGetPayload: async ({ input }: { input: z.infer<typeof clientV.create> }, context) => {
+  mutateAndGetPayload: async (input: z.infer<typeof clientV.create>, context) => {
     const me = context.getUser();
     checkAuthetication(me);
-    doerCanDo(me, input.user);
+    console.log(input);
+    const { id: userId } = fromGlobalId(input.user);
+    input.user = userId;
+    doerCanDo(me, userId);
     checkRequiredFields(input, clientV.create);
     const client = await ClientModel.create(input);
+    console.log(client);
     await UserModel.findByIdAndUpdate(input.user, { $push: { projects: client._id } });
-    return client;
+    return { clientEdge: { node: client, cursor: client.id } };
   },
 });
 

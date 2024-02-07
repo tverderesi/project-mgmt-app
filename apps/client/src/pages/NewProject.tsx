@@ -121,6 +121,15 @@ export const NewProject = () => {
                   description="Insert a brief description of the project, if you want."
                 />
                 <ProjectFormClientCommand form={form} user={user} />
+                <FormInput
+                  form={form}
+                  label="User"
+                  placeholder="User"
+                  name="user"
+                  description="This is the user that will be assigned to the project."
+                  autoComplete="off"
+                  disabled
+                />
               </div>
             </div>
 
@@ -131,7 +140,7 @@ export const NewProject = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   form.reset({
-                    user: user.id,
+                    user: user?.id,
                   });
                 }}
               >

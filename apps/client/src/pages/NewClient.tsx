@@ -17,6 +17,7 @@ import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.gra
 import { FormInput } from "@/components/FormInput";
 import { useNavigate } from "react-router-dom";
 import { useSetPageTitle } from "@/lib/useSetPageTitle";
+import { getConnectionID } from "relay-runtime/lib/handlers/connection/ConnectionHandler";
 
 export const NewClient = ({ asSideItem = false }) => {
   const { toast } = useToast();
@@ -41,26 +42,35 @@ export const NewClient = ({ asSideItem = false }) => {
   }, [user]);
 
   const onSubmit = (data: z.infer<typeof clientV.create>) => {
+    const connectionId = getConnectionID(user?.id as string, "User_clientEdge");
     mutate({
       variables: {
         input: data,
+        connections: [connectionId],
       },
-      onCompleted: () => {
-        toast({
-          title: "Client created",
-          description: "The client was created successfully.",
-        });
-        form.reset({
-          name: "",
-          email: "",
-          phone: "",
-          user: user?.id || "",
-        });
-        {
+      onCompleted: (_, errors) => {
+        if (errors) {
+          toast({
+            title: "Error",
+            description: `There was an error creating the client. ${errors}`,
+          });
+          console.log(errors);
+        } else {
+          toast({
+            title: "Success",
+            description: "Client created successfully.",
+          });
+          form.reset({
+            name: "",
+            email: "",
+            phone: "",
+            user: user?.id || "",
+          });
           !asSideItem && navigate("/app");
         }
       },
       onError: (err) => {
+        console.error(err);
         toast({
           title: "Error",
           description: `There was an error creating the client. ${err.message}`,
