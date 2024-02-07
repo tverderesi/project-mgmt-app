@@ -7,3 +7,4 @@ client/node_modules
 /apps/server/logs/audit
 /apps/server/logs/.4f188e6e6650f339f6383047847b936349b9fce3-audit.json
 /apps/server/logs/.dcd9d0244adf29f7fc8218221f4b9c69fa4dd44a-audit.json
+apps/server/.env.development

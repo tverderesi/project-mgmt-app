@@ -6,7 +6,7 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "lint": "eslint --ext .ts ./src",
-    "dev": " tsx --watch --env-file=.env.development --trace-deprecation  ./src/index.ts",
+    "dev": "cross-env NODE_ENV=development tsx --watch --trace-deprecation  ./src/index.ts",
     "build": "babel --extensions .ts src --out-dir dist --copy-files",
     "start": "cross-env NODE_ENV=production node ./dist/index.js",
     "update-schema": "tsx ./src/utils/updateSchema.ts"
