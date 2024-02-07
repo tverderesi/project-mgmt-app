@@ -48,7 +48,7 @@
     "react-relay": "^16.1.0",
     "react-router-dom": "^6.21.1",
     "relay-runtime": "^16.1.0",
-    "tailwind-merge": "^2.2.0",
+    "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^2.12.1",
     "zod": "^3.22.4"
