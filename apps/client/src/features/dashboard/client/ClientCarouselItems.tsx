@@ -10,7 +10,7 @@ import { NoClientsCard } from "./NoClientsCard";
 export const ClientCarouselItems = ({ data }: { data: any }) => {
   const clients = data?.clientEdge?.edges.map((edge: any) => edge.node);
 
-  if (clients.count === 0) {
+  if (!clients || clients.length === 0) {
     return <NoClientsCard />;
   }
 

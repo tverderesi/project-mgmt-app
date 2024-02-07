@@ -8,7 +8,7 @@ import { statusDTO } from "@/lib/utils";
 import { NoProjectsCard } from "./NoProjectsCard";
 
 export const ProjectCarouselItems = ({ projects }) => {
-  const projectCount = projects.length;
+  const projectCount = projects.projects.edges.length;
   if (projectCount === 0) {
     return <NoProjectsCard />;
   }
