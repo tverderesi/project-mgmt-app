@@ -18,7 +18,7 @@ import { useSetPageTitle } from "@/lib/useSetPageTitle";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormInput } from "@/components/FormInput";
 import { ProjectStatusSelect } from "../features/project/ProjectFormStatusSelect";
-import { ProjectFormClientCommand } from "../features/project/ProjectFormClientCommand";
+import { ProjectFormClientDropdown } from "../features/project/ProjectFormClientCommand";
 import { FormTextarea } from "@/components/FormTextArea";
 import { useNavigate } from "react-router-dom";
 import { NewProjectMutation, NewProjectMutation$data } from "./__generated__/NewProjectMutation.graphql";
@@ -120,7 +120,7 @@ export const NewProject = () => {
                   form={form}
                   description="Insert a brief description of the project, if you want."
                 />
-                <ProjectFormClientCommand form={form} user={user} />
+                <ProjectFormClientDropdown form={form} user={user} />
                 <FormInput
                   form={form}
                   label="User"
