@@ -56,4 +56,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  input:disabled.disabled-override {
+    @apply text-foreground opacity-100 placeholder:opacity-100;
+  }
 }

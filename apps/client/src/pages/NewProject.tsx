@@ -21,7 +21,8 @@ import { ProjectStatusSelect } from "../features/project/ProjectFormStatusSelect
 import { ProjectFormClientDropdown } from "../features/project/ProjectFormClientCommand";
 import { FormTextarea } from "@/components/FormTextArea";
 import { useNavigate } from "react-router-dom";
-import { NewProjectMutation, NewProjectMutation$data } from "./__generated__/NewProjectMutation.graphql";
+import { NewProjectMutation } from "./__generated__/NewProjectMutation.graphql";
+import { getConnectionID } from "relay-runtime/lib/handlers/connection/ConnectionHandler";
 
 export const NewProject = () => {
   useSetPageTitle("mgmt.app - New Project");
@@ -47,16 +48,14 @@ export const NewProject = () => {
   }, [user?.id]);
 
   const [mutate, isInFlight] = useMutation<NewProjectMutation>(graphql`
-    mutation NewProjectMutation($input: CreateProjectInput!) {
+    mutation NewProjectMutation($input: CreateProjectInput!, $connections: [ID!]!) {
       createProject(input: $input) {
-        project {
-          id
-          name
-          description
-          status
-          client {
+        projectEdge @appendEdge(connections: $connections) {
+          node {
             id
             name
+            description
+            status
           }
         }
       }
@@ -64,17 +63,27 @@ export const NewProject = () => {
   `);
 
   const onValid = (data: z.infer<typeof projectV.create>) => {
+    const connectionID = getConnectionID(user?.id || "", "user_projectEdge");
     mutate({
       variables: {
         input: data,
+        connections: [connectionID],
       },
-      onCompleted: ({ createProject }: NewProjectMutation$data) => {
-        toast({
-          title: "Project created",
-          description: "The project was created successfully.",
-        });
-        form.reset();
-        navigate(`/app/projects/${createProject?.id}`);
+      onCompleted: (_, errors) => {
+        if (errors) {
+          toast({
+            title: "Error",
+            description: `There was an error creating the project.`,
+            variant: "destructive",
+          });
+          console.error(errors);
+        } else {
+          toast({
+            title: "Project created",
+            description: "The project was created successfully.",
+          });
+          form.reset();
+        }
       },
       onError: (err) => {
         toast({

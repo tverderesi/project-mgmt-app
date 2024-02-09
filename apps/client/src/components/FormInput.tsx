@@ -5,13 +5,14 @@ import { cn } from "@/lib/utils";
 
 interface FormInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "form"> {
   form: UseFormReturn<any, any, any>;
-  label: string;
+  label?: string;
   placeholder: string;
   name: string;
   className?: string;
   description?: string;
+  inputClassName?: string;
 }
-export function FormInput({ form, label, placeholder, name, className, description, ...props }: FormInputProps) {
+export function FormInput({ form, label, placeholder, name, className, description, inputClassName, ...props }: FormInputProps) {
   return (
     <FormField
       control={form.control}
@@ -20,7 +21,7 @@ export function FormInput({ form, label, placeholder, name, className, descripti
         <FormItem className={cn("w-72", className)}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} {...props} />
+            <Input placeholder={placeholder} {...field} {...props} className={inputClassName} />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

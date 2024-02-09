@@ -26,7 +26,7 @@ export const PROJECT_FRAGMENT = graphql`
   fragment userProject_ProjectConnection on User
   @refetchable(queryName: "userProject_ProjectConnectionQuery")
   @argumentDefinitions(first: { type: "Int" }, after: { type: "String" }, last: { type: "Int" }, before: { type: "String" }) {
-    projects(first: $first, after: $after, last: $last, before: $before) @connection(key: "User_projects") {
+    projectEdge(first: $first, after: $after, last: $last, before: $before) @connection(key: "user_projectEdge") {
       edges {
         node {
           id

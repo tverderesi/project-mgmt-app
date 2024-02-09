@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface FormTextareaProps extends Omit<React.InputHTMLAttributes<HTMLTextAreaElement>, "form"> {
   form: UseFormReturn<any, any, any>;
-  label: string;
+  label?: string;
   placeholder: string;
   name: string;
   className?: string;

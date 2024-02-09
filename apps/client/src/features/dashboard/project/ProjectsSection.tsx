@@ -9,15 +9,22 @@ import { Count } from "../shared/Count";
 import { usePaginationFragment } from "react-relay";
 import { PROJECT_FRAGMENT } from "@/graphql/queries/user";
 import { ProjectCarouselItems } from "./ProjectCarouselItems";
-import { userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
+import { userUserQuery, userUserQuery$data } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 import { h2 } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
+import {
+  userProject_ProjectConnectionQuery,
+  userProject_ProjectConnectionQuery$data,
+  userProject_ProjectConnectionQuery$variables,
+} from "@/graphql/queries/__generated__/userProject_ProjectConnectionQuery.graphql";
+import { userProject_ProjectConnection$key } from "@/graphql/queries/__generated__/userProject_ProjectConnection.graphql";
 
 export function ProjectsSection({ fragmentRef }: { fragmentRef: userUserQuery$data["user"] }) {
-  const { data, hasNext, hasPrevious, isLoadingNext, isLoadingPrevious, loadNext, loadPrevious, refetch } = usePaginationFragment(
-    PROJECT_FRAGMENT,
-    fragmentRef
-  );
+  const { data, hasNext, isLoadingNext, loadNext } = usePaginationFragment<
+    userProject_ProjectConnectionQuery,
+    userProject_ProjectConnection$key
+  >(PROJECT_FRAGMENT, fragmentRef);
+
   return (
     <Card className="shadow-none  h-100 flex flex-col justify-center">
       <CardHeader>
@@ -34,7 +41,7 @@ export function ProjectsSection({ fragmentRef }: { fragmentRef: userUserQuery$da
       <CardContent className="px-6 h-auto">
         <div className="flex w-full gap-3 overflow-x-scroll  snap-proximity snap-x scroll-smooth scroll-ps-3 pb-4">
           <Suspense fallback={<CardFallback />}>
-            <ProjectCarouselItems projects={data} />
+            <ProjectCarouselItems data={data} count={fragmentRef?.projectCount} />
             {hasNext && (
               <Card
                 className="w-48 h-48 shrink-0 overflow-hidden snap-start flex-col flex justify-between hover:bg-primary/10 transition-all ease-in-out hover:cursor-pointer"

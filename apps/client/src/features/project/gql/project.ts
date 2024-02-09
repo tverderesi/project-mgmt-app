@@ -32,6 +32,18 @@ export const PROJECT_TASKS_FRAGMENT = graphql`
   }
 `;
 
+export const UPDATE_PROJECT = graphql`
+  mutation projectUpdateMutation($input: UpdateProjectInput!) {
+    updateProject(input: $input) {
+      project {
+        id
+        name
+        description
+      }
+    }
+  }
+`;
+
 export const PROJECT = graphql`
   query projectProjectQuery($id: String!) {
     project(id: $id) {

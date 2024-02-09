@@ -16,32 +16,28 @@ import { UserModel } from "./models/User";
 import { logger } from "./utils/logger";
 import { rateLimit } from "express-rate-limit";
 import { schema } from "./graphql/schema";
+import { updateSchema } from "./utils/updateSchema";
 
 const envPath = path.resolve(process.cwd(), "..", process.env.NODE_ENV === "development" ? ".env.development" : ".env");
 
 //Configuring environment variables
 dotenv.config({ path: envPath });
 const isDevelopment = process.env.NODE_ENV === "development";
-logger.log("info", "intializing rate limiter");
+updateSchema();
 const limiter = rateLimit({
   windowMs: 1000,
   max: 100,
 });
 
-logger.log("info", "intializing Apollo server");
 const server = new ApolloServer({
   schema: schema,
   introspection: isDevelopment,
 });
 
-//Starting Express server
-logger.log("info", "starting server");
 await server.start();
-//Initializing the express server
-logger.log("info", "initializing express server");
+
 const app = express();
 
-logger.log("info", "setting up express server");
 app.use(cookieParser());
 
 app.use(
@@ -70,7 +66,6 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60,
       secure: !isDevelopment,
-      sameSite: isDevelopment ? "strict" : "none",
     },
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI,

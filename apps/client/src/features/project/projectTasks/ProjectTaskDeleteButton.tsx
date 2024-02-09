@@ -5,6 +5,7 @@ import { projectDeleteTaskMutation } from "../gql/__generated__/projectDeleteTas
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
 import { getConnectionID } from "relay-runtime/lib/handlers/connection/ConnectionHandler";
+import { cn } from "@/lib/utils";
 
 export function DeleteTaskButton({ task, projectID }: { task: any; projectID: string }) {
   const { toast } = useToast();
@@ -39,6 +40,10 @@ export function DeleteTaskButton({ task, projectID }: { task: any; projectID: st
         const taskId = store.get(task.id)?.getDataID();
         if (taskId) store.delete(taskId);
       },
+      optimisticUpdater: (store) => {
+        const taskId = store.get(task.id)?.getDataID();
+        if (taskId) store.delete(taskId);
+      },
     });
   };
   return (
@@ -46,11 +51,11 @@ export function DeleteTaskButton({ task, projectID }: { task: any; projectID: st
       <Tooltip>
         <TooltipTrigger>
           <div className="p-1 hover:bg-accent/70 focus-visible:ring-1 focus-visible:ring-ring rounded-md">
-            {isInFlight ? (
-              <Loader2 className="h-8 w-8 animate-spin stroke-red-600" strokeWidth={1.2} />
-            ) : (
-              <XCircle className="w-8 h-8 stroke-red-600 cursor-pointer" strokeWidth={1.2} onClick={handleDeleteTask} />
-            )}
+            <XCircle
+              className={cn("w-8 h-8 stroke-red-600 cursor-pointer", isInFlight && "pointer-events-none cursor-not-allowed")}
+              strokeWidth={1.2}
+              onClick={handleDeleteTask}
+            />
           </div>
         </TooltipTrigger>
         <TooltipContent className="flex flex-col gap-2">Delete Task</TooltipContent>

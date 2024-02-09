@@ -26,7 +26,7 @@ export const userType = new GraphQLObjectType<User, any>({
       args: connectionArgs,
       resolve: resolveClientsInUser,
     },
-    projects: {
+    projectEdge: {
       type: new GraphQLNonNull(projectConnection.connectionType),
       args: connectionArgs,
       resolve: resolveProjectsInUser,

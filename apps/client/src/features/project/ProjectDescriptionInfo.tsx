@@ -1,6 +1,31 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-
-export const ProjectDescriptionInfo = ({ description }: { description?: string | null }) => {
+import { UseFormReturn } from "react-hook-form";
+import { z } from "zod";
+import projectV from "@/validators/project";
+import { FormTextarea } from "@/components/FormTextArea";
+import { useContext } from "react";
+import { EditModeContext } from "@/lib/EditModeProvider";
+export const ProjectDescriptionInfo = ({
+  description,
+  form,
+}: {
+  description?: string | null;
+  form: UseFormReturn<z.infer<typeof projectV.update>>;
+}) => {
+  const { editMode } = useContext(EditModeContext);
+  if (editMode)
+    return (
+      <div>
+        <p className="text-2xl font-semibold px-3 rounded">Description</p>
+        <FormTextarea
+          form={form}
+          placeholder="Description"
+          name="description"
+          description="Provide a description for the project."
+          className="px-2 w-full resize-none"
+        />
+      </div>
+    );
   if (description)
     return (
       <Accordion type="single" collapsible defaultValue="description">

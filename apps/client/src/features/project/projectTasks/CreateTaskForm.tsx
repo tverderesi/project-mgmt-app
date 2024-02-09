@@ -1,7 +1,13 @@
 import { ConnectionHandler, useLazyLoadQuery, useMutation } from "react-relay";
 import { CREATE_TASK } from "@/features/project/gql/project";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { statusDTO } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
@@ -9,25 +15,32 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "@/components/ui/form";
-import { projectCreateTaskMutation } from "../__generated__/projectCreateTaskMutation.graphql";
+import { projectCreateTaskMutation } from "../gql/__generated__/projectCreateTaskMutation.graphql";
 import { useParams } from "react-router-dom";
 import { USER } from "@/graphql/queries/user";
 import { userUserQuery } from "@/graphql/queries/__generated__/userUserQuery.graphql";
 import { useEffect } from "react";
-import { status } from "./ProjectTasks";
+import taskV from "@/validators/task";
 import { useToast } from "@/components/ui/use-toast";
 
 export const CreateTaskForm = () => {
-  const [createTask, isInFlight] = useMutation<projectCreateTaskMutation>(CREATE_TASK);
+  const statuses = Object.keys(taskV.base.shape.status.Values).map(
+    (status) => status,
+  );
+  const [createTask] = useMutation<projectCreateTaskMutation>(CREATE_TASK);
   const projectID = useParams<{ id: string }>().id || "";
   const { user } = useLazyLoadQuery<userUserQuery>(USER, { id: "" });
   const { toast } = useToast();
 
   const schema = z.object({
-    title: z.string(),
+    title: z.string({ required_error: "Title is required!" }),
     status: z.enum(["NOT_STARTED", "IN_PROGRESS", "COMPLETED"]),
-    project: z.string(),
-    user: z.string(),
+    project: z.string({
+      required_error: "Task can't be created outside a project!",
+    }),
+    user: z.string({
+      required_error: "Task can't be created without an user!",
+    }),
   });
 
   const form = useForm<z.infer<typeof schema>>({
@@ -46,7 +59,10 @@ export const CreateTaskForm = () => {
     form.setValue("project", projectID);
   }, [user?.id, projectID]);
   const handleTaskSubmit = () => {
-    const connectionID = ConnectionHandler.getConnectionID(projectID, "project_taskEdge");
+    const connectionID = ConnectionHandler.getConnectionID(
+      projectID,
+      "project_taskEdge",
+    );
     createTask({
       variables: {
         input: {
@@ -119,12 +135,16 @@ export const CreateTaskForm = () => {
           control={form.control}
           name="status"
           render={({ field }) => (
-            <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              value={field.value}
+            >
               <SelectTrigger className="border-b border-l-0 border-r-0 border-t-0 rounded-none focus:rounded w-36 shadow-none border-border font-semibold">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                {status.map((status) => (
+                {statuses.map((status) => (
                   <SelectItem key={status} value={status}>
                     {statusDTO(status)}
                   </SelectItem>

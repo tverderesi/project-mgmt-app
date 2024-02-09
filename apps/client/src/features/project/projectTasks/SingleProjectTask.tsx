@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { TaskBadge } from "./TaskBadge";
 import { DeleteTaskButton } from "./ProjectTaskDeleteButton";
-import { ProjectStatusButton } from "../ProjectStatusButton";
+import { TaskStatusButton } from "../TaskStatusButton";
 import { Suspense, useState } from "react";
 import { UPDATE_TASK } from "@/features/project/gql/project";
 import { useMutation } from "react-relay";
@@ -36,7 +36,7 @@ export const SingleProjectTask = ({ node, projectID }: { node: ProjectTaskProps;
         key={node.id}
       >
         <div className=" flex items-center justify-between gap-4 font-semibold data-[state=completed]:line-through">
-          <ProjectStatusButton task={node} />
+          <TaskStatusButton task={node} />
           <span className={cn("grow", node.status === "COMPLETED" && "line-through")}>{node.title}</span>
           <TaskBadge task={node} />
           <DeleteTaskButton task={node} projectID={projectID} />

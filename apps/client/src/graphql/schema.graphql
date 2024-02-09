@@ -61,7 +61,7 @@ type User implements Node {
     """Returns the last n items from the list."""
     last: Int
   ): ClientConnection!
-  projects(
+  projectEdge(
     """Returns the items in the list that come after the specified cursor."""
     after: String
 
@@ -370,7 +370,7 @@ input DeleteUserInput {
 }
 
 type CreateProjectPayload {
-  project: Project
+  projectEdge: ProjectEdge
   clientMutationId: String
 }
 
@@ -397,6 +397,9 @@ type UpdateProjectPayload {
 
 input UpdateProjectInput {
   id: String!
+  name: String
+  description: String
+  status: ProjectStatus
   clientMutationId: String
 }
 
