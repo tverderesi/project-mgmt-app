@@ -60,7 +60,7 @@
     "babel-plugin-import-graphql": "^2.8.1",
     "babel-plugin-module-resolver": "^5.0.0",
     "cross-env": "^7.0.3",
-    "dotenv": "^16.4.1",
+    "dotenv": "^16.4.5",
     "eslint": "^8.56.0",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
