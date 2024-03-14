@@ -56,7 +56,7 @@
   "devDependencies": {
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.18",
+    "@types/react-dom": "^18.2.22",
     "@types/react-input-mask": "^3.0.5",
     "@types/react-relay": "^16.0.6",
     "@types/relay-runtime": "^14.1.23",
